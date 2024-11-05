@@ -51,10 +51,10 @@ rule filter_genomic:
     input:
         pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.fna"
     output:    
-        temp(pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.ans")
+        temp(pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.no_lc.fna")
     shell:
         """
-        dustmasker  -in {input} -out {output} -parse_seqids -outfmt maskinfo_asn1_bin
+        python3 python/remove_low_compl.py {input} {output}
         """
 
 rule get_blast_db:
@@ -63,18 +63,20 @@ rule get_blast_db:
     """
     input:
  #       fasta="data/assemblies/{accession}/genomic.fna"
-        fasta = pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.fna",
-        filter = pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.ans"
+        fasta = pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.no_lc.fna",
+ #       filter = pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.ans"
     output:
-        temp("data/blastdb_nucleotide_seq/{accession}/nucldb.nhr"),
-        temp("data/blastdb_nucleotide_seq/{accession}/nucldb.nin"),
+        #temp("data/blastdb_nucleotide_seq/{accession}/nucldb.nhr"),
+        #temp("data/blastdb_nucleotide_seq/{accession}/nucldb.nin"),
         #"data/blastdb_nucleotide_seq/{accession}/nucldb.nog"),
-        temp("data/blastdb_nucleotide_seq/{accession}/nucldb.nsd"),
-        temp("data/blastdb_nucleotide_seq/{accession}/nucldb.nsi"),
-        temp("data/blastdb_nucleotide_seq/{accession}/nucldb.nsq")
+        #temp("data/blastdb_nucleotide_seq/{accession}/nucldb.nsd"),
+        #temp("data/blastdb_nucleotide_seq/{accession}/nucldb.nsi"),
+        #temp("data/blastdb_nucleotide_seq/{accession}/nucldb.nsq")
+        temp(directory("data/blastdb_nucleotide_seq/{accession}/db/"))        
     shell:
         """
-        makeblastdb -in {input.fasta} -mask_data {input.filter} -out data/blastdb_nucleotide_seq/{wildcards.accession}/nucldb -dbtype nucl -parse_seqids
+        mkdir data/blastdb_nucleotide_seq/{wildcards.accession}/db
+        makeblastdb -max_file_sz 4G -in {input.fasta}  -out data/blastdb_nucleotide_seq/{wildcards.accession}/db/nucldb -dbtype nucl -parse_seqids
         #formatdb -i {input} -n data/blastdb_nucleotide_seq/{wildcards.accession}/nucldb -p F -o T
         """
 
@@ -97,7 +99,7 @@ rule get_blast_db_curated:
         for fasta in ${{array[@]}};
         do
             mkdir -p data/blastdb_protein_seq/"$fasta";
-            makeblastdb -in data/assemblies/"$fasta"/protein.faa -out data/blastdb_protein_seq/"$fasta"/protdb -dbtype prot -parse_seqids;
+            makeblastdb  -max_file_sz 3G  -in data/assemblies/"$fasta"/protein.faa -out data/blastdb_protein_seq/"$fasta"/protdb -dbtype prot -parse_seqids;
             #formatdb -i data/assemblies/"$fasta"/protein.faa -n data/blastdb_protein_seq/"$fasta"/protdb -p T -o T;
 
         done
@@ -110,17 +112,19 @@ rule get_tblastn:
     input:
         #cds="data/ref_align/Prdm9_Metazoa_Reference_alignment/exon_peptides/{exon}.fst",
         cds=pathGTDriftResource+"ref_align/Prdm9_Metazoa_Reference_alignment/exon_peptides/{exon}.fst",        
-        nhr="data/blastdb_nucleotide_seq/{accession}/nucldb.nhr",
-        nin="data/blastdb_nucleotide_seq/{accession}/nucldb.nin",
-        #nog="data/blastdb_nucleotide_seq/{accession}/nucldb.nog",
-        nsd="data/blastdb_nucleotide_seq/{accession}/nucldb.nsd",
-        nsi="data/blastdb_nucleotide_seq/{accession}/nucldb.nsi",
-        nsq="data/blastdb_nucleotide_seq/{accession}/nucldb.nsq"
+        #nhr="data/blastdb_nucleotide_seq/{accession}/nucldb.nhr",
+        #nin="data/blastdb_nucleotide_seq/{accession}/nucldb.nin",
+        ##nog="data/blastdb_nucleotide_seq/{accession}/nucldb.nog",
+        #nsd="data/blastdb_nucleotide_seq/{accession}/nucldb.nsd",
+        #nsi="data/blastdb_nucleotide_seq/{accession}/nucldb.nsi",
+        #nsq="data/blastdb_nucleotide_seq/{accession}/nucldb.nsq"
+        db="data/blastdb_nucleotide_seq/{accession}/db/"
     output:
         "results/{accession}/Step1_blast/tblastn/PRDM9_{exon}.tblastn.fmt7"
     shell:
         """
-        tblastn  -db_soft_mask 11 -query {input.cds} -db data/blastdb_nucleotide_seq/{wildcards.accession}/nucldb -out {output} -evalue 1e-3 -max_target_seqs 500 -max_hsps 180 -outfmt "7 delim=  qseqid qlen sseqid slen pident nident length mismatch gapopen qstart qend sstart send bitscore evalue" -num_threads 4
+ #       tblastn  -db_soft_mask 11 -query {input.cds} -db data/blastdb_nucleotide_seq/{wildcards.accession}/nucldb -out {output} -evalue 1e-3 -max_target_seqs 500 -max_hsps 180 -outfmt "7 delim=  qseqid qlen sseqid slen pident nident length mismatch gapopen qstart qend sstart send bitscore evalue" -num_threads 4
+        /beegfs/home/penel/tmpdir/ncbi/ncbi-blast-2.16.0+-src/c++/ReleaseMT/bin/tblastn   -query {input.cds} -db data/blastdb_nucleotide_seq/{wildcards.accession}/db/nucldb -out {output} -evalue 1e-3 -max_target_seqs 500 -max_hsps 180 -outfmt "7 delim=  qseqid qlen sseqid slen pident nident length mismatch gapopen qstart qend sstart send bitscore evalue" -num_threads 4
         """
 
 rule get_blastp:
@@ -247,17 +251,18 @@ rule extract_sequences:
     """
     input:
         entry="results/{accession}/Step2_extract_loci/separated_candidates.txt",
-        nhr="data/blastdb_nucleotide_seq/{accession}/nucldb.nhr",
-        nin="data/blastdb_nucleotide_seq/{accession}/nucldb.nin",
-        #nog="data/blastdb_nucleotide_seq/{accession}/nucldb.nog",
-        nsd="data/blastdb_nucleotide_seq/{accession}/nucldb.nsd",
-        nsi="data/blastdb_nucleotide_seq/{accession}/nucldb.nsi",
-        nsq="data/blastdb_nucleotide_seq/{accession}/nucldb.nsq"
+        #nhr="data/blastdb_nucleotide_seq/{accession}/nucldb.nhr",
+        #nin="data/blastdb_nucleotide_seq/{accession}/nucldb.nin",
+        ##nog="data/blastdb_nucleotide_seq/{accession}/nucldb.nog",
+        #nsd="data/blastdb_nucleotide_seq/{accession}/nucldb.nsd",
+        #nsi="data/blastdb_nucleotide_seq/{accession}/nucldb.nsi",
+        #nsq="data/blastdb_nucleotide_seq/{accession}/nucldb.nsq"
+        db="data/blastdb_nucleotide_seq/{accession}/db/"
     output:
         "results/{accession}/Step2_extract_loci/candidate_loci/candidates.fna"
     shell:
         """
-        blastdbcmd -db data/blastdb_nucleotide_seq/{wildcards.accession}/nucldb -entry_batch {input.entry} > {output}
+        blastdbcmd -db data/blastdb_nucleotide_seq/{wildcards.accession}/db/nucldb -entry_batch {input.entry} > {output}
         """
 
 rule annotate_candidates:
@@ -430,7 +435,7 @@ rule get_protdb:
         psd="results/{accession}/Step3_genewise/protdb.psd"
     shell:
         """
-        makeblastdb -in {input} -title protdb -out results/{wildcards.accession}/Step3_genewise/protdb -dbtype prot -parse_seqids
+        makeblastdb  -max_file_sz 3G  -in {input} -title protdb -out results/{wildcards.accession}/Step3_genewise/protdb -dbtype prot -parse_seqids
         #formatdb -i {input} -t protdb -n results/{wildcards.accession}/Step3_genewise/protdb -p T -o T
         """
          
@@ -606,7 +611,7 @@ rule result_database:
         psd="results/{accession}/output_db/out_prot.psd"
     shell:
         """
-        makeblastdb -in {input} -title out_prot -out results/{wildcards.accession}/output_db/out_prot -dbtype prot -parse_seqids
+        makeblastdb  -max_file_sz 3G  -in {input} -title out_prot -out results/{wildcards.accession}/output_db/out_prot -dbtype prot -parse_seqids
         #formatdb -i {input} -t out_prot -n results/{wildcards.accession}/output_db/out_prot -p T -o T 
         """
 
