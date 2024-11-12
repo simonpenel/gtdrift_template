@@ -8,9 +8,17 @@ import json
 with open('../environment_path.json') as f:
     d = json.load(f)
     
-accession = [elt for elt in os.listdir('results/') if elt.startswith('GC')]
+#accession = [elt for elt in os.listdir('results/') if elt.startswith('GC')]
 full_data = []
 
+accession = []
+with open('data/resources/organisms_data') as reader:
+    for line in reader.readlines()[1:]:
+        #taxid = int(line.split('\t')[1])
+        assembly = line.split('\t')[2]
+        accession.append(assembly)
+        #dico[taxid] = assembly
+        
 krab_data = pd.read_csv(d["pathGTDriftGlobalResults"]+'prdm9_genomic_protein_analysis/summarized_results/krab_data.csv', sep=';')
 for accession_number in accession:
     with open(f"results/{accession_number}/Step4_Hmm/tbl/ZF_processed") as reader:
