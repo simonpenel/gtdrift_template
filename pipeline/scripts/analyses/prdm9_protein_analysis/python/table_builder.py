@@ -58,8 +58,11 @@ def processed_domains(domain, accession_number=accession_number):
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain end"]= line_data[18]
 
 def getTaxid(accession_number=accession_number,input_dir=input_dir):
-    df = pd.read_csv(input_dir+'/../ncbi_genome_assembly_taxon.txt', sep='\t', header=0)
-    taxid = df.loc[df['AssemblyAccession'] == accession_number, 'Taxid'].values[0]
+#   df = pd.read_csv(input_dir+'/../ncbi_genome_assembly_taxon.txt', sep='\t', header=0)
+#   taxid = df.loc[df['AssemblyAccession'] == accession_number, 'Taxid'].values[0]
+    df = pd.read_csv(input_dir+'/../organisms_data', sep='\t', header=0)
+    taxid = df.loc[df['Assembly Accession'] == accession_number, 'Taxid'].values[0]    
+    print("DEBUG "+accession_number+": "+str(taxid))
     summarised_data["Taxid"] = taxid
 
 
