@@ -13,11 +13,11 @@ df = pd.read_csv(sys.argv[1], sep=';')
 accession = sys.argv[2]
 inputdir = sys.argv[3]
 
-                
-print(f"Run formatdb -i {inputdir}../../pipeline/resources/PRDM_family_HUMAN/PRDM_family_HUMAN.fa -t protdb -n {inputdir}../../pipeline/resources/PRDM_family_HUMAN/prdm_family -p T -o T")            
-ret = os.system(f"formatdb -i {inputdir}../../pipeline/resources/PRDM_family_HUMAN/PRDM_family_HUMAN.fa -t protdb -n {inputdir}../../pipeline/resources/PRDM_family_HUMAN/prdm_family -p T -o T")
-if ret > 0 :
-    sys.exit("Error during formatdb")  
+# Pose pb quand tourne en parallele. Il fauddrait le faire une fois au debut en ajoutant une regle                
+#print(f"Run formatdb -i {inputdir}../../pipeline/resources/PRDM_family_HUMAN/PRDM_family_HUMAN.fa -t protdb -n {inputdir}../../pipeline/resources/PRDM_family_HUMAN/prdm_family -p T -o T")            
+#ret = os.system(f"formatdb -i {inputdir}../../pipeline/resources/PRDM_family_HUMAN/PRDM_family_HUMAN.fa -t protdb -n {inputdir}../../pipeline/resources/PRDM_family_HUMAN/prdm_family -p T -o T")
+#if ret > 0 :
+#    sys.exit("Error during formatdb")  
                 
 with open(f"{inputdir}/{accession}/analyses/prdm9_prot/blastp.txt", 'w') as writer:
     taxid = None
