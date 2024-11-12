@@ -27,6 +27,14 @@ os.system("awk '/^>/ {sub(\">\", \"\", $1); print $1}' "+ output_dir+"analyses_s
 
 ncbi = NCBITaxa()
 
+dicospec = {}
+with open(f'{input_dir}/organisms_data') as reader:
+    #dico = {}
+    for line in reader.readlines()[1:]:
+        taxid = int(line.split('\t')[1])
+        species = line.split('\t')[0]
+        dicospec[taxid] = species
+                
 with open(f'{output_dir}/taxid.txt') as reader:
     data_list = [elt for elt in reader.readlines()]
 
@@ -35,10 +43,18 @@ for elt in data_list:
     try:
         lineage = ncbi.get_lineage(elt)
     except ValueError as err:
-        print("Error : ",format(err))
+        print("Error  for taxonmy: ",format(err))
         lineage = []
     names = ncbi.get_taxid_translator(lineage)
-    organism_data = [int(elt.strip())] + [names[taxid] for taxid in lineage]
+    taxid = int(elt.strip())
+    if taxid in dicospec:
+        species = dicospec[taxid]
+    else:
+        species = "Not found"
+        print("Taxid "+str(taxid)+" not found")
+    
+    #organism_data = [int(elt.strip())] + [names[taxid] for taxid in lineage]
+    organism_data = [int(elt.strip())] + [names[taxid] for taxid in lineage] +[species]
     tax_data.append(organism_data)
 
 taille_max = max(tax_data, key=len)
@@ -53,17 +69,22 @@ for index, row in sorted_tax.iterrows():
 
 move_last_col(sorted_tax)
 
-with open(f'{input_dir}/ncbi_genome_assembly_taxon.txt') as reader:
+#with open(f'{input_dir}/ncbi_genome_assembly_taxon.txt') as reader:
+with open(f'{input_dir}/organisms_data') as reader:
     dico = {}
     for line in reader.readlines()[1:]:
-        #taxid = int(line.split('\t')[1])
-        taxid = int(line.split('\t')[6])
+        taxid = int(line.split('\t')[1])
+       #taxid = int(line.split('\t')[6])
         assembly = line.split('\t')[2]
         dico[taxid] = assembly
 
 for index, row in sorted_tax.iterrows():
     taxid = row['Taxid']
-    sorted_tax.at[index, 'Accession'] = dico[taxid]
-
+#    sorted_tax.at[index, 'Accession'] = dico[taxid]
+    if taxid in dico :
+        sorted_tax.at[index, 'Assembly Accession'] = dico[taxid]
+    else :
+        print("Error : taxid is not present "+ str(taxid))
+    
 move_last_col(sorted_tax)
 sorted_tax.to_csv(f'{output_dir}/sorted_taxonomy.csv', sep = ';')
