@@ -25,7 +25,10 @@ rule all:
         krabzf = pathGTDriftGlobalResults + "analyses_summaries/table_results/krabzf_data.csv",
         zf = pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv",
         table = pathGTDriftGlobalResults + "analyses_summaries/table_results/table_prdm9.csv",
-        zincfinger = pathGTDriftGlobalResults + "analyses_summaries/table_results/zinc_finger.csv"
+        PRDM9_candidates = pathGTDriftGlobalResults + "analyses_summaries/table_results/global_prdm9_candidates.csv",
+	zincfinger = pathGTDriftGlobalResults + "analyses_summaries/table_results/zinc_finger.csv",
+	SET_tyrosines = pathGTDriftGlobalResults + "analyses_summaries/table_results/SET_tyrosines.csv"
 
 include: "module_stats_prdm9.smk"
 include: "module_stats_zincfinger.smk"
+include: "module_SET_tyrosines.smk"
