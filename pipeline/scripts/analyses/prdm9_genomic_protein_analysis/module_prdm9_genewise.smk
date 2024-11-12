@@ -308,7 +308,8 @@ rule genewisedb:
         ref=pathGTDriftResource+"ref_align/Prdm9_Metazoa_Reference_alignment/PRDM9_metazoa_ReferenceSequences.fa"
 
     output:
-        touch("genewisedb.{accession}.done")
+        touch("genewisedb.{accession}.done"),
+        res="genewisedb.{accession}.lst"
     shell:
         """
         accession={wildcards.accession};
@@ -316,15 +317,19 @@ rule genewisedb:
         mkdir -p results/"${{accession}}"/Step3_genewise ;
         elt=' ' read -a array <<< "{input.candidates}";
         i=1;
+        echo "processing genewise on {input.candidates}..."
         for cand in ${{array[@]}};
         do
             file_output=results/"${{accession}}"/Step3_genewise/"${{i}}".gw;
+            echo "processing genewise..."
             echo ${{file_output}};
             genewisedb {input.ref} ${{cand}} -prodb -dnas -genes -pseudo -cdna -pep -quiet -init local -subs 1e-6 -indel 1e-6 -pretty -aln {ALN} > ${{file_output}} || touch ${{file_output}};
             python3 python/check_end_file.py -i ${{file_output}}
             echo "completed"
+            echo ${{file_output}} >> {output.res}
             ((i++))
         done
+        touch {output.res}
         """
 
 rule concatenate_candidates:
@@ -332,15 +337,25 @@ rule concatenate_candidates:
     Concatenating candidates for genewise parsing
     """
     input:
-        "genewisedb.{accession}.done"
+        "genewisedb.{accession}.done",
+        res="genewisedb.{accession}.lst"
     output:
         "results/{accession}/Step3_genewise/gw.concat"
     shell:
         """
+        export testgw=`wc -l {input.res}|cut -f1 -d" "`;
+        touch {output} 
+        echo $testgw
+        if [ $testgw != "0" ];
+        then
+        echo "Some results for genewise"
         cd results/{wildcards.accession}/Step3_genewise;
         cat *.gw > gw.concat;
         cd ../../..;
         #rm genewisedb.{wildcards.accession}.done
+        else 
+        echo "No results for genewise"
+        fi
         """
 
 rule genewise_parser:
@@ -348,13 +363,24 @@ rule genewise_parser:
     Parse through generated genewise files
     """
     input:
-        "results/{accession}/Step3_genewise/gw.concat"
+        concat="results/{accession}/Step3_genewise/gw.concat",
+        res="genewisedb.{accession}.lst"
     output:
         fasta="results/{accession}/Step3_genewise/genewise_predicted_proteins.faa",
         text="results/{accession}/Step3_genewise/genewise_prediction.txt"
     shell:
         """
-        python3 python/genewise_parser.py -i {input} -a {wildcards.accession} -o {output.text} -f {output.fasta}
+        export testgw=`wc -l {input.res}|cut -f1 -d" "`;
+        touch {output.text}
+        touch {output.fasta} 
+        echo $testgw
+        if [ $testgw != "0" ];
+        then
+        echo "Some results for genewise"
+        python3 python/genewise_parser.py -i {input.concat} -a {wildcards.accession} -o {output.text} -f {output.fasta}
+        else 
+        echo "No results for genewise"
+        fi
         """
 
 rule concatenate_predictions:
@@ -425,7 +451,8 @@ rule get_protdb:
     Generate a blast db for the predicted proteins.
     """
     input:
-        concat_or_not
+        concat=concat_or_not,
+        res="genewisedb.{accession}.lst"
     output:
         phr="results/{accession}/Step3_genewise/protdb.phr",
         pin="results/{accession}/Step3_genewise/protdb.pin",
@@ -435,8 +462,16 @@ rule get_protdb:
         psd="results/{accession}/Step3_genewise/protdb.psd"
     shell:
         """
-        makeblastdb  -max_file_sz 3G  -in {input} -title protdb -out results/{wildcards.accession}/Step3_genewise/protdb -dbtype prot -parse_seqids
+        export testgw=`wc -l {input.res}|cut -f1 -d" "`;
+        touch {output}
+        echo $testgw
+        if [ $testgw != "0" ];
+        then
+        makeblastdb  -max_file_sz 3G  -in {input.concat} -title protdb -out results/{wildcards.accession}/Step3_genewise/protdb -dbtype prot -parse_seqids
         #formatdb -i {input} -t protdb -n results/{wildcards.accession}/Step3_genewise/protdb -p T -o T
+        else 
+        echo "No results for genewise"
+        fi
         """
          
 rule hmm_build:
@@ -457,13 +492,24 @@ rule hmm_search:
     """
     input:
         model="data/hmm_build/{domain}.hmm",
-        protein="results/{accession}/Step3_genewise/genewise_predicted_proteins.faa"
+        protein="results/{accession}/Step3_genewise/genewise_predicted_proteins.faa",
+        res="genewisedb.{accession}.lst"
     output:
         table = "results/{accession}/Step4_Hmm/tbl/{domain}",
         domains = "results/{accession}/Step4_Hmm/domtbl/{domain}_domains"
     shell:
-        "{RUNCMD} hmmsearch -E 1E-3 --domE 1E-3 --tblout {output.table} --domtblout {output.domains} --noali {input.model} {input.protein}"
-
+        """
+        export testgw=`wc -l {input.res}|cut -f1 -d" "`;
+        touch {output.table}
+        touch {output.domains} 
+        echo $testgw
+        if [ $testgw != "0" ];
+        then
+        {RUNCMD} hmmsearch -E 1E-3 --domE 1E-3 --tblout {output.table} --domtblout {output.domains} --noali {input.model} {input.protein}
+        else 
+        echo "No results for genewise"
+        fi
+        """
 
 rule tbl_processing:
     """
@@ -576,6 +622,10 @@ rule taxonomy:
     shell:
         "python3 python/taxonomy.py"
 
+def domain_processed(wildcards):
+    return expand("results/{accession}/Step4_Hmm/tbl/{domain}_processed" , domain=DOMAIN,accession=ACCESSNB)
+
+
 rule create_table:
     """
     Creation of multiple result table using blastp results and hmm search results
@@ -583,11 +633,13 @@ rule create_table:
     input:
         "results/BLASTP_results/blastp_results.csv",
         "data/resources/sorted_taxonomy.csv"
+    #    domain_processed
     output:
         pathGTDriftGlobalResults+"prdm9_genomic_protein_analysis/summarized_results/krab_data.csv",
         pathGTDriftGlobalResults+"prdm9_genomic_protein_analysis/summarized_results/krabzf_data.csv",
         pathGTDriftGlobalResults+"prdm9_genomic_protein_analysis/summarized_results/zf_count.csv",
-        pathGTDriftGlobalResults+"prdm9_genomic_protein_analysis/summarized_results/table_prdm9.csv"
+        pathGTDriftGlobalResults+"prdm9_genomic_protein_analysis/summarized_results/table_prdm9.csv",
+
     shell:
         """
         python3 python/krab.py\
