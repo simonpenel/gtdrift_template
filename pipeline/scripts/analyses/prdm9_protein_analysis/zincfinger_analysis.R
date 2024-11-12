@@ -1,9 +1,7 @@
-
-##options(repos = c(CRAN = "https://cloud.r-project.org/"))
+#options(repos = c(CRAN = "https://cloud.r-project.org/"))
 #.libPaths("~/R/libs")
-##.libPaths(getwd())
-##install.packages("BiocManager", lib=getwd())
-##BiocManager::install("Biostrings")
+#install.packages("BiocManager")
+#BiocManager::install("Biostrings")
 
 library(Biostrings)
 library(stringr)
@@ -15,16 +13,19 @@ output_file <- args[2]
 
 
 if (!file.exists(protein_file)) {
-    stop(paste("Error: The input file does not exist:", protein_file))
+  stop(paste("Error: The input file does not exist:", protein_file))
 }
 
 
 print(paste("Path to the input:", protein_file))
 
 
-# This code contains three functions. In the overall, the input is a FASTA file and the output is a data frame which contains, for each aminoacidic sequence, its ID, its total number of ZF (*Num_ZF*), the
-# diversity index of the positions in contact with the DNA from the ZFs wich are in the longest tandem array (*ZFDa*), the diversity index of the positions in contact with the DNA from all ZF in the sequen
-#ce (*ZFDg*), the number of ZFs of 28 AA (*Num_ZF_28*), the number of ZFs of 29 AA (*Num_ZF_29*) and the number ZF that are in the longest tandem array (*Max_Tandem_Length*)
+# This code contains three functions. In the overall, the input is a FASTA file and the output is a data frame
+# which contains, for each aminoacidic sequence, its ID, its total number of ZF (*Num_ZF*), the diversity index
+# of the positions in contact with the DNA from the ZFs wich are in the longest tandem array (*ZFDa*), 
+# the diversity index of the positions in contact with the DNA from all ZF in the sequence (*ZFDg*),
+# the number of ZFs of 28 AA (*Num_ZF_28*), the number of ZFs of 29 AA (*Num_ZF_29*)
+# and the number ZF that are in the longest tandem array (*Max_Tandem_Length*)
 
 calc.ZFD = function(aa.seq, allele.name, equation = 2, tandem.only = TRUE, min.ZFs = 4, return.prop = TRUE) {
   # equation = 1 --> true heterozygosity (sampling without replacement)
@@ -161,7 +162,15 @@ calc.ZFD.FASTA = function(fasta_file, return.prop = TRUE) {
   # Read the FASTA file
   fasta_seqs <- readAAStringSet(fasta_file) 
   
-  # Create an empty data frame to store the results
+  # Verifi if the FASTA file is empty
+  if (length(fasta_seqs) == 0) {
+    return(list(resultados = data.frame(ID = "# 0 candidate PRDM9 proteins"), num_sequences = 0))
+  }
+  
+  # Obtain the number of sequences of the FASTA
+  num_sequences <- length(fasta_seqs)
+  
+  # Generate an empty data frame to store the results
   resultados <- data.frame(
     ID = character(),
     Num_ZF = integer(),
@@ -173,18 +182,18 @@ calc.ZFD.FASTA = function(fasta_file, return.prop = TRUE) {
     stringsAsFactors = FALSE
   )
   
-  # Iterate over each sequence in the FASTA
+  # Iteration over each sequence of the FASTA file
   for (i in 1:length(fasta_seqs)) {
-    seq_id <- names(fasta_seqs)[i]  # Get the sequence ID
+    seq_id <- names(fasta_seqs)[i]  # Obtener el ID de la secuencia
     aa.seq <- tolower(as.character(fasta_seqs[[i]]))
     
-    # Call the calc.ZFD function to compute ZFDs and the number of ZFs
+    # Call to the function calc.ZFD
     calc_results <- calc.ZFD(aa.seq, seq_id, return.prop = return.prop)
     
-    # Auxiliary code to check if calc.ZFD has returned valid results
+    # Auxiliary code to verify if calc.ZFD has returned valid results
     if (is.null(calc_results) || !all(c("num.ZFs", "result.ZFDa", "result.ZFDg") %in% names(calc_results))) {
       warning(paste("Results could not be obtained for the sequence:", seq_id))
-      # If there are no results, add the corresponding row with 0 in ZFs
+      
       resultados <- rbind(resultados, data.frame(
         ID = seq_id,
         Num_ZF = 0,
@@ -198,11 +207,11 @@ calc.ZFD.FASTA = function(fasta_file, return.prop = TRUE) {
       next  
     }
     
-    # Extract the results from the calc.ZFD function
+    # Extract the results of the function calc.ZFD
     total_zf <- calc_results$num.ZFs
     result_zfda <- calc_results$result.ZFDa
     result_zfdg <- calc_results$result.ZFDg
-    max_tandem_length <- calc_results$max.tandem.length  # Maximum tandem length
+    max_tandem_length <- calc_results$max.tandem.length 
     
     # Add the results to the data frame
     resultados <- rbind(resultados, data.frame(
@@ -217,15 +226,30 @@ calc.ZFD.FASTA = function(fasta_file, return.prop = TRUE) {
     ))
   }
   
-  return(resultados)
+  # Return the results and the number of sequences
+  return(list(resultados = resultados, num_sequences = num_sequences))
 }
-
-
 
 # Input FASTA file
 fasta_file <- protein_file
 
-# Run the analysis and save the output as a CSV
+# Run the analisis and save the results in a .csv file
 ZFD_analysis <- calc.ZFD.FASTA(fasta_file)
-write.csv(ZFD_analysis, file = output_file, row.names = FALSE)
+
+output_conn <- file(output_file, open = "w")
+
+# Add the header line with the number of sequences
+if (ZFD_analysis$num_sequences > 0) {
+  cat(paste("#", ZFD_analysis$num_sequences, "candidate PRDM9 proteins\n"), file = output_conn)
+} else {
+  # If the FASTA file is empty, write "0 candidate PRDM9 proteins"
+  cat("# 0 candidate PRDM9 proteins\n", file = output_conn)
+}
+
+
+if (ZFD_analysis$num_sequences > 0) {
+  write.csv(ZFD_analysis$resultados, file = output_conn, row.names = FALSE)
+}
+
+close(output_conn)
 
