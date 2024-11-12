@@ -17,7 +17,8 @@ This script creates a summary table of domain presence absence in candidate gene
 """
 
 taxonomy = pd.read_csv(f'{input_dir}sorted_taxonomy.csv', sep= ';')
-taxonomy = taxonomy[['Taxid', 'Accession']]
+#taxonomy = pd.read_csv(f'{input_dir}organisms_data', sep= ';')
+taxonomy = taxonomy[['Taxid', 'Assembly Accession']]
 donnees = pd.read_csv(f"{output_dir}analyses_summaries/BLASTP_results/blastp_results.csv", sep=";")
 donnees = donnees.loc[:, ~donnees.columns.str.contains('^Unnamed')]
 donnees['boolZF'] = donnees['ZF'].apply(lambda x: 0 if x == 0 else 1)
@@ -48,7 +49,7 @@ synth['Nb_SET'] = synth['Nb_SET'].fillna(0).astype(int)
 
 merge = pd.merge(synth, taxonomy, left_on='Taxid', right_on='Taxid', how='inner')
 merge = merge.loc[:, ~merge.columns.str.contains('^Unnamed')]
-merge = merge[['Taxid', 'Accession', 'Species_name',
+merge = merge[['Taxid', 'Assembly Accession', 'Species_name',
                'Nb_SET', 'Complete_PRDM9 nb', 'Complete_PRDM9', 
                'SET+KRAB+SSXRD nb', 'SET+KRAB+SSXRD', 'SET+KRAB+ZF nb', 'SET+KRAB+ZF', 'SET+KRAB nb', 'SET+KRAB']]
 merge.to_csv(f'{output_dir}analyses_summaries/table_results/table_prdm9.csv', sep = ';', index=False)
