@@ -18,21 +18,34 @@ snakemake iteration constraints, and optimisation constraints.
 ncbi = NCBITaxa()
 data = []
 
+with open(f'{input_dir}../data_results_per_assembly/organisms_data') as reader:
+    dico = {}
+    for line in reader.readlines()[1:]:
+        taxid = int(line.split('\t')[1])
+        species = line.split('\t')[0]
+        dico[taxid] = species
+        
 with open(f'{input_dir}analyses_summaries/BLASTP_results/blastp_summary.txt', 'r+') as reader:
     for line in reader.readlines():
         line = line.strip()
         # Get taxid and taxonomy data
         if line.startswith('>') == True:
             taxid = line.lstrip('>')
-            try:
-                lineage = ncbi.get_lineage(taxid)
-                taxonomy = ncbi.get_taxid_translator(lineage)
-                species = ncbi.get_taxid_translator([taxid])[int(taxid)]
-            except ValueError as err:
-                print("Error : ",format(err))
-                lineage = []
-                taxonomy = {}
-                species = ""
+            if int(taxid) in dico:
+                species = dico[int(taxid)]
+            else:
+                species = "Not found"
+                print("Taxid "+taxid+" not found")
+            #try:
+            #    species = dico[int(taxid)]
+                #lineage = ncbi.get_lineage(taxid)
+                #taxonomy = ncbi.get_taxid_translator(lineage)
+                #species = ncbi.get_taxid_translator([taxid])[int(taxid)]
+            #except ValueError as err:
+            #    print("Error : ",format(err))
+                #lineage = []
+                #taxonomy = {}
+             #   species = "Not found"
             # superorder = taxonomy[lineage[18]] # this line was used when working on insects. It can be modified to keep the chosen tanonomy level (change lineage index) or simply ignored.
         # get proteic domains data
         elif line.startswith('<') == True:
