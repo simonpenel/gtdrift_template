@@ -26,13 +26,13 @@ rule get_blastdb:
         fasta = pathGTDriftData+ "genome_assembly/{accession}/annotation/protein.faa"
     output:    
         psq= pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psq",
-     #   psi= pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psi",
-     #   psd= pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psd",
+    #    psi= pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psi",
+    #    psd= pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psd",
         pin= pathGTDriftData+ "genome_assembly/{accession}/analyses/prdm9_prot/protdb.pin",
         phr= pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.phr"        
     shell:
-        #"makeblastdb -in {input.fasta} -title protdb -out "+pathGTDriftData+"genome_assembly/{wildcards.accession}/analyses/prdm9_prot/protdb -dbtype prot "
-        "formatdb -i {input.fasta} -t protdb -n "+pathGTDriftData+"genome_assembly/{wildcards.accession}/analyses/prdm9_prot/protdb -p T -o T"
+       #"makeblastdb -in {input.fasta} -title protdb -out "+pathGTDriftData+"genome_assembly/{wildcards.accession}/analyses/prdm9_prot/protdb -dbtype prot "
+       "formatdb -i {input.fasta} -t protdb -n "+pathGTDriftData+"genome_assembly/{wildcards.accession}/analyses/prdm9_prot/protdb -p T -o T"
 
          
 rule hmm_build:
@@ -163,10 +163,8 @@ rule create_table:
     output:
         pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
         pathGTDriftGlobalResults + "analyses_summaries/table_results/krabzf_data.csv",
-        pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv",
-        pathGTDriftGlobalResults + "analyses_summaries/table_results/table_prdm9.csv"
+        pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv"
     shell:
         "python3 "+pathGTDriftScripts+"/analyses/prdm9_protein_analysis/python/krab.py -i "+ pathGTDriftData + " -o " + pathGTDriftGlobalResults +"\
         && python3 "+pathGTDriftScripts+"/analyses/prdm9_protein_analysis/python/krabzf.py  -i "+ pathGTDriftData + " -o " + pathGTDriftGlobalResults +"\
-        && python3 "+pathGTDriftScripts+"analyses/prdm9_protein_analysis/python/zf_analysis.py  -i "+ pathGTDriftData + " -o " + pathGTDriftGlobalResults +"\
-        && python3 "+pathGTDriftScripts+"analyses/prdm9_protein_analysis/python/table_prdm9.py  -i "+ pathGTDriftGlobalResults + " -o " + pathGTDriftGlobalResults
+        && python3 "+pathGTDriftScripts+"analyses/prdm9_protein_analysis/python/zf_analysis.py  -i "+ pathGTDriftData + " -o " + pathGTDriftGlobalResults
