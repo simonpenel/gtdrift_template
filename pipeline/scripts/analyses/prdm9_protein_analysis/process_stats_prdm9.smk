@@ -40,8 +40,10 @@ rule all:
     Get the prdm9 stats on protein data
     """
     input:
-        # prdm9 protein statistics for each assembly
-        # ------------------------------------------
+        # prdm9 protein statistics for each assembly.
+        # warning : summary_table_prdm9_{accession}.csv should
+        # no be confused with summary_table_{accession}.csv
+        # -----------------------------------------------------
         stats_prdm9=expand(
             pathGTDriftData
             + "genome_assembly/{accession}/analyses/prdm9_prot/summary_table_prdm9_{accession}.csv",
