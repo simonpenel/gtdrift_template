@@ -115,6 +115,7 @@ rule read_table:
         
     output:
         pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/blastp.txt",
+        pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/summary_table_{accession}.csv"
     shell:
         "python3 "+pathGTDriftScripts+"analyses/prdm9_protein_analysis/python/blastp_analysis.py "+ pathGTDriftData + "genome_assembly/{wildcards.accession}/analyses/prdm9_prot/summary_table_prdm9_{wildcards.accession}.csv {wildcards.accession} "+ pathGTDriftData + "genome_assembly/"
 
