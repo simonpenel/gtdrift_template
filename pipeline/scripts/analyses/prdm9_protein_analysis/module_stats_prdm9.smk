@@ -178,7 +178,7 @@ def domain_done(wildcards):
 # table_editing
 # write prdm9 protein statistics for each assembly.
 # warning : summary_table_prdm9_{accession}.csv should
-# no be confused with summary_table_{accession}.csv
+# not be confused with summary_table_{accession}.csv
 # Output format:
 # ;SeqID;SET Query;SET E-value;SET Score;Nb SET domains;SET domain start;SET domain end;KRAB Query;KRAB E-value;KRAB Score;Nb KRAB domains;KRAB domain start;KRAB domain end;SSXRD Query;SSXRD E-value;SSXRD Score;Nb SSXRD domains;SSXRD domain start;SSXRD domain end;ZF Query;ZF E-value;ZF Score;Nb ZF domains;ZF domain start;ZF domain end;Taxid
 # ------------------------------------------
@@ -192,7 +192,7 @@ rule table_editing:
     output:
         # prdm9 protein statistics for each assembly.
         # warning : summary_table_prdm9_{accession}.csv should
-        # no be confused with summary_table_{accession}.csv
+        # not be confused with summary_table_{accession}.csv
         pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/summary_table_prdm9_{accession}.csv",
     shell:
@@ -205,6 +205,13 @@ rule table_editing:
         )
 
 
+# read_table
+# Extracts the sequence selected by hmm search for an organism and runs a blastp analysis
+# against the Human PRDM genes family. If the best match is PRDM9, the value is saved
+# and compared to the next best non-PRDM9 match.
+# The ouput file contains the taxid, the best PRDM match,
+# the presence/absence data for every proteic domain, the bit score of the blastp
+# if the best match is PRDM9 and the ratio with the second best non-PRDM9 match
 rule read_table:
     """
     Reads each summary table and runs a blastp analysis on every candidate
@@ -315,14 +322,14 @@ rule create_table:
             + " -o "
             + pathGTDriftGlobalResults
             + "\
-                                                                                                        && python3 "
+                                                                                                                && python3 "
             + pathGTDriftScripts
             + "/analyses/prdm9_protein_analysis/python/krabzf.py  -i "
             + pathGTDriftData
             + " -o "
             + pathGTDriftGlobalResults
             + "\
-                                                                                                        && python3 "
+                                                                                                                && python3 "
             + pathGTDriftScripts
             + "analyses/prdm9_protein_analysis/python/zf_analysis.py  -i "
             + pathGTDriftData
