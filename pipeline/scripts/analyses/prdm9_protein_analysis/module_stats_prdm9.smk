@@ -175,6 +175,13 @@ def domain_done(wildcards):
     )
 
 
+# table_editing
+# write prdm9 protein statistics for each assembly.
+# warning : summary_table_prdm9_{accession}.csv should
+# no be confused with summary_table_{accession}.csv
+# Output format:
+# ;SeqID;SET Query;SET E-value;SET Score;Nb SET domains;SET domain start;SET domain end;KRAB Query;KRAB E-value;KRAB Score;Nb KRAB domains;KRAB domain start;KRAB domain end;SSXRD Query;SSXRD E-value;SSXRD Score;Nb SSXRD domains;SSXRD domain start;SSXRD domain end;ZF Query;ZF E-value;ZF Score;Nb ZF domains;ZF domain start;ZF domain end;Taxid
+# ------------------------------------------
 rule table_editing:
     """
     Creation of a summary table of hmm_search results.
@@ -308,14 +315,14 @@ rule create_table:
             + " -o "
             + pathGTDriftGlobalResults
             + "\
-                                                                                                && python3 "
+                                                                                                        && python3 "
             + pathGTDriftScripts
             + "/analyses/prdm9_protein_analysis/python/krabzf.py  -i "
             + pathGTDriftData
             + " -o "
             + pathGTDriftGlobalResults
             + "\
-                                                                                                && python3 "
+                                                                                                        && python3 "
             + pathGTDriftScripts
             + "analyses/prdm9_protein_analysis/python/zf_analysis.py  -i "
             + pathGTDriftData
