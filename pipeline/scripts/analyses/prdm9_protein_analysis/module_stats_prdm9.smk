@@ -36,13 +36,14 @@ else:
 # -----
 
 
-# get_blastdb: Build a blast database from the proteins wich should 
-# be stored in the genome_assembly directory. These data were 
-# collected with the "collecting_genome_annotation" pipeline.
-# Use of formatdb instead makeblastdb because last makeblastdb 
-# version doestn work on beegfs. Alternatively, it is possible to use
-# an old version of makeblasdb by modify the PATH in your bash 
-# environment.
+# -------------------------------------------------------------------
+# get_blastdb
+# Build a blast database from the proteins wich should be stored in
+# the genome_assembly directory. These data were collected with the
+# "collecting_genome_annotation" pipeline. Use of formatdb instead
+# makeblastdb because last makeblastdb version doestn work on beegfs.
+# Alternatively, it is possible to use an old version of makeblasdb
+# by modify the PATH in your bash  environment.
 # -------------------------------------------------------------------
 rule get_blastdb:
     """
@@ -70,6 +71,7 @@ rule get_blastdb:
         )
 
 
+# ------------------------------------------------------------------
 # hmm_build
 # build the HMM from the Prdm9 metazoa reference alignments for each
 # domain.
@@ -89,6 +91,7 @@ rule hmm_build:
         "{RUNCMD} hmmbuild {output} {input}"
 
 
+# ------------------------------------------------------
 # hmm_search
 # search the  HMM profile of the domain in the proteome.
 # ------------------------------------------------------
@@ -112,6 +115,7 @@ rule hmm_search:
         "{RUNCMD} hmmsearch -E 1E-3 --domE 1E-3 --tblout {output.table} --domtblout {output.domains} --noali {input.model} {input.protein}"
 
 
+# ------------------------------------------
 # tbl_processing
 # write per-sequence hits in tabular format.
 # ------------------------------------------
@@ -135,6 +139,7 @@ rule tbl_processing:
         )
 
 
+# ----------------------------------------
 # domain_processing
 # write per-domain hits in tabular format.
 # ----------------------------------------
@@ -165,7 +170,8 @@ rule domain_processing:
         )
 
 
-# function returning the path of all per-domain hits in tabular 
+# -------------------------------------------------------------
+# function returning the path of all per-domain hits in tabular
 # format with overlapping zinc finger domains.
 # -------------------------------------------------------------
 def domain_done(wildcards):
@@ -178,9 +184,10 @@ def domain_done(wildcards):
     )
 
 
+# ------------------------------------------------------------
 # table_editing
 # write prdm9 protein statistics for each assembly.
-# warning : summary_table_prdm9_{accession}.csv should not be 
+# warning : summary_table_prdm9_{accession}.csv should not be
 # confused with summary_table_{accession}.csv
 # Output format:
 # ;SeqID;SET Query;SET E-value;SET Score;Nb SET domains;SET domain start;SET domain end;KRAB Query;KRAB E-value;KRAB Score;Nb KRAB domains;KRAB domain start;KRAB domain end;SSXRD Query;SSXRD E-value;SSXRD Score;Nb SSXRD domains;SSXRD domain start;SSXRD domain end;ZF Query;ZF E-value;ZF Score;Nb ZF domains;ZF domain start;ZF domain end;Taxid
@@ -208,10 +215,11 @@ rule table_editing:
         )
 
 
+# -------------------------------------------------------------------
 # read_table
 # Extracts the sequence selected by hmm search for an organism and
 # runs a blastp analysis against the Human PRDM genes family. If the
-# best match is PRDM9, the value is saved and compared to the next 
+# best match is PRDM9, the value is saved and compared to the next
 # best non-PRDM9 match. The ouput blastp.txt file contains the taxid,
 # the best PRDM match,the presence/absence data for every proteic
 # domain, the bit score of the blastp if the best match is PRDM9 and
@@ -254,6 +262,7 @@ rule read_table:
         )
 
 
+# -------------------------------------------------------------------
 # summary
 # concatenate all the candidate search in human PRDM family summaries
 # into a unique file.
@@ -279,6 +288,7 @@ rule summary:
         """
 
 
+# --------------------------------------------------------------
 # blastp_results
 # create a table of the different candidate for all  assemblies.
 # ;Taxid;Species_name;Protein ID;Bit score;Ratio;SET;KRAB;SSXRD;ZF;Best_Match
@@ -305,6 +315,7 @@ rule blastp_results:
         )
 
 
+# -----------------------------------------------------------------
 # taxonomy
 # Creation of a table associating a genome accession number to its
 # complete taxonomy.
@@ -332,8 +343,9 @@ rule taxonomy:
         )
 
 
+# ---------------------------------------------------------------
 # create_table
-# Creation of multiple result table using blastp results and hmm 
+# Creation of multiple result table using blastp results and hmm
 # search results.
 # TODO: sorted_taxonomy does not seem to be used in the scripts.
 # What is the purpose of this input?
@@ -359,14 +371,14 @@ rule create_table:
             + " -o "
             + pathGTDriftGlobalResults
             + "\
-                                                                                                                                                && python3 "
+                                                                                                                                                        && python3 "
             + pathGTDriftScripts
             + "/analyses/prdm9_protein_analysis/python/krabzf.py  -i "
             + pathGTDriftData
             + " -o "
             + pathGTDriftGlobalResults
             + "\
-                                                                                                                                                && python3 "
+                                                                                                                                                        && python3 "
             + pathGTDriftScripts
             + "analyses/prdm9_protein_analysis/python/zf_analysis.py  -i "
             + pathGTDriftData
