@@ -265,7 +265,7 @@ rule read_table:
 # -------------------------------------------------------------------
 # summary
 # concatenate all the candidate search in human PRDM family summaries
-# into a unique file.
+# into a single file.
 # -------------------------------------------------------------------
 rule summary:
     """
