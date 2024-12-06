@@ -331,15 +331,14 @@ rule create_table:
             + pathGTDriftData
             + " -o "
             + pathGTDriftGlobalResults
-            + "\
-                                                                                                                                && python3 "
+            + "\ && python3 "
             + pathGTDriftScripts
             + "/analyses/prdm9_protein_analysis/python/krabzf.py  -i "
             + pathGTDriftData
             + " -o "
             + pathGTDriftGlobalResults
             + "\
-                                                                                                                                && python3 "
+                                                                                                                                        && python3 "
             + pathGTDriftScripts
             + "analyses/prdm9_protein_analysis/python/zf_analysis.py  -i "
             + pathGTDriftData
