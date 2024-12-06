@@ -271,15 +271,20 @@ rule summary:
         cat {input} > {output}
         """
 
-
+# blastp_results
+# create a table of the different candidate for all  assemblies
+#;Taxid;Species_name;Protein ID;Bit score;Ratio;SET;KRAB;SSXRD;ZF;Best_Match
+# Warning : the python script use  the file ../data_results_per_assembly/organisms_data
 rule blastp_results:
     """
     Writing a table from the concatenation
     """
     input:
+        # concatenation of all summaries
         pathGTDriftGlobalResults
         + "analyses_summaries/BLASTP_results/blastp_summary.txt",
     output:
+        # table of the different candidate for all  assemblies
         pathGTDriftGlobalResults
         + "analyses_summaries/BLASTP_results/blastp_results.csv",
     shell:
@@ -290,15 +295,19 @@ rule blastp_results:
             + pathGTDriftGlobalResults
         )
 
-
+# taxonomy
+# Creation of a table associating a genome accession number to its complete taxonomy
+# Warning : the python script use  the file ../data_results_per_assembly/organisms_data
 rule taxonomy:
     """
     Creation of a table associating a genome accession number to its complete taxonomy
     """
     input:
+        # concatenation of all summaries
         pathGTDriftGlobalResults
         + "analyses_summaries/BLASTP_results/blastp_summary.txt",
     output:
+        # full taxonomy for each assemblies
         pathGTDriftGlobalResults + "sorted_taxonomy.csv",
     shell:
         (
@@ -310,7 +319,10 @@ rule taxonomy:
             + pathGTDriftGlobalResults
         )
 
-
+# create_table
+# Creation of multiple result table using blastp results and hmm search results
+# TODO: sorted_taxonomy does not seem to be used in the scripts. What is the purpose of 
+# this input?
 rule create_table:
     """
     Creation of multiple result table using blastp results and hmm search results
