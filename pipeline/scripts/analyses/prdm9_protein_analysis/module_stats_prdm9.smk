@@ -209,26 +209,32 @@ rule table_editing:
 # Extracts the sequence selected by hmm search for an organism and runs a blastp analysis
 # against the Human PRDM genes family. If the best match is PRDM9, the value is saved
 # and compared to the next best non-PRDM9 match.
-# The ouput file contains the taxid, the best PRDM match,
+# The ouput blastp.txt file contains the taxid, the best PRDM match,
 # the presence/absence data for every proteic domain, the bit score of the blastp
 # if the best match is PRDM9 and the ratio with the second best non-PRDM9 match
+# The summary_table_{accession}.csv is more detailed :
+# ;Unnamed: 0;SeqID;SET Query;SET E-value;SET Score;Nb SET domains;SET domain start;SET domain end;KRAB Query;KRAB E-value;KRAB Score;Nb KRAB domains;KRAB domain start;KRAB domain end;SSXRD Query;SSXRD E-value;SSXRD Score;Nb SSXRD domains;SSXRD domain start;SSXRD domain end;ZF Query;ZF E-value;ZF Score;Nb ZF domains;ZF domain start;ZF domain end;Taxid;Best Match;Bit Score;Score ratio
 rule read_table:
     """
     Reads each summary table and runs a blastp analysis on every candidate
     """
     input:
+        # prdm9 protein statistics for each assembly.
         pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/summary_table_prdm9_{accession}.csv",
+        # some of the blast database index (TODO use a directory instead)        
         psq=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psq",
-        #psi= pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psi",
-        #psd= pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psd",
+        # some of the blast database index (TODO use a directory instead)
         pin=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.pin",
+        # some of the blast database index (TODO use a directory instead)        
         phr=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.phr",
     output:
+        # a summary of the blastp results of the search in the human PRDM family    
         pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/blastp.txt",
+        # detailed results inluding the blastp results        
         pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/summary_table_{accession}.csv",
     shell:
@@ -243,17 +249,21 @@ rule read_table:
         )
 
 
+# summary
+# concatenate all the candidate search in human PRDM family summaries into a unique file
 rule summary:
     """
     Concatenation of each proteome blastp results.
     """
     input:
+        # summaries the search in human PRDM family for each assemblies
         expand(
             pathGTDriftData
             + "genome_assembly/{accession}/analyses/prdm9_prot/blastp.txt",
             accession=ACCESSNB,
         ),
     output:
+        # concatenation of all summaries
         pathGTDriftGlobalResults
         + "analyses_summaries/BLASTP_results/blastp_summary.txt",
     shell:
