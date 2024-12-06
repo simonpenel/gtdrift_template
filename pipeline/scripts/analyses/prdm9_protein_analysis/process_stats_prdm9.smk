@@ -32,9 +32,9 @@ DOMAIN = ["KRAB", "SET", "SSXRD", "ZF"]
 # Rules
 # -----
 
-
-# all : inputs define the files to be generated a the the end of the pipeline
-# ---------------------------------------------------------------------------
+# --------------------------------------------------------------
+# all : inputs define the files generated at the end of process. 
+# --------------------------------------------------------------
 rule all:
     """
     Get the prdm9 stats on protein data
@@ -80,16 +80,21 @@ rule all:
 # Modules snakemake
 # -----------------
 
-
+# -----------------------------------------------------------
 # module_stats_prdm9.smk:
-# general statistics on prdm9 search in protein data
-# outputs : stats_prdm9, krab,krabzf,zf,table
+# general statistics on prdm9 search in protein data.
+# outputs : stats_prdm9, krab,krabzf,zf
+# -----------------------------------------------------------
 include: "module_stats_prdm9.smk"
+# -----------------------------------------------------------
 # module_stats_zinfinger.smk:
 # statistics on zinc fingers in protein data, summary of data
-# outputs : PRDM9_candidates, zincfinger
+# outputs : PRDM9_candidates, zincfinger, table
+# -----------------------------------------------------------
 include: "module_stats_zincfinger.smk"
+# -----------------------------------------------------------
 # module_SET_tyrosines.smk:
 # statistics on SET tyrosines
 # outputs : SET_tyrosines
+# -----------------------------------------------------------
 include: "module_SET_tyrosines.smk"
