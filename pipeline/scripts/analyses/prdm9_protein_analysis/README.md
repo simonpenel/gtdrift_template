@@ -92,7 +92,7 @@ et virer la dernière virgule dans config.json.clean.
 On peut remplacer le fichier de configuration par le fichier généré et  relancer le pipeline _process_stats_prdm9.smk_ .
 
 
-
+![Image graphe](https://raw.githubusercontent.com/simonpenel/gtdrift_template/refs/heads/master/pipeline/scripts/analyses/prdm9_protein_analysis/dag_single_process_stats_prdm9.png "Graphe pour un assemblage")
 
 
 
