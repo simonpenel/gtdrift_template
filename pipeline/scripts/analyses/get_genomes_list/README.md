@@ -72,3 +72,11 @@ hominidae_queries.col contient:
  OR (GCA_963575185) 
  OR (GCF_000001405) 
 ```
+
+La redondance entre assemblages GCA et GCF dans organisms_data a été supprimée:
+
+```
+ grep panis data/resources/organisms_data 
+Pan paniscus	9597	GCA_029289425.3	False	False	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/029/289/425/GCA_029289425.3_NHGRI_mPanPan1-v2.0_pri/GCA_029289425.3_NHGRI_mPanPan1-v2.0_pri
+Pan paniscus	9597	GCF_029289425.2	True	True	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/029/289/425/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri
+```
