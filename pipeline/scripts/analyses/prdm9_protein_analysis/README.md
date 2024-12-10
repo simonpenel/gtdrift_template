@@ -37,3 +37,37 @@ snakemake -s process_stats_prdm9.smk  --configfile config_dag_single.json --forc
 snakemake -s process_stats_prdm9.smk  --configfile config_dag_2.json --forceall --dag | dot -Tpdf > dag_2_process_stats_prdm9.pdf
 
 ```
+
+
+# Problemes d'annotation absente
+
+Il peut arriver que le fichier de protéine (le fichier contient alors le message NO_PROTEIN_DATA) soit absent alors que l'assemblage est annoté.
+
+En général, il s'agit d'un problème lors du téléchargement. Il convient alors de relancer le pipeline _collecting_genome_annotation_.
+Mais avant cela il faut naturellement supprimer ces fichiers problématiques ainsi que l'analyse effectuée :
+
+```
+export  gc=`grep GC config.json |cut -f2 -d\"`
+for acc in $gc
+do
+grep NO_PROTEIN_DATA ../../../../data_results_per_assembly/genome_assembly/$acc/annotation/protein.faa
+if [ $? -gt 0 ]
+then
+echo "ok"
+else
+echo "pb"
+echo "efface ../../../../data_results_per_assembly/genome_assembly/$acc/analyses/prdm9_prot/"
+rm -r ../../../../data_results_per_assembly/genome_assembly/$acc/analyses/prdm9_prot/
+echo "efface  ../../../../data_results_per_assembly/genome_assembly/$acc/annotation"
+rm -r  ../../../../data_results_per_assembly/genome_assembly/$acc/annotation
+fi
+done
+```
+
+
+
+
+
+
+
+
