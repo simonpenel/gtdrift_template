@@ -116,10 +116,10 @@ rule hmm_search:
 
 
 # ------------------------------------------
-# tbl_processing
+# formating_hmm_sequence_hit
 # write per-sequence hits in tabular format.
 # ------------------------------------------
-rule tbl_processing:
+rule formating_hmm_sequence_hit:
     """
     Result file processing for a later use.
     """
@@ -140,10 +140,10 @@ rule tbl_processing:
 
 
 # ----------------------------------------
-# domain_processing
+# formating_hmm_domain_hit
 # write per-domain hits in tabular format.
 # ----------------------------------------
-rule domain_processing:
+rule formating_hmm_domain_hit:
     """
     Result file processing for a later use.
     """
@@ -185,14 +185,14 @@ def domain_done(wildcards):
 
 
 # ------------------------------------------------------------
-# table_editing
+# summarize_hmm_results
 # write prdm9 protein statistics for each assembly.
 # warning : summary_table_prdm9_{accession}.csv should not be
 # confused with summary_table_{accession}.csv
 # Output format:
 # ;SeqID;SET Query;SET E-value;SET Score;Nb SET domains;SET domain start;SET domain end;KRAB Query;KRAB E-value;KRAB Score;Nb KRAB domains;KRAB domain start;KRAB domain end;SSXRD Query;SSXRD E-value;SSXRD Score;Nb SSXRD domains;SSXRD domain start;SSXRD domain end;ZF Query;ZF E-value;ZF Score;Nb ZF domains;ZF domain start;ZF domain end;Taxid
 # ------------------------------------------------------------
-rule table_editing:
+rule summarize_hmm_results:
     """
     Creation of a summary table of hmm_search results.
     """
@@ -216,7 +216,7 @@ rule table_editing:
 
 
 # -------------------------------------------------------------------
-# read_table
+# prdm_paralog_check
 # Extracts the sequence selected by hmm search for an organism and
 # runs a blastp analysis against the Human PRDM genes family. If the
 # best match is PRDM9, the value is saved and compared to the next
@@ -227,7 +227,7 @@ rule table_editing:
 # The summary_table_{accession}.csv is more detailed :
 # ;Unnamed: 0;SeqID;SET Query;SET E-value;SET Score;Nb SET domains;SET domain start;SET domain end;KRAB Query;KRAB E-value;KRAB Score;Nb KRAB domains;KRAB domain start;KRAB domain end;SSXRD Query;SSXRD E-value;SSXRD Score;Nb SSXRD domains;SSXRD domain start;SSXRD domain end;ZF Query;ZF E-value;ZF Score;Nb ZF domains;ZF domain start;ZF domain end;Taxid;Best Match;Bit Score;Score ratio
 # -------------------------------------------------------------------
-rule read_table:
+rule prdm_paralog_check:
     """
     Reads each summary table and runs a blastp analysis on every candidate
     """
