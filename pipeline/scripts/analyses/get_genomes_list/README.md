@@ -11,8 +11,8 @@ snakemake -s  get_list.smk  --cores 1
 
 Le  fichier de configuration config.json:
 ```
-{
-    "query": '"\"Norana najaformis\"[Organism]"'
+{    
+    "query": '"\"Hominidae\"[Organism]"'
 }
 ```
 
