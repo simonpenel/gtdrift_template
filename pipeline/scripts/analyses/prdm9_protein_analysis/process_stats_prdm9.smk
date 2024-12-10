@@ -83,7 +83,7 @@ rule all:
 # -----------------------------------------------------------
 # module_stats_prdm9.smk:
 # general statistics on prdm9 search in protein data.
-# outputs : stats_prdm9, krab,krabzf,zf
+# outputs : stats_prdm9
 # -----------------------------------------------------------
 include: "module_stats_prdm9.smk"
 # -----------------------------------------------------------
@@ -98,3 +98,9 @@ include: "module_stats_zincfinger.smk"
 # outputs : SET_tyrosines
 # -----------------------------------------------------------
 include: "module_SET_tyrosines.smk"
+# -----------------------------------------------------------
+# module_concatenate_results.smk:
+# concatenate
+# outputs : krab,krabzf,zf
+# -----------------------------------------------------------
+include: "module_concatenate_results.smk"
