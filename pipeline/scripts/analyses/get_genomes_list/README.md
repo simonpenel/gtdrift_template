@@ -31,8 +31,7 @@ Lorsque l'on récupère tous les assemblages de métazoaires, ce fichier
 
 # Générer les fichier json nécessaires aux autres pipelines
 
-
-Le fichier de configuration de prdm9_protein_analysis contient une liste d'assemblages versionés au format json.
+Le fichier de configuration de collecting_genome_annotations et prdm9_protein_analysis contient une liste d'assemblages versionés au format json.
 
 Le fichier de configuration de prdm9_genomic_protein_analysis contient une requete sur des assemblages non versionés au format json.
  
