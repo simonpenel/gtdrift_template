@@ -13,7 +13,7 @@ with open(sys.argv[1]) as reader:
     data = reader.readlines()
     for line in data[1:]:
         line_data = line.strip().split('\t')
-        print(line_data[-1]+" "+ line_data[3])
+        #print(line_data[-1]+" "+ line_data[3])
         full_ac = line_data[2]
         url = line_data[-1]
         is_annoted = line_data[3]
