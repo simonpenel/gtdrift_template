@@ -1,8 +1,28 @@
-# Collecting genome annotation from NCBI
+# Télécharger les génomes et les annotation à partir du NCBI
 
 Ce pipeline permet de télécharger les génomes et leurs annotations étant donné une liste d'assemblage, dans `/beegfs/banque/gtdrift/data/genome_assembly/XXassemblyXX/genome_seq` et `/beegfs/banque/gtdrift/data/genome_assembly/``XXassemblyXX``/annotation` respectivement. Des liens symboliques seront créés pour faciliter les analyses. Parfois le téléchargement en simultané de plusieurs fichiers bug.
 
-Une commande pour lancer ce pipeline :
+
+Le fichier de configuration est sous la forme
+
+```
+{
+  "storagetype": "irods",
+  "assembly_list": [
+"GCF_029281585.2" , 
+"GCF_029289425.2" , 
+"GCF_028885625.2" , 
+"GCF_028858775.2" , 
+"GCF_028885655.2" , 
+"GCF_000001405.40" 
+]  
+}
+```
+Le champ "storagetype" indique si la séquence du génome (fichier *.fna) doit être stockéé
+localement (_local_) ou sur irods (_irods_).
+
+
+La commande pour lancer ce pipeline :
 
 ``` bash
 snakemake -s  collecting_annotations.smk --configfile config.json  --cores 1
