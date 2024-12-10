@@ -69,7 +69,6 @@ On peut aussi ecrire un script pour genere un nouveau fichier de configuration s
 
 ```
 head -3 config.json > config.json.clean
-
 export  gc=`grep GC config.json |cut -f2 -d\"`
 for acc in $gc
 do
