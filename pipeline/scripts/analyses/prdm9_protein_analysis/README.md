@@ -1,26 +1,28 @@
-Generer la liste de GC en json a partir des donnees collectees
-#export  gc=`grep ">"   ../../../../data_results_per_assembly/genome_assembly/*/annotation/protein.faa |cut -f7 -d"/"|sort -u `
-#for acc in $gc; do echo "\"$acc\","; done > acc.json
+# Lancer la recherche de PRDM9 dans les protéomes
+
+Ce pipeline lance la recherche de PRDM9 dans les protéomes.
 
 
-#Vire les fichiers de protein qui contient THERE_IS_NO_PROTEIN_DATA (cas de pb de telechargement)
+Le fichier de configuration est sous la forme
 
-#head -3 config.json.before_clean > config.json.clean
-#export  gc=`grep GC config.json.before_clean |cut -f2 -d\"`
-#for acc in $gc
-#do
-#echo "\"$acc\" ," >> config.json.clean
-#grep NO_PROTEIN_DATA ../../../../data_results_per_assembly/genome_assembly/$acc/annotation/#protein.faa
-#if [ $? -gt 0 ]
-#then
-#echo "ok"
-#else
-#echo "pb"
-#rm ../../../../data_results_per_assembly/genome_assembly/$acc/analyses/prdm9_prot/protdb*
-#fi
-#done
-#echo "]}" >> config.json.clean
-#et virer la dernire virgule
+```
+{
+  "mode": "guix",
+  "assembly_list": [
+"GCF_029281585.2" , 
+"GCF_029289425.2" , 
+"GCF_028885625.2" , 
+"GCF_028858775.2" , 
+"GCF_028885655.2" , 
+"GCF_000001405.40" 
+]  
+}
+```
+Le champ "mode" indique les calculs hmm doivent utiliser l'executable local (-local_) ou l'executable via guix (_guix_).
+
+Le champ "assembly_list" donne la liste des assemblages à téléchager. La valeur de ce champ peut être 
+générée en utilisant le script décrit dans le pipeline  get_genomes_list.
+
 
 Lancer l'analyse avec la commande:
 
