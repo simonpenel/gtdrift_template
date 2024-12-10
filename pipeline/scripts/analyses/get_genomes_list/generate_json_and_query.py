@@ -18,9 +18,9 @@ with open(sys.argv[1]) as reader:
         url = line_data[-1]
         is_annoted = line_data[3]
         acc = full_ac.split(".")[0][4:]
-        print ("url "+url+" cur onnly "+str(curated_only)+ " is-ano " + is_annoted)      
+        #print ("url "+url+" cur onnly "+str(curated_only)+ " is-ano " + is_annoted)      
         if ((url != 'None') and (( curated_only == False ) or ( is_annoted == "True" ))) :
-            print("OK")
+            #print("OK")
             if acc in dico:
                 dico[acc].append(full_ac)
             else :
