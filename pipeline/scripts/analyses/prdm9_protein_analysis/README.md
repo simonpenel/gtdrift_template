@@ -64,6 +64,8 @@ fi
 done
 ```
 
+Une fois que pipeline _collecting_genome_annotation_ a tourné et téléchargé les annotations manquantes, on peut relancer le pipeline _process_stats_prdm9.smk_
+
 Dans certains cas (rares) il s'agit d'une erreur dans fichier organism_data due à une information eronnée donné par le NCBI via _esearch_. Il faut alors virer manuellement l'assemblage du fichier de configuration.
 On peut aussi ecrire un script pour genere un nouveau fichier de configuration si on est sur que le probleme ne vient pas du téléchargement.
 
@@ -86,7 +88,8 @@ done
 echo "]}" >> config.json.clean
 ```
 
-et virer la dernière virgule dans config.json.clean
+et virer la dernière virgule dans config.json.clean.
+On peut remplacer le fichier de configuration par le fichier généré et  relancer le pipeline _process_stats_prdm9.smk_ .
 
 
 
