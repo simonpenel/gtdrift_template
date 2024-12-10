@@ -20,7 +20,7 @@ Le fichier de configuration est sous la forme
 ```
 Le champ "mode" indique les calculs hmm doivent utiliser l'executable local (_local_) ou l'executable via guix (_guix_).
 
-Le champ "assembly_list" donne la liste des assemblages à téléchager. La valeur de ce champ peut être 
+Le champ "assembly_list" donne la liste des assemblages à analyser. La valeur de ce champ peut être 
 générée en utilisant le script décrit dans le pipeline  get_genomes_list.
 
 
