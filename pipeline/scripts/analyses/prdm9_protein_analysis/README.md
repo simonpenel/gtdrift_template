@@ -81,8 +81,6 @@ else
 echo "pb"
 echo "efface ../../../../data_results_per_assembly/genome_assembly/$acc/analyses/prdm9_prot/"
 rm -r ../../../../data_results_per_assembly/genome_assembly/$acc/analyses/prdm9_prot/
-echo "efface  ../../../../data_results_per_assembly/genome_assembly/$acc/annotation"
-rm -r  ../../../../data_results_per_assembly/genome_assembly/$acc/annotation
 fi
 done
 echo "]}" >> config.json.clean
