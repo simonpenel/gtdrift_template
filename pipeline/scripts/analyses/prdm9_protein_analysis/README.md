@@ -65,6 +65,31 @@ done
 ```
 
 Dans certains cas (rares) il s'agit d'une erreur dans fichier organism_data due à une information eronnée donné par le NCBI via _esearch_. Il faut alors virer manuellement l'assemblage du fichier de configuration.
+On peut aussi ecrire un script pour genere un nouveau fichier de configuration si on est sur que le probleme ne vient pas du téléchargement.
+
+```
+head -3 config.json > config.json.clean
+
+export  gc=`grep GC config.json |cut -f2 -d\"`
+for acc in $gc
+do
+grep NO_PROTEIN_DATA ../../../../data_results_per_assembly/genome_assembly/$acc/annotation/protein.faa
+if [ $? -gt 0 ]
+then
+echo "ok"
+echo "\"$acc\" ," >> config.json.clean
+else
+echo "pb"
+echo "efface ../../../../data_results_per_assembly/genome_assembly/$acc/analyses/prdm9_prot/"
+rm -r ../../../../data_results_per_assembly/genome_assembly/$acc/analyses/prdm9_prot/
+echo "efface  ../../../../data_results_per_assembly/genome_assembly/$acc/annotation"
+rm -r  ../../../../data_results_per_assembly/genome_assembly/$acc/annotation
+fi
+done
+echo "]}" >> config.json.clean
+```
+
+et virer la dernière virgule dans config.json.clean
 
 
 
