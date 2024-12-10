@@ -38,8 +38,37 @@ Le fichier de configuration de prdm9_genomic_protein_analysis contient une reque
  
  Le script generate_json_and_query.py permet de générer ces morceaux de code json.
  
-
+Dans cet exemple avec les hominidés, on lance 
 ```
 python3 generate_json_and_query.py  data/resources/organisms_data  hominidae_assemblies hominidae_queries
 ```
 
+Ceci génere les 2 fichiers
+
+```
+hominidae_queries.col
+hominidae_assemblies.col
+```
+
+hominidae_assemblies.col contient:
+```
+  "assembly_list": [
+"GCF_029289425.2" , 
+"GCF_029281585.2" , 
+"GCF_028885625.2" , 
+"GCF_028858775.2" , 
+"GCF_028885655.2" , 
+"GCA_963575185.1" , 
+"GCF_000001405.40" 
+```
+
+hominidae_queries.col contient:
+```
+(GCF_029289425) 
+ OR (GCF_029281585) 
+ OR (GCF_028885625) 
+ OR (GCF_028858775) 
+ OR (GCF_028885655) 
+ OR (GCA_963575185) 
+ OR (GCF_000001405) 
+```
