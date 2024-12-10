@@ -39,9 +39,9 @@ snakemake -s process_stats_prdm9.smk  --configfile config_dag_2.json --forceall 
 ```
 
 
-# Problemes d'annotation absente
+# Problèmes d'annotation absente
 
-Il peut arriver que le fichier de protéine (le fichier contient alors le message NO_PROTEIN_DATA) soit absent alors que l'assemblage est annoté.
+Il peut arriver que le protéome soit absent (le fichier de protéine contient alors le message NO_PROTEIN_DATA) alors que l'assemblage est annoté.
 
 En général, il s'agit d'un problème lors du téléchargement. Il convient alors de relancer le pipeline _collecting_genome_annotation_.
 Mais avant cela il faut naturellement supprimer ces fichiers problématiques ainsi que l'analyse effectuée :
@@ -64,7 +64,7 @@ fi
 done
 ```
 
-
+Dans certains cas (rares) il s'agit d'une erreur dans fichier organism_data due à une information eronnée donné par le NCBI via _esearch_. Il faut alors virer manuellement l'assemblage du fichier de configuration.
 
 
 
