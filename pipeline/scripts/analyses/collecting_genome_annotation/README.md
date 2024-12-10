@@ -38,14 +38,9 @@ Une commande pour lancer ce pipeline avec un fichier de conf génére par ./prdm
 snakemake -s  collecting_annotations.smk --configfile config_prdm9_genomic.json  --cores 1
 ```
 
-Un autre commande avec singularity
-
-``` bash
-snakemake collect_everything --configfile config.json  --use-singularity --singularity-args "--bind /beegfs/:/beegfs/" --cluster "sbatch -J {params.name} -p {params.partition} -N 1 --ntasks={params.ntasks} --mem={params.mem} -t {params.time} -o {params.out} -e {params.err}" --rerun-incomplete --rerun-triggers mtime -j 100 -n --forceall
-```
 
 Créer un  dag file :
 
 ``` bash
-snakemake collect_everything --configfile config.json --forceall --dag | dot -Tpdf > dag-GTDrift.pdf
+snakemake --configfile config.json --forceall --dag | dot -Tpdf > dag-GTDrift.pdf
 ```
