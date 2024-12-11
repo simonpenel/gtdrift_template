@@ -58,7 +58,7 @@ rule all:
         + "analyses_summaries/table_results/krabzf_data.csv",
         # global statistics on ZF domains count
         # -------------------------------------
-        ##zf=pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv",
+        zf=pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv",
         # global statistics on prdm9
         # --------------------------
         table=pathGTDriftGlobalResults
