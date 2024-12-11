@@ -73,8 +73,8 @@ rule all:
         + "analyses_summaries/table_results/zinc_finger.csv",
         # statistics on SET tyrosines
         # ---------------------------
-        ##SET_tyrosines=pathGTDriftGlobalResults
-        ##+ "analyses_summaries/table_results/SET_tyrosines.csv",
+        SET_tyrosines=pathGTDriftGlobalResults
+        + "analyses_summaries/table_results/SET_tyrosines.csv",
 
 
 # Modules snakemake
