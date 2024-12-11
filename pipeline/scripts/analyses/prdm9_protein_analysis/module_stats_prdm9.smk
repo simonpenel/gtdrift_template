@@ -130,7 +130,7 @@ rule formating_hmm_sequence_hit:
     output:
         # per-sequence hits in tabular format
         pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/{domain}_processed",
+        + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/{domain}_tabulated",
     shell:
         (
             "python3 "
@@ -150,14 +150,14 @@ rule formating_hmm_domain_hit:
     input:
         # per-sequence hits in tabular format
         pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/{domain}_processed",
+        + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/{domain}_tabulated",
         # per-domain hits from hmmsearch
         domain_data=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains",
     output:
         # per-domain hits in tabular format
         processed=pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains_processed",
+        + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains_tabulated",
         # per-domain hits in tabular format in which overlapping zinc finger domains are
         # merged to create one big domain with multiple repetitions 
         summary=pathGTDriftData
@@ -186,9 +186,9 @@ def domain_done(wildcards):
 
 # ------------------------------------------------------------
 # summarize_hmm_results
-# write prdm9 protein statistics for each assembly.
-# warning : summary_table_prdm9_{accession}.csv should not be
-# confused with summary_table_{accession}.csv
+# write results of hmm search  for each assembly.
+# warning : summary_hmmsearch_prdm9_{accession}.csv should not be
+# confused with summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv
 # Output format:
 # ;SeqID;SET Query;SET E-value;SET Score;Nb SET domains;SET domain start;SET domain end;KRAB Query;KRAB E-value;KRAB Score;Nb KRAB domains;KRAB domain start;KRAB domain end;SSXRD Query;SSXRD E-value;SSXRD Score;Nb SSXRD domains;SSXRD domain start;SSXRD domain end;ZF Query;ZF E-value;ZF Score;Nb ZF domains;ZF domain start;ZF domain end;Taxid
 # ------------------------------------------------------------
@@ -201,10 +201,10 @@ rule summarize_hmm_results:
         domain_done,
     output:
         # prdm9 protein statistics for each assembly.
-        # warning : summary_table_prdm9_{accession}.csv should
-        # not be confused with summary_table_{accession}.csv
+        # warning : summary_hmmsearch_prdm9_{accession}.csv should
+        # not be confused with summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv
         pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/summary_table_prdm9_{accession}.csv",
+        + "genome_assembly/{accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_{accession}.csv",
     shell:
         (
             "python3 "
@@ -224,7 +224,7 @@ rule summarize_hmm_results:
 # the best PRDM match,the presence/absence data for every proteic
 # domain, the bit score of the blastp if the best match is PRDM9 and
 # the ratio with the second best non-PRDM9 match.
-# The summary_table_{accession}.csv is more detailed :
+# The summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv is more detailed :
 # ;Unnamed: 0;SeqID;SET Query;SET E-value;SET Score;Nb SET domains;SET domain start;SET domain end;KRAB Query;KRAB E-value;KRAB Score;Nb KRAB domains;KRAB domain start;KRAB domain end;SSXRD Query;SSXRD E-value;SSXRD Score;Nb SSXRD domains;SSXRD domain start;SSXRD domain end;ZF Query;ZF E-value;ZF Score;Nb ZF domains;ZF domain start;ZF domain end;Taxid;Best Match;Bit Score;Score ratio
 # -------------------------------------------------------------------
 rule prdm_paralog_check:
@@ -234,7 +234,7 @@ rule prdm_paralog_check:
     input:
         # prdm9 protein statistics for each assembly.
         pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/summary_table_prdm9_{accession}.csv",
+        + "genome_assembly/{accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_{accession}.csv",
         # some of the blast database index (TODO use a directory instead)        
         psq=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psq",
@@ -249,14 +249,14 @@ rule prdm_paralog_check:
         pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/blastp.txt",
         # detailed results inluding the blastp results        
         pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/summary_table_{accession}.csv",
+        + "genome_assembly/{accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv",
     shell:
         (
             "python3 "
             + pathGTDriftScripts
             + "analyses/prdm9_protein_analysis/python/blastp_analysis.py "
             + pathGTDriftData
-            + "genome_assembly/{wildcards.accession}/analyses/prdm9_prot/summary_table_prdm9_{wildcards.accession}.csv {wildcards.accession} "
+            + "genome_assembly/{wildcards.accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_{wildcards.accession}.csv {wildcards.accession} "
             + pathGTDriftData
             + "genome_assembly/"
         )

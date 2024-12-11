@@ -41,12 +41,12 @@ rule all:
     """
     input:
         # prdm9 protein statistics for each assembly.
-        # warning : summary_table_prdm9_{accession}.csv should
-        # no be confused with summary_table_{accession}.csv
+        # warning : summary_hmmsearch_prdm9_{accession}.csv should
+        # no be confused with summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv
         # -----------------------------------------------------
         stats_prdm9=expand(
             pathGTDriftData
-            + "genome_assembly/{accession}/analyses/prdm9_prot/summary_table_prdm9_{accession}.csv",
+            + "genome_assembly/{accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_{accession}.csv",
             accession=ACCESSNB,
         ),
         # global statistics on KRAB domains
