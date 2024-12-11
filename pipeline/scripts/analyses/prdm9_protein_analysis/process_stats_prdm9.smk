@@ -54,11 +54,11 @@ rule all:
         krab=pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
         # global statistics on KRAB and ZF domains
         # ----------------------------------------
-        krabzf=pathGTDriftGlobalResults
+        ##krabzf=pathGTDriftGlobalResults
         + "analyses_summaries/table_results/krabzf_data.csv",
         # global statistics on ZF domains count
         # -------------------------------------
-        zf=pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv",
+        ##zf=pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv",
         # global statistics on prdm9
         # --------------------------
         table=pathGTDriftGlobalResults
@@ -69,11 +69,11 @@ rule all:
         + "analyses_summaries/table_results/global_prdm9_candidates.csv",
         # statistics on zinc finger diversity
         # -----------------------------------
-        zincfinger=pathGTDriftGlobalResults
+        ##zincfinger=pathGTDriftGlobalResults
         + "analyses_summaries/table_results/zinc_finger.csv",
         # statistics on SET tyrosines
         # ---------------------------
-        SET_tyrosines=pathGTDriftGlobalResults
+        ##SET_tyrosines=pathGTDriftGlobalResults
         + "analyses_summaries/table_results/SET_tyrosines.csv",
 
 

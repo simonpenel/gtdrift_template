@@ -111,16 +111,9 @@ rule taxonomy:
         )
 
 
-# ---------------------------------------------------------------
-# create_table
-# Creation of multiple result table using blastp results and hmm
-# search results.
-# TODO: sorted_taxonomy does not seem to be used in the scripts.
-# What is the purpose of this input?
-# ---------------------------------------------------------------
-rule create_table:
+rule create_global_krab_table:
     """
-    Creation of multiple result table using blastp results and hmm search results
+    Creation of krab result table using hmm search results
     """
     input:
         pathGTDriftGlobalResults
@@ -130,8 +123,6 @@ rule create_table:
         #+ "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/KRAB_tabulated",
     output:
         pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
-        pathGTDriftGlobalResults + "analyses_summaries/table_results/krabzf_data.csv",
-        pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv"
     shell:
         (
             "python3 "
@@ -140,18 +131,48 @@ rule create_table:
             + pathGTDriftData
             + " -o "
             + pathGTDriftGlobalResults
-            + "\
-                                                                                                                                                        && python3 "
-            + pathGTDriftScripts
-            + "/analyses/prdm9_protein_analysis/python/krabzf.py  -i "
-            + pathGTDriftData
-            + " -o "
-            + pathGTDriftGlobalResults
-            + "\
-                                                                                                                                                        && python3 "
-            + pathGTDriftScripts
-            + "analyses/prdm9_protein_analysis/python/zf_analysis.py  -i "
-            + pathGTDriftData
-            + " -o "
-            + pathGTDriftGlobalResults
         )
+# ---------------------------------------------------------------
+# create_table
+# Creation of multiple result table using blastp results and hmm
+# search results.
+# TODO: sorted_taxonomy does not seem to be used in the scripts.
+# What is the purpose of this input?
+# ---------------------------------------------------------------
+#rule create_table:
+#    """
+#    Creation of multiple result table using blastp results and hmm search results
+#    """
+#    input:
+#        pathGTDriftGlobalResults
+#        + "analyses_summaries/BLASTP_results/blastp_results.csv",
+#        pathGTDriftGlobalResults + "sorted_taxonomy.csv",
+#        #krab = pathGTDriftData
+#        #+ "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/KRAB_tabulated",
+#    output:
+#        pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
+#        pathGTDriftGlobalResults + "analyses_summaries/table_results/krabzf_data.csv",
+#        pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv"
+#    shell:
+#        (
+#            "python3 "
+#            + pathGTDriftScripts
+#            + "/analyses/prdm9_protein_analysis/python/krab.py  -i "
+#            + pathGTDriftData
+#            + " -o "
+#            + pathGTDriftGlobalResults
+#            + "\
+#                                                                                                                                                        #&& python3 "
+#            + pathGTDriftScripts
+#            + "/analyses/prdm9_protein_analysis/python/krabzf.py  -i "
+#            + pathGTDriftData
+#            + " -o "
+#            + pathGTDriftGlobalResults
+#            + "\
+#                                                                                                                                                        #&& python3 "
+#            + pathGTDriftScripts
+#            + "analyses/prdm9_protein_analysis/python/zf_analysis.py  -i "
+#            + pathGTDriftData
+#            + " -o "
+#            + pathGTDriftGlobalResults
+#        )
