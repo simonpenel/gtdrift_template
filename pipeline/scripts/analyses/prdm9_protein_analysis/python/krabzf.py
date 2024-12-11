@@ -23,7 +23,7 @@ full_data = []
 
 krab_data = pd.read_csv(f'{output_dir}analyses_summaries/table_results/krab_data.csv', sep=';')
 for accession_number in accession:
-    with open(f"{input_dir}genome_assembly/{accession_number}/analyses/prdm9_prot/hmm_search/tbl/ZF_processed") as reader:
+    with open(f"{input_dir}genome_assembly/{accession_number}/analyses/prdm9_prot/hmm_search/tbl/ZF_tabulated") as reader:
         prot_list = []
         for line in reader.readlines():
             prot_name = line.split('\t')[0].split(' ')[0]

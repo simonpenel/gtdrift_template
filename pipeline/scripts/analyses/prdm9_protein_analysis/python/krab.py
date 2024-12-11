@@ -27,7 +27,7 @@ f.close()
 full_data = []
 
 for accession_number in accession:
-    with open(f"{input_dir}genome_assembly/{accession_number}/analyses/prdm9_prot/hmm_search/tbl/KRAB_processed") as reader:
+    with open(f"{input_dir}genome_assembly/{accession_number}/analyses/prdm9_prot/hmm_search/tbl/KRAB_tabulated") as reader:
 #    with open(f"{input_file}) as reader:    
         prot_list = []
         for line in reader.readlines():
