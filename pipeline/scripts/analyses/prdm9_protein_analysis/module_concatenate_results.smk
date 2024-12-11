@@ -116,9 +116,13 @@ rule create_global_krab_table:
     Creation of global krab result table 
     """
     input:
-        pathGTDriftGlobalResults
-        + "analyses_summaries/BLASTP_results/blastp_results.csv",
-        pathGTDriftGlobalResults + "sorted_taxonomy.csv",
+        #pathGTDriftGlobalResults + "analyses_summaries/BLASTP_results/blastp_results.csv",
+        #pathGTDriftGlobalResults + "sorted_taxonomy.csv",
+        krab_tabulated = expand(
+            pathGTDriftData
+            + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/KRAB_tabulated",
+            accession=ACCESSNB,
+        ),
     output:
         pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
     shell:
@@ -128,7 +132,6 @@ rule create_global_krab_table:
             + "/analyses/prdm9_protein_analysis/python/krab.py  -i "
             + pathGTDriftData
             + " -o  {output}"
-            #+ pathGTDriftGlobalResults
         )
         
         
