@@ -11,7 +11,7 @@ parser.add_argument('-o', '--output_file', type=str, required=True, help='Proces
 args = parser.parse_args()
 
 input_dir = args.input_dir
-output_dir = args.output_dir
+output_file = args.output_file
 
 
 
