@@ -12,6 +12,7 @@ if the best match is PRDM9 and the ratio with the second best non-PRDM9 match.
 df = pd.read_csv(sys.argv[1], sep=';')
 accession = sys.argv[2]
 inputdir = sys.argv[3]
+outputile = sys.argv[4]
 
 # Pose pb quand tourne en parallele. Il fauddrait le faire une fois au debut en ajoutant une regle                
 #print(f"Run formatdb -i {inputdir}../../pipeline/resources/PRDM_family_HUMAN/PRDM_family_HUMAN.fa -t protdb -n {inputdir}../../pipeline/resources/PRDM_family_HUMAN/prdm_family -p T -o T")            
@@ -72,7 +73,7 @@ with open(f"{inputdir}/{accession}/analyses/prdm9_prot/blastp.txt", 'w') as writ
                     string += f"{prot}{prot_id}\t{prdm_match}\n"
         else :
             print(f"blastdbcmd was not processed")        
-    df.to_csv(f"{inputdir}/{accession}/analyses/prdm9_prot/summary_table_{accession}.csv", sep=';')
+    df.to_csv(f"{outputfile}", sep=';')
     if taxid == None:
         print("Nothing found in blastp")
     else:
