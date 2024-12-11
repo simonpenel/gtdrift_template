@@ -1,7 +1,7 @@
 ## Module for prdm9 analysis on protein data
 ## Date : Decembre 2024
-## Authors :
-
+## Authors : L. Duret 
+## Purpose: Search for PRDM9 sequences in the proteome.
 
 # Configuration
 # -------------
