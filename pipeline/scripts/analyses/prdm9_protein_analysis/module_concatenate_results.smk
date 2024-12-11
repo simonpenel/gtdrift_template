@@ -138,7 +138,11 @@ rule create_global_krabzf_table:
     """
     input:
         krab = pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
-        
+        zf_tabulated = expand(
+            pathGTDriftData
+            + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/ZF_tabulated",
+            accession=ACCESSNB,
+        ),
     output:
         pathGTDriftGlobalResults + "analyses_summaries/table_results/krabzf_data.csv",
     shell:
