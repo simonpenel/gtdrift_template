@@ -123,9 +123,9 @@ rule create_table:
     Creation of multiple result table using blastp results and hmm search results
     """
     input:
-#        pathGTDriftGlobalResults
-#        + "analyses_summaries/BLASTP_results/blastp_results.csv",
-#        pathGTDriftGlobalResults + "sorted_taxonomy.csv",
+        pathGTDriftGlobalResults
+        + "analyses_summaries/BLASTP_results/blastp_results.csv",
+        pathGTDriftGlobalResults + "sorted_taxonomy.csv",
         krab = pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/KRAB_tabulated",
     output:
@@ -135,8 +135,10 @@ rule create_table:
     shell:
         (
             "python3 "
-            + pathGTDriftScripts
-            + "/analyses/prdm9_protein_analysis/python/krab.py -i {input.krab} -i {output.krab}"
+            + "/analyses/prdm9_protein_analysis/python/krab.py  -i "
+            + pathGTDriftData
+            + " -o "
+            + pathGTDriftGlobalResults
             + "\
                                                                                                                                                         && python3 "
             + pathGTDriftScripts
