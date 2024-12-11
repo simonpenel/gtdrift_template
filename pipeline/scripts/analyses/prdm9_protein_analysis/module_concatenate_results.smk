@@ -129,7 +129,7 @@ rule create_table:
         krab = pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/KRAB_tabulated",
     output:
-        krab=pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
+        pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
         pathGTDriftGlobalResults + "analyses_summaries/table_results/krabzf_data.csv",
         pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv"
     shell:
