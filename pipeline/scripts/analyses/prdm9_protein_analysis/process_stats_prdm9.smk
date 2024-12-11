@@ -69,8 +69,8 @@ rule all:
         + "analyses_summaries/table_results/global_prdm9_candidates.csv",
         # statistics on zinc finger diversity
         # -----------------------------------
-        ##zincfinger=pathGTDriftGlobalResults
-        ##+ "analyses_summaries/table_results/zinc_finger.csv",
+        zincfinger=pathGTDriftGlobalResults
+        + "analyses_summaries/table_results/zinc_finger.csv",
         # statistics on SET tyrosines
         # ---------------------------
         ##SET_tyrosines=pathGTDriftGlobalResults
