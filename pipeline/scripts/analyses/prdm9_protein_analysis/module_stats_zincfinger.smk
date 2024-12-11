@@ -16,7 +16,7 @@ globals().update(load_json("../environment_path.json"))
 
 rule generate_prdm9_candidates:
     input:
-        prdm9_prot_summary = pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/summary_table_{accession}.csv",
+        prdm9_prot_summary = pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv",
         assembly_info_file = pathGTDriftData + "organisms_data"
     output:
         candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/prdm9_candidates.csv"
