@@ -55,7 +55,7 @@ rule all:
         # global statistics on KRAB and ZF domains
         # ----------------------------------------
         ##krabzf=pathGTDriftGlobalResults
-        + "analyses_summaries/table_results/krabzf_data.csv",
+        ##+ "analyses_summaries/table_results/krabzf_data.csv",
         # global statistics on ZF domains count
         # -------------------------------------
         ##zf=pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv",
@@ -70,11 +70,11 @@ rule all:
         # statistics on zinc finger diversity
         # -----------------------------------
         ##zincfinger=pathGTDriftGlobalResults
-        + "analyses_summaries/table_results/zinc_finger.csv",
+        ##+ "analyses_summaries/table_results/zinc_finger.csv",
         # statistics on SET tyrosines
         # ---------------------------
         ##SET_tyrosines=pathGTDriftGlobalResults
-        + "analyses_summaries/table_results/SET_tyrosines.csv",
+        ##+ "analyses_summaries/table_results/SET_tyrosines.csv",
 
 
 # Modules snakemake
