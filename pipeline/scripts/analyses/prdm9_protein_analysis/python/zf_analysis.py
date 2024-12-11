@@ -6,7 +6,7 @@ import argparse
 parser = argparse.ArgumentParser(description='This script is used to count the number of proteins with 5 or more Zinc finger domains for every organism')
 
 parser.add_argument('-i', '--input_dir', type=str, required=True, help='Input dir path')
-parser.add_argument('-o', '--output_dir', type=str, required=True, help='Processed file path')
+parser.add_argument('-o', '--output_file', type=str, required=True, help='Processed file path')
 
 args = parser.parse_args()
 
@@ -36,4 +36,4 @@ for accession_number in accession:
         full_data.append([accession_number, prot_count])
 
 zf_data = pd.DataFrame(full_data, columns=['Accession', '5+ ZF'])
-zf_data.to_csv(f'{output_dir}analyses_summaries/table_results/zf_count.csv', sep = ';', index= False)
+zf_data.to_csv(f'{output_file}', sep = ';', index= False)
