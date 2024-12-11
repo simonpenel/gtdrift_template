@@ -110,14 +110,17 @@ rule taxonomy:
             + pathGTDriftGlobalResults
         )
 
-
+# -----------------------------------------------------------------
+# create_global_krab_table
+# write a summary of krab domain in the proteome.
+# Output format:
+# Accession;Protein List;KRAB nb
+# -----------------------------------------------------------------
 rule create_global_krab_table:
     """
     Creation of global krab result table 
     """
     input:
-        #pathGTDriftGlobalResults + "analyses_summaries/BLASTP_results/blastp_results.csv",
-        #pathGTDriftGlobalResults + "sorted_taxonomy.csv",
         krab_tabulated = expand(
             pathGTDriftData
             + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/KRAB_tabulated",
@@ -134,7 +137,12 @@ rule create_global_krab_table:
             + " -o  {output}"
         )
         
-        
+# -----------------------------------------------------------------
+# create_global_krabzf_table
+# write a summary of krab domain in the proteome.
+# Output format:
+# Accession;KRAB+ZF protein list;KRAB+ZF nb
+# -----------------------------------------------------------------
 rule create_global_krabzf_table:
     """
     Creation of global krab and zf result table
@@ -158,7 +166,12 @@ rule create_global_krabzf_table:
             + " -o  {output}"
         )      
         
-        
+# -----------------------------------------------------------------
+# create_global_zf_table
+# write a summary of zf protein with more than 5 zf domains.
+# Output format:
+# Accession;5+ ZF
+# -----------------------------------------------------------------
 rule create_global_zf_table:
     """
     Creation of global zf count table
@@ -179,47 +192,4 @@ rule create_global_zf_table:
             + pathGTDriftData
             + " -o  {output}"
         )             
-# ---------------------------------------------------------------
-# create_table
-# Creation of multiple result table using blastp results and hmm
-# search results.
-# TODO: sorted_taxonomy does not seem to be used in the scripts.
-# What is the purpose of this input?
-# ---------------------------------------------------------------
-#rule create_table:
-#    """
-#    Creation of multiple result table using blastp results and hmm search results
-#    """
-#    input:
-#        pathGTDriftGlobalResults
-#        + "analyses_summaries/BLASTP_results/blastp_results.csv",
-#        pathGTDriftGlobalResults + "sorted_taxonomy.csv",
-#        #krab = pathGTDriftData
-#        #+ "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/KRAB_tabulated",
-#    output:
-#        pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
-#        pathGTDriftGlobalResults + "analyses_summaries/table_results/krabzf_data.csv",
-#        pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv"
-#    shell:
-#        (
-#            "python3 "
-#            + pathGTDriftScripts
-#            + "/analyses/prdm9_protein_analysis/python/krab.py  -i "
-#            + pathGTDriftData
-#            + " -o "
-#            + pathGTDriftGlobalResults
-#            + "\
-#                                                                                                                                                        #&& python3 "
-#            + pathGTDriftScripts
-#            + "/analyses/prdm9_protein_analysis/python/krabzf.py  -i "
-#            + pathGTDriftData
-#            + " -o "
-#            + pathGTDriftGlobalResults
-#            + "\
-#                                                                                                                                                        #&& python3 "
-#            + pathGTDriftScripts
-#            + "analyses/prdm9_protein_analysis/python/zf_analysis.py  -i "
-#            + pathGTDriftData
-#            + " -o "
-#            + pathGTDriftGlobalResults
-#        )
+
