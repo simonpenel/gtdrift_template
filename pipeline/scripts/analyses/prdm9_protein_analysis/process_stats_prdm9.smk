@@ -44,7 +44,8 @@ rule all:
         # -------------------------------------------------------------
         stats_prdm9=expand(
             pathGTDriftData
-            + "genome_assembly/{accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_{accession}.csv",
+            + "genome_assembly/{accession}/analyses/prdm9_prot/"
+            + "summary_hmmsearch_prdm9_{accession}.csv",
             accession=ACCESSNB,
         ),
         
