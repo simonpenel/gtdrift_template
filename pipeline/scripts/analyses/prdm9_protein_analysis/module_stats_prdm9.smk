@@ -258,7 +258,7 @@ rule prdm_paralog_check:
             + pathGTDriftData
             + "genome_assembly/{wildcards.accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_{wildcards.accession}.csv {wildcards.accession} "
             + pathGTDriftData
-            + "genome_assembly/ + {output}"
+            + "genome_assembly/  {output}"
         )
 
 
