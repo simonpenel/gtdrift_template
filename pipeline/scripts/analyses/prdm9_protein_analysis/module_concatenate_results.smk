@@ -131,7 +131,7 @@ rule create_table:
     output:
         krab=pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
         pathGTDriftGlobalResults + "analyses_summaries/table_results/krabzf_data.csv",
-        pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv",
+        pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv"
     shell:
         (
             "python3 "
