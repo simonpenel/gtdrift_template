@@ -246,9 +246,9 @@ rule prdm_paralog_check:
         + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.phr",
     output:
         # a summary of the blastp results of the search in the human PRDM family    
-        pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/blastp.txt",
+        blast=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/blastp.txt",
         # detailed results inluding the blastp results        
-        pathGTDriftData
+        table=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv",
     shell:
         (
@@ -258,7 +258,7 @@ rule prdm_paralog_check:
             + pathGTDriftData
             + "genome_assembly/{wildcards.accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_{wildcards.accession}.csv {wildcards.accession} "
             + pathGTDriftData
-            + "genome_assembly/  {output}"
+            + "genome_assembly/  {output.table}"
         )
 
 
