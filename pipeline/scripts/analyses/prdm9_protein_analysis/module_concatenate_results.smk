@@ -135,6 +135,7 @@ rule create_table:
     shell:
         (
             "python3 "
+            + pathGTDriftScripts
             + "/analyses/prdm9_protein_analysis/python/krab.py  -i "
             + pathGTDriftData
             + " -o "
