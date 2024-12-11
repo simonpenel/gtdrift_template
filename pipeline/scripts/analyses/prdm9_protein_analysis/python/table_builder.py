@@ -5,12 +5,13 @@ parser = argparse.ArgumentParser(description='Reads hmm_search processed files a
 
 parser.add_argument('-i', '--input_dir', type=str, required=True, help='Input dir path')
 parser.add_argument('-a', '--accession', type=str, required=True, help='Organism genome NCBI accession number')
-parser.add_argument('-o', '--output', type=str, required=True, help='Processed file path')
-
+parser.add_argument('-o', '--output', type=str, required=True, help='Output file path')
+#parser.add_argument('-s', '--set', type=str, required=True, help='Tabulated SET domain hmmsearch results file path')
 args = parser.parse_args()
 
 accession_number = args.accession
 input_dir = args.input_dir
+#SET_hmm_tab = args.s
 noms_colonnes = ['SeqID', 'SET Query', 'SET E-value', 'SET Score', 'Nb SET domains', 'SET domain start', 'SET domain end',
                 'KRAB Query', 'KRAB E-value', 'KRAB Score', 'Nb KRAB domains', 'KRAB domain start', 'KRAB domain end',
                 'SSXRD Query', 'SSXRD E-value', 'SSXRD Score', 'Nb SSXRD domains', 'SSXRD domain start', 'SSXRD domain end',
@@ -20,7 +21,8 @@ noms_colonnes = ['SeqID', 'SET Query', 'SET E-value', 'SET Score', 'Nb SET domai
 data_list = []
 
 # All candidates must have a SET domain
-with open(f"{input_dir}/{accession_number}/analyses/prdm9_prot/hmm_search/tbl/SET_processed") as reader:
+with open(f"{input_dir}/{accession_number}/analyses/prdm9_prot/hmm_search/tbl/SET_tabulated") as reader:
+#with open(f"{SET_hmm_tab}") as reader:
     for line in reader:
         line_data = line.strip().split('\t')
         to_add = {'SeqID': line_data[0], 'SET Query': line_data[2], 'SET E-value': line_data[7], 'SET Score': line_data[8]}
@@ -33,7 +35,7 @@ def processed_data(domain, accession_number=accession_number):
     '''
     Lit les fichiers résultat de hmm_search après mise en forme (1 fichier pour chaque domain protéique) et saisit les valeurs d'intérêt (E-value, Score) dans un data frame
     '''
-    with open(f"{input_dir}/{accession_number}/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains_processed") as reader:
+    with open(f"{input_dir}/{accession_number}/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains_tabulated") as reader:
         for line in reader.readlines():
             line_data = line.split('\t')
             seq_id = line_data[0]
