@@ -126,8 +126,8 @@ rule create_table:
         pathGTDriftGlobalResults
         + "analyses_summaries/BLASTP_results/blastp_results.csv",
         pathGTDriftGlobalResults + "sorted_taxonomy.csv",
-        krab = pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/KRAB_tabulated",
+        #krab = pathGTDriftData
+        #+ "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/KRAB_tabulated",
     output:
         pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
         pathGTDriftGlobalResults + "analyses_summaries/table_results/krabzf_data.csv",
