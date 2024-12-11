@@ -54,8 +54,8 @@ rule all:
         krab=pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
         # global statistics on KRAB and ZF domains
         # ----------------------------------------
-        ##krabzf=pathGTDriftGlobalResults
-        ##+ "analyses_summaries/table_results/krabzf_data.csv",
+        krabzf=pathGTDriftGlobalResults
+        + "analyses_summaries/table_results/krabzf_data.csv",
         # global statistics on ZF domains count
         # -------------------------------------
         ##zf=pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv",

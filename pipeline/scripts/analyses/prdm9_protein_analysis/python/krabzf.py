@@ -5,12 +5,16 @@ import argparse
 
 parser = argparse.ArgumentParser(description='This script takes the previously created krab_data dataframe, that contains the list of every protein presenting a krab domain for every organism, and checks for every entries in all of the lists whether these proteins also carry a zinc finger domain or not')
 parser.add_argument('-i', '--input_dir', type=str, required=True, help='Input dir path')
-parser.add_argument('-o', '--output_dir', type=str, required=True, help='Processed file path')
+#parser.add_argument('-o', '--output_dir', type=str, required=True, help='Processed file path')
+parser.add_argument('-o', '--output_file', type=str, required=True, help='Output file path')
+parser.add_argument('-k', '--krab_data', type=str, required=True, help='krab_data.csv path')
 
 args = parser.parse_args()
 
 input_dir = args.input_dir
-output_dir = args.output_dir
+#output_dir = args.output_dir
+output_file = args.output_file
+krab_data_file = args.krab_data
 
 f = open('config.json')
 data = json.load(f)
@@ -21,7 +25,8 @@ f.close()
 
 full_data = []
 
-krab_data = pd.read_csv(f'{output_dir}analyses_summaries/table_results/krab_data.csv', sep=';')
+#krab_data = pd.read_csv(f'{output_dir}analyses_summaries/table_results/krab_data.csv', sep=';')
+krab_data = pd.read_csv(f'{krab_data_file}', sep=';')
 for accession_number in accession:
     with open(f"{input_dir}genome_assembly/{accession_number}/analyses/prdm9_prot/hmm_search/tbl/ZF_tabulated") as reader:
         prot_list = []
