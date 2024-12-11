@@ -137,9 +137,7 @@ rule create_global_krabzf_table:
     Creation of global krab and zf result table
     """
     input:
-        #pathGTDriftGlobalResults + "analyses_summaries/BLASTP_results/blastp_results.csv",
-        #pathGTDriftGlobalResults + "sorted_taxonomy.csv",
-        pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
+        krab = pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
         
     output:
         pathGTDriftGlobalResults + "analyses_summaries/table_results/krabzf_data.csv",
@@ -149,7 +147,7 @@ rule create_global_krabzf_table:
             + pathGTDriftScripts
             + "/analyses/prdm9_protein_analysis/python/krabzf.py  -i "
             + pathGTDriftData
-            + " -k  {input}"
+            + " -k  {input.krab}"
             + " -o  {output}"
             #+ pathGTDriftGlobalResults
         )        
