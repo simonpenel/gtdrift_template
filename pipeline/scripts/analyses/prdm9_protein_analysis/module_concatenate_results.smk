@@ -30,33 +30,6 @@ globals().update(load_json("../environment_path.json"))
 # Rules
 # -----
 
-# -------------------------------------------------------------------
-# summary
-# concatenate all the candidate search in human PRDM family summaries
-# into a single file.
-# -------------------------------------------------------------------
-#rule summary:
-#    """
-#    Concatenation of each proteome blastp results.
-#    """
-#    input:
-#        # summaries the search in human PRDM family for each assemblies
-#        expand(
-#            pathGTDriftData
-#            + "genome_assembly/{accession}/analyses/prdm9_prot/blastp.txt",
-#            accession=ACCESSNB,
-#        ),
-#    output:
-#        # concatenation of all summaries
-#        pathGTDriftGlobalResults
-#        + "analyses_summaries/BLASTP_results/blastp_summary.txt",
-#    shell:
-#        """
-#        cat {input} > {output}
-#        """
-
-
-
 # -----------------------------------------------------------------
 # create_global_krab_table
 # write a summary of krab domain in the proteome.
