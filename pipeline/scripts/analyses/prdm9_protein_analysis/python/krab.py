@@ -7,11 +7,12 @@ krab_tab_files = snakemake.input
 output_file = snakemake.output[0]
 prefix = snakemake.params.path
 print("prefix = "+prefix)
+prefix_length = len(prefix)
 
 full_data = []
 
 for krab_tab_file in krab_tab_files:
-    accession_number = krab_tab_file
+    accession_number = krab_tab_file[prefix_length:]
     with open(krab_tab_file) as reader:
         prot_list = []
         for line in reader.readlines():
