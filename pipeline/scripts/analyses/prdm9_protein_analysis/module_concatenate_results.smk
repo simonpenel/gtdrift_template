@@ -75,6 +75,9 @@ rule create_global_krab_table:
         ),
     output:
         pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
+    params:
+        path=pathGTDriftData + "genome_assembly"
+    
     script:
          "python/krab.py"
         
@@ -97,15 +100,8 @@ rule create_global_krabzf_table:
         ),
     output:
         pathGTDriftGlobalResults + "analyses_summaries/table_results/krabzf_data.csv",
-    shell:
-        (
-            "python3 "
-            + pathGTDriftScripts
-            + "/analyses/prdm9_protein_analysis/python/krabzf.py  -i "
-            + pathGTDriftData
-            + " -k  {input.krab}"
-            + " -o  {output}"
-        )      
+    script:
+         "python/krabzf.py"    
         
 # -----------------------------------------------------------------
 # create_global_zf_table

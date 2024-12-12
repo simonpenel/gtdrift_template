@@ -3,13 +3,15 @@ import os
 
 # This script creates a dataframe with the list of proteins presenting a KRAB domain for every organism
 
-accession = snakemake.input
+krab_tab_files = snakemake.input
 output_file = snakemake.output[0]
+prefix = snakemake.params.path
 
 full_data = []
 
-for accession_number in accession:
-    with open(accession_number) as reader:
+for krab_tab_file in krab_tab_files:
+    accession = krab_tab_file
+    with open(krab_tab_file) as reader:
         prot_list = []
         for line in reader.readlines():
             prot_name = line.split('\t')[0].split(' ')[0]
