@@ -32,7 +32,7 @@ with open(tabulated_per_domain_file) as reader, open(summary_per_domain_file, 'w
             test_if_zf = tabulated_per_domain_file.split("/")[-1]
             print("Check if "+test_if_zf+ " is ZF_domains_tabulated :")
             if test_if_zf == 'ZF_domains_tabulated':
-            	print("Yes.")
+                print("Yes.")
                 line_data = line.split(maxsplit=23)
                 newline_data = newline.split('\t')
                 evalue = line_data[12]
