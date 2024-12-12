@@ -2,6 +2,7 @@ import pandas as pd
 import os
 
 krab_data_file = snakemake.input[0]
+print(snakemake.input)
 zf_tab_files = snakemake.input[1]
 output_file = snakemake.output[0]
 prefix = snakemake.params.path
