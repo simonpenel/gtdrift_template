@@ -6,7 +6,6 @@ import os
 krab_tab_files = snakemake.input
 output_file = snakemake.output[0]
 prefix = snakemake.params.path
-print("prefix = "+prefix)
 prefix_length = len(prefix)
 
 full_data = []
