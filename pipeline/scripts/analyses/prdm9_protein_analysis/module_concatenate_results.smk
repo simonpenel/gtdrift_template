@@ -67,7 +67,8 @@ rule create_global_krab_table:
     """
     Creation of global krab result table 
     """
-    input: expand(
+    input: 
+        expand(
             pathGTDriftData
             + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/KRAB_tabulated",
             accession=ACCESSNB,
