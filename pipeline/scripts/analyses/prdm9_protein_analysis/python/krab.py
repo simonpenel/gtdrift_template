@@ -6,11 +6,12 @@ import os
 krab_tab_files = snakemake.input
 output_file = snakemake.output[0]
 prefix = snakemake.params.path
+print("prefix = "+prefix)
 
 full_data = []
 
 for krab_tab_file in krab_tab_files:
-    accession = krab_tab_file
+    accession_number = krab_tab_file
     with open(krab_tab_file) as reader:
         prot_list = []
         for line in reader.readlines():
