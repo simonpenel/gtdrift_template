@@ -30,8 +30,9 @@ with open(tabulated_per_domain_file) as reader, open(summary_per_domain_file, 'w
         else:
             # overlapping zinc finger domains are merged to create one big domain with multiple repetitions.
             test_if_zf = tabulated_per_domain_file.split("/")[-1]
-            print("\n\n\nDEBUG\n\n COMPARE "+test_if_zf+ " WITH ZF_domains_tabulated\n\n\n\n")
+            print("Check if "+test_if_zf+ " is ZF_domains_tabulated :")
             if test_if_zf == 'ZF_domains_tabulated':
+            	print("Yes.")
                 line_data = line.split(maxsplit=23)
                 newline_data = newline.split('\t')
                 evalue = line_data[12]
@@ -42,6 +43,7 @@ with open(tabulated_per_domain_file) as reader, open(summary_per_domain_file, 'w
                 newline_data[18] = str(max(int(end), int(newline_data[18])))
                 newline = '\t'.join(newline_data)
             else:
+                print("No.")
                 writer.write(newline + '\n')
                 newline = ''
                 for elt in line.split(maxsplit=23):
