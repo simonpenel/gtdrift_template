@@ -13,8 +13,8 @@ prefix_length = len(prefix)
 
 full_data = []
 
-#krab_data = pd.read_csv(f'{output_dir}analyses_summaries/table_results/krab_data.csv', sep=';')
 krab_data = pd.read_csv(krab_data_file, sep=';')
+
 for zf_tab_file in zf_tab_files:
     accession_number = zf_tab_file[(prefix_length + 1) :].split("/")[0]
     with open(zf_tab_file) as reader:
