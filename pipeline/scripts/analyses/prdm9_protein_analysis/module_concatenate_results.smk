@@ -116,19 +116,16 @@ rule create_global_zf_table:
     Creation of global zf count table
     """
     input:
-        zf_domains = expand(
+        expand(
             pathGTDriftData
             + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/ZF_domains_summary",
             accession=ACCESSNB,
         ),
     output:
         pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv",
-    shell:
-        (
-            "python3 "
-            + pathGTDriftScripts
-            + "/analyses/prdm9_protein_analysis/python/zf_analysis.py  -i "
-            + pathGTDriftData
-            + " -o  {output}"
-        )             
+    params:
+        path=pathGTDriftData + "genome_assembly"      
+    script:
+         "python/zf_analysis.py"    
+                     
 
