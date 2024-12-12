@@ -12,7 +12,7 @@ prefix_length = len(prefix)
 full_data = []
 
 for krab_tab_file in krab_tab_files:
-    accession_number = krab_tab_file[(prefix_length + 1) :]
+    accession_number = krab_tab_file[(prefix_length + 1) :].split("/")[0]
     with open(krab_tab_file) as reader:
         prot_list = []
         for line in reader.readlines():
