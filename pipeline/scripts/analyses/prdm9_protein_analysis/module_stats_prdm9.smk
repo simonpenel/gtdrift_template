@@ -192,7 +192,8 @@ rule summarize_hmm_results:
     """
     input:
         # path of all per-domain hits in tabular format with overlapping zinc finger domains
-        domain_done,
+        done = domain_done,
+        SET_tabulated = pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/SET_tabulated"
     output:
         # prdm9 protein statistics for each assembly.
         # warning : summary_hmmsearch_prdm9_{accession}.csv should
