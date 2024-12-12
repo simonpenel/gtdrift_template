@@ -22,6 +22,7 @@ with open(snakemake.output.tabulated[0]) as reader, open(snakemake.output.summar
                 newline += f"{elt.strip()}\t"
         else:
             # overlapping zinc finger domains are merged to create one big domain with multiple repetitions.
+            print("\nDEBUG\n\n COMPARE "+snakemake.output.tabulated[0]+ " WITH ZF_domains_processed\n\n")
             if snakemake.output.tabulated[0] == 'ZF_domains_processed':
                 line_data = line.split(maxsplit=23)
                 newline_data = newline.split('\t')
