@@ -100,6 +100,8 @@ rule create_global_krabzf_table:
         ),
     output:
         pathGTDriftGlobalResults + "analyses_summaries/table_results/krabzf_data.csv",
+    params:
+        path=pathGTDriftData + "genome_assembly"        
     script:
          "python/krabzf.py"    
         
