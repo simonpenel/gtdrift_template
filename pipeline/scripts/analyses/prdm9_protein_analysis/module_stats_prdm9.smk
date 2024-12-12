@@ -131,12 +131,14 @@ rule formating_hmm_sequence_hit:
         # per-sequence hits in tabular format
         pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/{domain}_tabulated",
-    shell:
-        (
-            "python3 "
-            + pathGTDriftScripts
-            + "analyses/prdm9_protein_analysis/python/hmmsearch_parser.py -i {input} -o {output}"
-        )
+    script:
+        "python/hmmsearch_parser.py"
+#    shell:
+#        (
+#            "python3 "
+#            + pathGTDriftScripts
+#            + "analyses/prdm9_protein_analysis/python/hmmsearch_parser.py -i {input} -o {output}"
+#        )
 
 
 # ----------------------------------------
