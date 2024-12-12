@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 print("Input per domain file "+snakemake.input.per_domain[0])
-print("Output tabulated domain file "+snakemake.output.per_domain_tabulated[0])
+print("Output tabulated domain file "+snakemake.output.tabulated_per_domain)
 print("Output summary domain file "+snakemake.output.domain_summary[0])
 
 with open(snakemake.input.per_domain[0]) as reader, open(snakemake.output.per_domain_tabulated[0], 'w') as writer:
