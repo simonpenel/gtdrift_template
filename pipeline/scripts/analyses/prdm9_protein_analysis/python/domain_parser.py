@@ -29,7 +29,7 @@ with open(tabulated_per_domain_file) as reader, open(summary_per_domain_file, 'w
                 newline += f"{elt.strip()}\t"
         else:
             # overlapping zinc finger domains are merged to create one big domain with multiple repetitions.
-            print("\nDEBUG\n\n COMPARE "+tabulated_per_domain_file+ " WITH ZF_domains_processed\n\n")
+            print("\n\n\nDEBUG\n\n COMPARE "+tabulated_per_domain_file+ " WITH ZF_domains_processed\n\n\n\n")
             if tabulated_per_domain_file == 'ZF_domains_processed':
                 line_data = line.split(maxsplit=23)
                 newline_data = newline.split('\t')
