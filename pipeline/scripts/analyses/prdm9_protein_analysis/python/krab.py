@@ -4,6 +4,7 @@ import os
 # This script creates a dataframe with the list of proteins presenting a KRAB domain for every organism
 
 accession = snakemake.input
+output_file = snakemake.output[0]
 
 full_data = []
 
@@ -17,4 +18,4 @@ for accession_number in accession:
         full_data.append([accession_number, prot_list, len(prot_list)])
 
 zf_data = pd.DataFrame(full_data, columns=['Accession', 'Protein List', 'KRAB nb'])
-zf_data.to_csv(snakemake.output, sep = ';', index= False)
+zf_data.to_csv(output_file, sep = ';', index= False)
