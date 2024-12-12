@@ -56,59 +56,6 @@ globals().update(load_json("../environment_path.json"))
 #        """
 
 
-# --------------------------------------------------------------
-# blastp_results
-# create a table of the different candidate for all  assemblies.
-# ;Taxid;Species_name;Protein ID;Bit score;Ratio;SET;KRAB;SSXRD;ZF;Best_Match
-# Warning : the python script use  the file ../data_results_per_assembly/organisms_data
-# --------------------------------------------------------------
-#rule blastp_results:
-#    """
-#    Writing a table from the concatenation
-#    """
-#    input:
-#        # concatenation of all summaries
-#        pathGTDriftGlobalResults
-#        + "analyses_summaries/BLASTP_results/blastp_summary.txt",
-#    output:
-#        # table of the different candidate for all  assemblies
-#        pathGTDriftGlobalResults
-#        + "analyses_summaries/BLASTP_results/blastp_results.csv",
-#    shell:
-#        (
-#            "python3 "
-#            + pathGTDriftScripts
-#            + "analyses/prdm9_protein_analysis//python/blastp_table.py -i "
-#            + pathGTDriftGlobalResults
-#        )
-
-
-# -----------------------------------------------------------------
-# taxonomy
-# Creation of a table associating a genome accession number to its
-# complete taxonomy.
-# Warning : the python script use  the file ../data_results_per_assembly/organisms_data
-# -----------------------------------------------------------------
-#rule taxonomy:
-#    """
-#    Creation of a table associating a genome accession number to its complete taxonomy
-#    """
-#    input:
-#        # concatenation of all summaries
-#        pathGTDriftGlobalResults
-#        + "analyses_summaries/BLASTP_results/blastp_summary.txt",
-#    output:
-#        # full taxonomy for each assemblies
-#        pathGTDriftGlobalResults + "sorted_taxonomy.csv",
-#    shell:
-#        (
-#            "python3 "
-#            + pathGTDriftScripts
-#            + "analyses/prdm9_protein_analysis/python/taxonomy.py -i "
-#            + pathGTDriftData
-#            + " -o "
-#            + pathGTDriftGlobalResults
-#        )
 
 # -----------------------------------------------------------------
 # create_global_krab_table
