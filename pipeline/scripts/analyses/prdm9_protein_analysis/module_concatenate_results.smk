@@ -92,8 +92,8 @@ rule create_global_krabzf_table:
     Creation of global krab and zf result table
     """
     input:
-        pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
-        expand(
+        krab=pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
+        zf_tabs=expand(
             pathGTDriftData
             + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/ZF_tabulated",
             accession=ACCESSNB,
