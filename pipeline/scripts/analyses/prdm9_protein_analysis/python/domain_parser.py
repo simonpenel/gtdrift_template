@@ -1,6 +1,7 @@
-import argparse
+import pandas as pd
+import os
 
-with open(snakemake.input.per_sequence[0]) as reader, open(snakemake.output.tabulated[0], 'w') as writer:
+with open(snakemake.input.per_domain[0]) as reader, open(snakemake.output.per_domain_tabulated[0], 'w') as writer:
     for line in reader.readlines():
         if line.startswith('#'):
             del(line)
@@ -9,7 +10,7 @@ with open(snakemake.input.per_sequence[0]) as reader, open(snakemake.output.tabu
                 writer.write(f"{elt.strip()}\t")
             writer.write('\n')
 
-with open(snakemake.output.tabulated[0]) as reader, open(snakemake.output.summary[0], 'w') as writer:
+with open(snakemake.output.per_domain_tabulated[0]) as reader, open(snakemake.output.domain_summary[0], 'w') as writer:
     seq_ID = ''
     newline = ''
     for line in reader.readlines(): 
@@ -22,7 +23,7 @@ with open(snakemake.output.tabulated[0]) as reader, open(snakemake.output.summar
                 newline += f"{elt.strip()}\t"
         else:
             # overlapping zinc finger domains are merged to create one big domain with multiple repetitions.
-            print("\nDEBUG\n\n COMPARE "+snakemake.output.tabulated[0]+ " WITH ZF_domains_processed\n\n")
+            print("\nDEBUG\n\n COMPARE "+snakemake.output.per_domain_tabulated[0]+ " WITH ZF_domains_processed\n\n")
             if snakemake.output.tabulated[0] == 'ZF_domains_processed':
                 line_data = line.split(maxsplit=23)
                 newline_data = newline.split('\t')
