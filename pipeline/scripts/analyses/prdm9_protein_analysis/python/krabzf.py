@@ -1,9 +1,8 @@
 import pandas as pd
 import os
 
-krab_data_file = snakemake.input[0]
-print(snakemake.input.zf_tabs)
-zf_tab_files = snakemake.input[1]
+krab_data_file = snakemake.input.krab
+zf_tab_files = snakemake.input.zf_tabs
 output_file = snakemake.output[0]
 prefix = snakemake.params.path
 prefix_length = len(prefix)
