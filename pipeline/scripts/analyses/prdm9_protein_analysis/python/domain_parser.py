@@ -1,14 +1,6 @@
 import argparse
 
-parser = argparse.ArgumentParser(description='Reads hmm_search per domain output file and writes another file with tab separator instead of whitespaces')
-
-parser.add_argument('-i', '--input', type=str, required=True, help='HMM_search -domtblout file path')
-parser.add_argument('-o', '--output', type=str, required=True, help='Processed file path')
-parser.add_argument('-s', '--synthesis', type=str, required=True, help='1 line only for each query (best match and whole domain alignment coordinates)\
-                                                                        file path')
-args = parser.parse_args()
-
-with open(args.input) as reader, open(args.output, 'w') as writer:
+with open(snakemake.input.per_sequence[0]) as reader, open(snakemake.output.tabulated[0], 'w') as writer:
     for line in reader.readlines():
         if line.startswith('#'):
             del(line)
@@ -17,7 +9,7 @@ with open(args.input) as reader, open(args.output, 'w') as writer:
                 writer.write(f"{elt.strip()}\t")
             writer.write('\n')
 
-with open(args.output) as reader, open(args.synthesis, 'w') as writer:
+with open(snakemake.output.tabulated[0]) as reader, open(snakemake.output.summary[0], 'w') as writer:
     seq_ID = ''
     newline = ''
     for line in reader.readlines(): 
@@ -30,7 +22,7 @@ with open(args.output) as reader, open(args.synthesis, 'w') as writer:
                 newline += f"{elt.strip()}\t"
         else:
             # overlapping zinc finger domains are merged to create one big domain with multiple repetitions.
-            if args.output == 'ZF_domains_processed':
+            if snakemake.output.tabulated[0] == 'ZF_domains_processed':
                 line_data = line.split(maxsplit=23)
                 newline_data = newline.split('\t')
                 evalue = line_data[12]

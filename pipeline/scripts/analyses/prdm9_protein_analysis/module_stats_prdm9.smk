@@ -133,13 +133,6 @@ rule formating_hmm_sequence_hit:
         + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/{domain}_tabulated",
     script:
         "python/hmmsearch_parser.py"
-#    shell:
-#        (
-#            "python3 "
-#            + pathGTDriftScripts
-#            + "analyses/prdm9_protein_analysis/python/hmmsearch_parser.py -i {input} -o {output}"
-#        )
-
 
 # ----------------------------------------
 # formating_hmm_domain_hit
@@ -151,25 +144,27 @@ rule formating_hmm_domain_hit:
     """
     input:
         # per-sequence hits in tabular format
-        pathGTDriftData
+        per_sequence=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/{domain}_tabulated",
         # per-domain hits from hmmsearch
-        domain_data=pathGTDriftData
+        per_domain=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains",
     output:
         # per-domain hits in tabular format
-        processed=pathGTDriftData
+        tabulated=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains_tabulated",
         # per-domain hits in tabular format in which overlapping zinc finger domains are
         # merged to create one big domain with multiple repetitions 
         summary=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains_summary",
-    shell:
-        (
-            "python3  "
-            + pathGTDriftScripts
-            + "analyses/prdm9_protein_analysis/python/domain_parser.py -i {input.domain_data} -o {output.processed} -s {output.summary}"
-        )
+    script:
+        "python/domain_parser.py"
+#    shell:
+#        (
+#            "python3  "
+#            + pathGTDriftScripts
+#            + "analyses/prdm9_protein_analysis/python/domain_parser.py -i {input.domain_data} -o #{output.processed} -s {output.summary}"
+#        )
 
 
 # -------------------------------------------------------------
