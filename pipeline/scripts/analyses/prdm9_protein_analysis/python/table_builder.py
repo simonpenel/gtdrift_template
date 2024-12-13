@@ -9,7 +9,7 @@ import pandas as pd
 #parser.add_argument('-s', '--set', type=str, required=True, help='Tabulated SET domain hmmsearch results file path')
 #args = parser.parse_args()
 
-#accession_number = args.accession
+accession_number = snakemake.params.accession
 #input_dir = args.input_dir
 
 SET_per_sequence_tabulated_file = snakemake.input.SET_per_sequence_tabulated

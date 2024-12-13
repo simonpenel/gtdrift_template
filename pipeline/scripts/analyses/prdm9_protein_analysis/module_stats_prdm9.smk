@@ -203,13 +203,15 @@ rule summarize_hmm_results:
         KRAB_per_domain_summary=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/KRAB_domains_summary",
         ZF_per_domain_summary=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/ZF_domains_summary", 
         SSXRD_per_domain_summary=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/SSXRD_domains_summary",          
-        #accession={accession}
+
     output:
         # prdm9 protein statistics for each assembly.
         # warning : summary_hmmsearch_prdm9_{accession}.csv should
         # not be confused with summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv
         pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_{accession}.csv",
+    params:    
+        accession={accession}        
     script:
         "python/table_builder.py"
 #    shell:
