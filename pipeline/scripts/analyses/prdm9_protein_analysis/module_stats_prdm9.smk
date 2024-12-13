@@ -164,19 +164,6 @@ rule formating_hmm_domain_hit:
 #        )
 
 
-# -------------------------------------------------------------
-# function returning the path of all per-domain hits in tabular
-# format with overlapping zinc finger domains.
-# -------------------------------------------------------------
-#def domain_done(wildcards):
-#    return expand(
-#        pathGTDriftData
-#        + "genome_assembly/"
-#        + wildcards.accession
-#        + "/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains_summary",
-#        domain=DOMAIN,
-#    )
-
 def accession_nb(wildcards):
     return wildcards.accession
 
@@ -193,14 +180,16 @@ rule summarize_hmm_results:
     Creation of a summary table of hmm_search results.
     """
     input:
-        # path of all per-domain hits in tabular format with overlapping zinc finger domains
-        #accession=accession_nb,
+        # organisms_data file
+        organisms_file=pathGTDriftData + "organisms_data",
         # tabulated results of hmm search on SET domain
         SET_per_sequence_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/SET_tabulated",
+        # path of all per-domain hits in tabular format
         SET_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/SET_domains_tabulated",
         KRAB_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/KRAB_domains_tabulated",
         ZF_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/ZF_domains_tabulated", 
-        SSXRD_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/SSXRD_domains_tabulated",               
+        SSXRD_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/SSXRD_domains_tabulated",
+        # path of all per-domain hits in tabular format with overlapping zinc finger domains                     
         SET_per_domain_summary=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/SET_domains_summary",
         KRAB_per_domain_summary=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/KRAB_domains_summary",
         ZF_per_domain_summary=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/ZF_domains_summary", 
@@ -216,14 +205,7 @@ rule summarize_hmm_results:
         accession=accession_nb,  
     script:
         "python/table_builder.py"
-#    shell:
-#        (
-#            "python3 "
-#            + pathGTDriftScripts
-#            + "analyses/prdm9_protein_analysis/python/table_builder.py -i "
-#            + pathGTDriftData
-#            + "genome_assembly -a {wildcards.accession} -o {output}"
-#        )
+
 
 
 # -------------------------------------------------------------------
