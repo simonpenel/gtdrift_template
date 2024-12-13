@@ -25,6 +25,9 @@ KRAB_per_domain_summary_file = snakemake.input.KRAB_per_domain_summary
 SSXRD_per_domain_summary_file = snakemake.input.SSXRD_per_domain_summary
 ZF_per_domain_summary_file = snakemake.input.ZF_per_domain_summary
 
+
+output_file = snakemake.output[0]
+
 #SET_hmm_tab = args.s
 noms_colonnes = ['SeqID', 'SET Query', 'SET E-value', 'SET Score', 'Nb SET domains', 'SET domain start', 'SET domain end',
                 'KRAB Query', 'KRAB E-value', 'KRAB Score', 'Nb KRAB domains', 'KRAB domain start', 'KRAB domain end',
@@ -107,4 +110,4 @@ process_domain_summary("ZF",ZF_per_domain_summary_file )
 # a remettre getTaxid()
 
 summarised_data = summarised_data.fillna(0)                                   
-summarised_data.to_csv(args.output, sep=';')
+summarised_data.to_csv(output_file, sep=';')

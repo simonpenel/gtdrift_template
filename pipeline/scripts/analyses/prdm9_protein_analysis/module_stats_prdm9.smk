@@ -177,6 +177,8 @@ rule formating_hmm_domain_hit:
 #        domain=DOMAIN,
 #    )
 
+def accession_nb(wildcards):
+    return wildcards.accession
 
 # ------------------------------------------------------------
 # summarize_hmm_results
@@ -192,7 +194,7 @@ rule summarize_hmm_results:
     """
     input:
         # path of all per-domain hits in tabular format with overlapping zinc finger domains
-        #domain_summaries=domain_done,
+        #accession=accession_nb,
         # tabulated results of hmm search on SET domain
         SET_per_sequence_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/SET_tabulated",
         SET_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/SET_domains_tabulated",
@@ -211,7 +213,7 @@ rule summarize_hmm_results:
         pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_{accession}.csv",
     params:    
-        accession={accession}        
+        accession=accession_nb,  
     script:
         "python/table_builder.py"
 #    shell:
