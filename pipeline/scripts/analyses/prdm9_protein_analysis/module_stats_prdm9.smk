@@ -54,20 +54,21 @@ rule get_blastdb:
         # the protein fasta file
         fasta=pathGTDriftData + "genome_assembly/{accession}/annotation/protein.faa",
     output:
+        dbprot=directory(pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/dbprot"
         # some databse index 
         # (we dont need to specify not all of them, TODO : use a directory instead)
-        psq=pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psq",
-        pin=pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.pin",
-        phr=pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.phr",
+        #psq=pathGTDriftData
+        #+ "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psq",
+        #pin=pathGTDriftData
+        #+ "genome_assembly/{accession}/analyses/prdm9_prot/protdb.pin",
+        #phr=pathGTDriftData
+        #+ "genome_assembly/{accession}/analyses/prdm9_prot/protdb.phr",
     shell:
         #"makeblastdb -in {input.fasta} -title protdb -out "+pathGTDriftData+"genome_assembly/{wildcards.accession}/analyses/prdm9_prot/protdb -dbtype prot "
         (
-            "formatdb -i {input.fasta} -t protdb -n "
-            + pathGTDriftData
-            + "genome_assembly/{wildcards.accession}/analyses/prdm9_prot/protdb -p T -o T"
+            "mkdir {output.dbprot} && formatdb -i {input.fasta} -t protdb -n {output.dbprot}/protdb -p T -o T"
+            #+ pathGTDriftData
+            #+ "genome_assembly/{wildcards.accession}/analyses/prdm9_prot/protdb -p T -o T"
         )
 
 
@@ -226,32 +227,44 @@ rule prdm_paralog_check:
     """
     input:
         # prdm9 protein statistics for each assembly.
-        pathGTDriftData
+        summary=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_{accession}.csv",
+        blastdb=pathGTDriftData
+        + "genome_assembly/{accession}/analyses/prdm9_prot/dbprot/,
+        prdmdb=pathGTDriftData
+        + "../pipeline/resources/PRDM_family_HUMAN/prdm_family",
         # some of the blast database index (TODO use a directory instead)        
-        psq=pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psq",
+        #psq=pathGTDriftData
+        #+ "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psq",
         # some of the blast database index (TODO use a directory instead)
-        pin=pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.pin",
+        #pin=pathGTDriftData
+        #+ "genome_assembly/{accession}/analyses/prdm9_prot/protdb.pin",
         # some of the blast database index (TODO use a directory instead)        
-        phr=pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/protdb.phr",
+        #phr=pathGTDriftData
+        #+ "genome_assembly/{accession}/analyses/prdm9_prot/protdb.phr",
+        dbprot=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/dbprot"
+    params:    
+        accession=accession_nb, 
     output:
         # a summary of the blastp results of the search in the human PRDM family    
-        blast=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/blastp.txt",
+        blastp_file=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/blastp.txt",
+        directory(SET_sequences_dir)=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/SET_sequences",
+        directory(SET_blastp_dir)=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/SET_blastp",        
         # detailed results inluding the blastp results        
         table=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv",
-    shell:
-        (
-            "python3 "
-            + pathGTDriftScripts
-            + "analyses/prdm9_protein_analysis/python/blastp_analysis.py "
-            + pathGTDriftData
-            + "genome_assembly/{wildcards.accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_{wildcards.accession}.csv {wildcards.accession} "
-            + pathGTDriftData
-            + "genome_assembly/  {output.table}"
-        )
+ #   shell:
+ #       (
+ #           "python3 "
+ #           + pathGTDriftScripts
+ #           + "analyses/prdm9_protein_analysis/python/blastp_analysis.py "
+ #           + pathGTDriftData
+ #           + "genome_assembly/{wildcards.accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_{wildcards.accession}.csv {wildcards.accession} "
+ #           + pathGTDriftData
+ #           + "genome_assembly/  {output.table}"
+ #       )
+     script:
+         "python/blastp_analysis.py "
+         
 
 
