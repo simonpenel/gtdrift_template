@@ -35,6 +35,24 @@ else:
 # Rules
 # -----
 
+# -------------------------------------------------------------------
+# build_prdm_blastdb
+# Build a blast database from the prdm family. Use of formatdb instead
+# makeblastdb because last makeblastdb version doestn work on beegfs.
+# Alternatively, it is possible to use an old version of makeblasdb
+# by modify the PATH in your bash  environment.
+# -------------------------------------------------------------------
+rule build_prdm_blastdb:
+    """
+    Genere a blast db for prdm family 
+    """
+    input:
+        # the protein fasta file
+        fasta=pathGTDriftResource + "PRDM_family_HUMAN/PRDM_family_HUMAN.fa",
+    output:
+        prdmdb=directory(pathGTDriftResource + "PRDM_family_HUMAN/prdmdb/"),
+    shell:
+        "mkdir {output.prdmdb} && formatdb -i {input.fasta} -t prdmdb -n {output.prdmdb}/prdm_family -p T -o T"
 
 # -------------------------------------------------------------------
 # get_blastdb
@@ -191,13 +209,13 @@ rule summarize_hmm_results:
 
 # -------------------------------------------------------------------
 # prdm_paralog_check
-# Extracts the sequence selected by hmm search for an organism and
-# runs a blastp analysis against the Human PRDM genes family. If the
-# best match is PRDM9, the value is saved and compared to the next
-# best non-PRDM9 match. The ouput blastp.txt file contains the taxid,
-# the best PRDM match,the presence/absence data for every proteic
-# domain, the bit score of the blastp if the best match is PRDM9 and
-# the ratio with the second best non-PRDM9 match.
+# Extracts the SET domain in the sequence selected by hmm search for
+# an organism and runs a blastp analysis against the Human PRDM genes
+# family. If the best match is PRDM9, the value is saved and compared
+# to the next best non-PRDM9 match. The ouput blastp.txt file 
+# contains the taxid, the best PRDM match,the presence/absence data
+# for every proteic domain, the bit score of the blastp if the best
+# match is PRDM9 and the ratio with the second best non-PRDM9 match.
 # The summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv is more detailed :
 # ;Unnamed: 0;SeqID;SET Query;SET E-value;SET Score;Nb SET domains;SET domain start;SET domain end;KRAB Query;KRAB E-value;KRAB Score;Nb KRAB domains;KRAB domain start;KRAB domain end;SSXRD Query;SSXRD E-value;SSXRD Score;Nb SSXRD domains;SSXRD domain start;SSXRD domain end;ZF Query;ZF E-value;ZF Score;Nb ZF domains;ZF domain start;ZF domain end;Taxid;Best Match;Bit Score;Score ratio
 # -------------------------------------------------------------------
@@ -213,7 +231,7 @@ rule prdm_paralog_check:
         blastdb=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/dbprot/",
         # blast database of the prdm family
-        prdmdb=pathGTDriftResource + "PRDM_family_HUMAN/",
+        prdmdb=pathGTDriftResource + "PRDM_family_HUMAN/prdmdb/",
     params:    
         accession=accession_nb, 
     output:
