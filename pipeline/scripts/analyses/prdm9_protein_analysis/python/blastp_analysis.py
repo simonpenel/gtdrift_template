@@ -86,7 +86,7 @@ with open(blastp_file, 'w') as writer:
                     	df.at[index, 'Score ratio'] = float(lines[5].split()[-1])/float(lines[5 + j].split()[-1])
                     	string += f"{prot}{prot_id}\t{float(lines[5].split()[-1])}\t{float(lines[5].split()[-1])/float(lines[5 + j].split()[-1])}\t{prdm_match}\n"
                     else:
-                    	print(f"Only 1 hit for {inputdir}/{accession}/analyses/prdm9_prot/SET_blastp/{row['SeqID']}")
+                    	print(f"Only 1 hit for {SET_blastp_dir}/{row['SeqID']}")
                 else:
                     string += f"{prot}{prot_id}\t{prdm_match}\n"
         else :
