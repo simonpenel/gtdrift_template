@@ -64,12 +64,13 @@ rule get_blastdb:
         #phr=pathGTDriftData
         #+ "genome_assembly/{accession}/analyses/prdm9_prot/protdb.phr",
     shell:
+        "mkdir {output.dbprot} && formatdb -i {input.fasta} -t protdb -n {output.dbprot}/protdb -p T -o T"
         #"makeblastdb -in {input.fasta} -title protdb -out "+pathGTDriftData+"genome_assembly/{wildcards.accession}/analyses/prdm9_prot/protdb -dbtype prot "
-        (
-            "mkdir {output.dbprot} && formatdb -i {input.fasta} -t protdb -n {output.dbprot}/protdb -p T -o T"
+        #(
+        #    "mkdir {output.dbprot} && formatdb -i {input.fasta} -t protdb -n {output.dbprot}/protdb -p T -o T"
             #+ pathGTDriftData
             #+ "genome_assembly/{wildcards.accession}/analyses/prdm9_prot/protdb -p T -o T"
-        )
+        #)
 
 
 # ------------------------------------------------------------------
@@ -230,9 +231,9 @@ rule prdm_paralog_check:
         summary=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_{accession}.csv",
         blastdb=pathGTDriftData
-        + "genome_assembly/{accession}/analyses/prdm9_prot/dbprot/,
+        + "genome_assembly/{accession}/analyses/prdm9_prot/dbprot/",
         prdmdb=pathGTDriftData
-        + "../pipeline/resources/PRDM_family_HUMAN/prdm_family",
+        + "../pipeline/resources/PRDM_family_HUMAN/",
         # some of the blast database index (TODO use a directory instead)        
         #psq=pathGTDriftData
         #+ "genome_assembly/{accession}/analyses/prdm9_prot/protdb.psq",
@@ -248,8 +249,8 @@ rule prdm_paralog_check:
     output:
         # a summary of the blastp results of the search in the human PRDM family    
         blastp_file=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/blastp.txt",
-        directory(SET_sequences_dir)=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/SET_sequences",
-        directory(SET_blastp_dir)=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/SET_blastp",        
+        SET_sequences_dir=directory(pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/SET_sequences"),
+        SET_blastp_dir=directory(pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/SET_blastp"),        
         # detailed results inluding the blastp results        
         table=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv",
@@ -264,7 +265,7 @@ rule prdm_paralog_check:
  #           + "genome_assembly/  {output.table}"
  #       )
     script:
-        "python/blastp_analysis.py "
+        "python/blastp_analysis.py"
          
 
 

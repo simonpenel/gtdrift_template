@@ -35,8 +35,10 @@ with open(blastp_file, 'w') as writer:
     string = ''
     #os.system(f"mkdir -p {inputdir}/{accession}/analyses/prdm9_prot/SET_sequences/")
     #os.system(f"mkdir -p {inputdir}/{accession}/analyses/prdm9_prot/SET_blastp/")
-    os.system("mkdir " + SET_sequences_dir)
-    os.system("mkdir " + SET_blast_dir)  
+    print("mkdir -p "+SET_sequences_dir)
+    os.system("mkdir -p "+SET_sequences_dir)
+    print("mkdir -p "+SET_blastp_dir)  
+    os.system("mkdir -p "+SET_blastp_dir)  
     for index, row in df.iterrows():
         taxid = f">{df['Taxid'].iloc[0]}\n"
         set = 0
@@ -56,7 +58,7 @@ with open(blastp_file, 'w') as writer:
         print(f"Run blastdbcmd -db {blastdb}/protdb -entry {row['SeqID']} -range {int(row['SET domain start'])}-{int(row['SET domain end'])} -out {SET_sequences_dir}/{row['SeqID']}.fa")
         if int(row['SET domain end']) > int(row['SET domain start']) :
             #ret = os.system(f"blastdbcmd -db {inputdir}/{accession}/analyses/prdm9_prot/protdb -entry {row['SeqID']} -range {int(row['SET domain start'])}-{int(row['SET domain end'])} -out  {inputdir}/{accession}/analyses/prdm9_prot/SET_sequences/{row['SeqID']}.fa")
-           ret = os.system(f"blastdbcmd -db {blastdb}/protdb -entry {row['SeqID']} -range {int(row['SET domain start'])}-{int(row['SET domain end'])} -out  {SET_sequences_dir}/{row['SeqID']}.fa")            
+            ret = os.system(f"blastdbcmd -db {blastdb}/protdb -entry {row['SeqID']} -range {int(row['SET domain start'])}-{int(row['SET domain end'])} -out  {SET_sequences_dir}/{row['SeqID']}.fa")            
             if ret > 0 :
                 sys.exit("Error during blastdbcmd")
                 
@@ -66,7 +68,7 @@ with open(blastp_file, 'w') as writer:
             #    sys.exit("Error during formatdb")            
             
  #           ret = os.system(f"blastp -db {inputdir}../../pipeline/resources/PRDM_family_HUMAN/prdm_family -outfmt 7 -query  {inputdir}/{accession}/analyses/prdm9_prot/SET_sequences/{row['SeqID']}.fa -out  {inputdir}/{accession}/analyses/prdm9_prot/SET_blastp/{row['SeqID']}")
-            ret = os.system(f"blastp -db {prdmdb} -outfmt 7 -query  {SET_sequences_dir}/{row['SeqID']}.fa -out  {SET_blastp_dir}/{row['SeqID']}")            
+            ret = os.system(f"blastp -db {prdmdb}/prdm_family -outfmt 7 -query  {SET_sequences_dir}/{row['SeqID']}.fa -out  {SET_blastp_dir}/{row['SeqID']}")            
             if ret > 0 :
                 sys.exit("Error during blastp")
             #with open(f"{inputdir}/{accession}/analyses/prdm9_prot/SET_blastp/{row['SeqID']}") as reader:
