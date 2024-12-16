@@ -54,7 +54,7 @@ rule get_blastdb:
         # the protein fasta file
         fasta=pathGTDriftData + "genome_assembly/{accession}/annotation/protein.faa",
     output:
-        dbprot=directory(pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/dbprot"
+        dbprot=directory(pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/dbprot"),
         # some databse index 
         # (we dont need to specify not all of them, TODO : use a directory instead)
         #psq=pathGTDriftData
@@ -263,8 +263,8 @@ rule prdm_paralog_check:
  #           + pathGTDriftData
  #           + "genome_assembly/  {output.table}"
  #       )
-     script:
-         "python/blastp_analysis.py "
+    script:
+        "python/blastp_analysis.py "
          
 
 
