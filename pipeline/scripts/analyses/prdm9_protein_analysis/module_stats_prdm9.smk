@@ -1,6 +1,6 @@
 ## Module for prdm9 analysis on protein data
 ## Date : Decembre 2024
-## Authors : L. Duret 
+## Authors : L. Duret, A. Raimbault, S. Penel 
 ## Purpose: Search for PRDM9 sequences in the proteome.
 
 # Configuration
@@ -47,8 +47,7 @@ else:
 # -------------------------------------------------------------------
 rule get_blastdb:
     """
-    Genere a blast db
-    WARNING: formatdb is used and not makeblastdb. Suffixes and options are different with makeblastdb
+    Genere a blast db 
     """
     input:
         # the protein fasta file
@@ -57,7 +56,6 @@ rule get_blastdb:
         dbprot=directory(pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/dbprot"),
     shell:
         "mkdir {output.dbprot} && formatdb -i {input.fasta} -t protdb -n {output.dbprot}/protdb -p T -o T"
-        #"makeblastdb -in {input.fasta} -title protdb -out "+pathGTDriftData+"genome_assembly/{wildcards.accession}/analyses/prdm9_prot/protdb -dbtype prot "
 
 
 # ------------------------------------------------------------------
@@ -215,15 +213,15 @@ rule prdm_paralog_check:
         blastdb=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/dbprot/",
         # blast database of the prdm family
-        prdmdb=pathGTDriftData
-        + "../pipeline/resources/PRDM_family_HUMAN/",
-        #dbprot=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/dbprot"
+        prdmdb=pathGTDriftResource + "PRDM_family_HUMAN/",
     params:    
         accession=accession_nb, 
     output:
         # a summary of the blastp results of the search in the human PRDM family    
         blastp_file=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/blastp.txt",
+        # directory for candidate sequences in fasta format 
         SET_sequences_dir=directory(pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/SET_sequences"),
+        # directory of the blast results of candidate sequences against prdm family datbase
         SET_blastp_dir=directory(pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/SET_blastp"),        
         # detailed results inluding the blastp results        
         table=pathGTDriftData
