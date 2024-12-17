@@ -50,13 +50,14 @@ rule build_prdm_blastdb:
         # the protein fasta file
         fasta=pathGTDriftResource + "PRDM_family_HUMAN/PRDM_family_HUMAN.fa",
     output:
+        # the prdm family database
         prdmdb=directory(pathGTDriftResource + "PRDM_family_HUMAN/prdmdb/"),
     shell:
         "mkdir {output.prdmdb} && formatdb -i {input.fasta} -t prdmdb -n {output.prdmdb}/prdm_family -p T -o T"
 
 # -------------------------------------------------------------------
 # get_blastdb
-# Build a blast database from the proteins wich should be stored in
+# Build a blast database from the proteome wich should be stored in
 # the genome_assembly directory. These data were collected with the
 # "collecting_genome_annotation" pipeline. Use of formatdb instead
 # makeblastdb because last makeblastdb version doestn work on beegfs.
@@ -71,6 +72,7 @@ rule get_blastdb:
         # the protein fasta file
         fasta=pathGTDriftData + "genome_assembly/{accession}/annotation/protein.faa",
     output:
+        # the proteome database
         dbprot=directory(pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/dbprot"),
     shell:
         "mkdir {output.dbprot} && formatdb -i {input.fasta} -t protdb -n {output.dbprot}/protdb -p T -o T"
@@ -126,7 +128,7 @@ rule hmm_search:
 # ------------------------------------------
 rule formating_hmm_sequence_hit:
     """
-    Result file processing for a later use.
+    Formating per-sequence hits from hmmsearch.
     """
     input:
         # per-sequence hits from hmmsearch
@@ -145,7 +147,7 @@ rule formating_hmm_sequence_hit:
 # ----------------------------------------
 rule formating_hmm_domain_hit:
     """
-    Result file processing for a later use.
+    Formating per-domain hits from hmmsearch.
     """
     input:
         # per-domain hits from hmmsearch
@@ -157,12 +159,17 @@ rule formating_hmm_domain_hit:
         + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains_tabulated",
         # per-domain hits in tabular format in which overlapping zinc finger domains are
         # merged to create one big domain with multiple repetitions 
+        # (ZF_domain_summary will differ from ZF_domain_tabulated,
+        # but there will no difference between the 2 ouputs for the
+        # other domains)
         domain_summary=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains_summary",
     script:
         "python/domain_parser.py"
 
+# ------------------------------------------------------------
 # Function sending the accession number
+# ------------------------------------------------------------
 def accession_nb(wildcards):
     return wildcards.accession
 
@@ -173,6 +180,7 @@ def accession_nb(wildcards):
 # confused with summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv
 # Output format:
 # ;SeqID;SET Query;SET E-value;SET Score;Nb SET domains;SET domain start;SET domain end;KRAB Query;KRAB E-value;KRAB Score;Nb KRAB domains;KRAB domain start;KRAB domain end;SSXRD Query;SSXRD E-value;SSXRD Score;Nb SSXRD domains;SSXRD domain start;SSXRD domain end;ZF Query;ZF E-value;ZF Score;Nb ZF domains;ZF domain start;ZF domain end;Taxid
+#### A AMELIORER : LORSQU'UN DOMAINE A PLUSIEUR HITS, LE DERNIER EST RETENU ALORS QUE C'EST LE MOINS STATISTIQUEMENT SIGNIFIANT
 # ------------------------------------------------------------
 rule summarize_hmm_results:
     """
@@ -210,12 +218,13 @@ rule summarize_hmm_results:
 # -------------------------------------------------------------------
 # prdm_paralog_check
 # Extracts the SET domain in the sequence selected by hmm search for
-# an organism and runs a blastp analysis against the Human PRDM genes
-# family. If the best match is PRDM9, the value is saved and compared
-# to the next best non-PRDM9 match. The ouput blastp.txt file 
-# contains the taxid, the best PRDM match,the presence/absence data
-# for every proteic domain, the bit score of the blastp if the best
-# match is PRDM9 and the ratio with the second best non-PRDM9 match.
+# an organism and runs a blastp analysis of the domain against the
+# Human PRDM genes family. If the best match is PRDM9, the value is
+# saved and compared to the next best non-PRDM9 match. The ouput 
+# blastp.txt file  contains the taxid, the best PRDM match, the 
+# presence/absence data for every proteic domain, the bit score of
+# the blastp if the best match is PRDM9 and the ratio with the second
+# best non-PRDM9 match. 
 # The summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv is more detailed :
 # ;Unnamed: 0;SeqID;SET Query;SET E-value;SET Score;Nb SET domains;SET domain start;SET domain end;KRAB Query;KRAB E-value;KRAB Score;Nb KRAB domains;KRAB domain start;KRAB domain end;SSXRD Query;SSXRD E-value;SSXRD Score;Nb SSXRD domains;SSXRD domain start;SSXRD domain end;ZF Query;ZF E-value;ZF Score;Nb ZF domains;ZF domain start;ZF domain end;Taxid;Best Match;Bit Score;Score ratio
 # -------------------------------------------------------------------
