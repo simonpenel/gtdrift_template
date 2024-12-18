@@ -60,7 +60,6 @@ def process_domain_summary(domain, domain_summary_file, accession_number=accessi
 def getTaxid(accession_number=accession_number,input_file=organisms_file):
     df = pd.read_csv(organisms_file, sep='\t', header=0)
     taxid = df.loc[df['Assembly Accession'] == accession_number, 'Taxid'].values[0]    
-    print("DEBUG "+accession_number+": "+str(taxid))
     summarised_data["Taxid"] = taxid
 
 #process_domain_tabulated("KRAB",KRAB_per_domain_tabulated_file )

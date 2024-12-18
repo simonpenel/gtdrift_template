@@ -25,9 +25,9 @@ with open(blastp_file, 'w') as writer:
     string = ''
     #os.system(f"mkdir -p {inputdir}/{accession}/analyses/prdm9_prot/SET_sequences/")
     #os.system(f"mkdir -p {inputdir}/{accession}/analyses/prdm9_prot/SET_blastp/")
-    print("mkdir -p "+SET_sequences_dir)
+    #print("mkdir -p "+SET_sequences_dir)
     os.system("mkdir -p "+SET_sequences_dir)
-    print("mkdir -p "+SET_blastp_dir)  
+    #print("mkdir -p "+SET_blastp_dir)  
     os.system("mkdir -p "+SET_blastp_dir)  
     for index, row in df.iterrows():
         taxid = f">{df['Taxid'].iloc[0]}\n"
@@ -44,7 +44,7 @@ with open(blastp_file, 'w') as writer:
         if row['Nb ZF domains'] != 0:
             zf = row['Nb ZF domains']
         prot = f"<\t{set}\t{krab}\t{ssxrd}\t{zf}\n"
-        print(f"Run blastdbcmd -db {blastdb}/protdb -entry {row['SeqID']} -range {int(row['SET domain start'])}-{int(row['SET domain end'])} -out {SET_sequences_dir}/{row['SeqID']}.fa")
+        #print(f"Run blastdbcmd -db {blastdb}/protdb -entry {row['SeqID']} -range {int(row['SET domain start'])}-{int(row['SET domain end'])} -out {SET_sequences_dir}/{row['SeqID']}.fa")
         if int(row['SET domain end']) > int(row['SET domain start']) :
             ret = os.system(f"blastdbcmd -db {blastdb}/protdb -entry {row['SeqID']} -range {int(row['SET domain start'])}-{int(row['SET domain end'])} -out  {SET_sequences_dir}/{row['SeqID']}.fa")            
             if ret > 0 :
