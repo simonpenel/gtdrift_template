@@ -6,11 +6,6 @@ organisms_file = snakemake.input.organisms_file
 
 SET_per_sequence_tabulated_file = snakemake.input.SET_per_sequence_tabulated
 
-#SET_per_domain_tabulated_file = snakemake.input.SET_per_domain_tabulated
-#KRAB_per_domain_tabulated_file = snakemake.input.KRAB_per_domain_tabulated
-#SSXRD_per_domain_tabulated_file = snakemake.input.SSXRD_per_domain_tabulated
-#ZF_per_domain_tabulated_file = snakemake.input.ZF_per_domain_tabulated
-
 SET_per_domain_summary_file = snakemake.input.SET_per_domain_summary
 KRAB_per_domain_summary_file = snakemake.input.KRAB_per_domain_summary
 SSXRD_per_domain_summary_file = snakemake.input.SSXRD_per_domain_summary
