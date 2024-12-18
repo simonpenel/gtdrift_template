@@ -192,10 +192,10 @@ rule summarize_hmm_results:
         # tabulated results of hmm search on SET domain
         SET_per_sequence_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/SET_tabulated",
         # path of all per-domain hits in tabular format
-        SET_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/SET_domains_tabulated",
-        KRAB_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/KRAB_domains_tabulated",
-        ZF_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/ZF_domains_tabulated", 
-        SSXRD_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/SSXRD_domains_tabulated",
+        #SET_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/SET_domains_tabulated",
+        #KRAB_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/KRAB_domains_tabulated",
+        #ZF_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/ZF_domains_tabulated", 
+        #SSXRD_per_domain_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/SSXRD_domains_tabulated",
         # path of all per-domain hits in tabular format with overlapping zinc finger domains                     
         SET_per_domain_summary=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/SET_domains_summary",
         KRAB_per_domain_summary=pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/KRAB_domains_summary",

@@ -6,10 +6,10 @@ organisms_file = snakemake.input.organisms_file
 
 SET_per_sequence_tabulated_file = snakemake.input.SET_per_sequence_tabulated
 
-SET_per_domain_tabulated_file = snakemake.input.SET_per_domain_tabulated
-KRAB_per_domain_tabulated_file = snakemake.input.KRAB_per_domain_tabulated
-SSXRD_per_domain_tabulated_file = snakemake.input.SSXRD_per_domain_tabulated
-ZF_per_domain_tabulated_file = snakemake.input.ZF_per_domain_tabulated
+#SET_per_domain_tabulated_file = snakemake.input.SET_per_domain_tabulated
+#KRAB_per_domain_tabulated_file = snakemake.input.KRAB_per_domain_tabulated
+#SSXRD_per_domain_tabulated_file = snakemake.input.SSXRD_per_domain_tabulated
+#ZF_per_domain_tabulated_file = snakemake.input.ZF_per_domain_tabulated
 
 SET_per_domain_summary_file = snakemake.input.SET_per_domain_summary
 KRAB_per_domain_summary_file = snakemake.input.KRAB_per_domain_summary
@@ -68,16 +68,20 @@ def getTaxid(accession_number=accession_number,input_file=organisms_file):
     print("DEBUG "+accession_number+": "+str(taxid))
     summarised_data["Taxid"] = taxid
 
-process_domain_tabulated("KRAB",KRAB_per_domain_tabulated_file )
+#process_domain_tabulated("KRAB",KRAB_per_domain_tabulated_file )
+process_domain_tabulated("KRAB",KRAB_per_domain_summary_file )
 process_domain_summary("KRAB",KRAB_per_domain_summary_file )
 
-process_domain_tabulated("SET",SET_per_domain_tabulated_file )
+#process_domain_tabulated("SET",SET_per_domain_tabulated_file )
+process_domain_tabulated("SET",SET_per_domain_summary_file )
 process_domain_summary("SET",SET_per_domain_summary_file )
 
-process_domain_tabulated("SSXRD",SSXRD_per_domain_tabulated_file )
+#process_domain_tabulated("SSXRD",SSXRD_per_domain_tabulated_file )
+process_domain_tabulated("SSXRD",SSXRD_per_domain_summary_file )
 process_domain_summary("SSXRD",SSXRD_per_domain_summary_file )
 
-process_domain_tabulated("ZF",ZF_per_domain_tabulated_file )
+#process_domain_tabulated("ZF",ZF_per_domain_tabulated_file )
+process_domain_tabulated("ZF",ZF_per_domain_summary_file )
 process_domain_summary("ZF",ZF_per_domain_summary_file )
 
 getTaxid()
