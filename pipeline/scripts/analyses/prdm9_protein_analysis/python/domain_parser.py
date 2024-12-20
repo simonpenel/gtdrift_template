@@ -51,7 +51,7 @@ with open(per_domain_file) as reader, open(summary_per_domain_file, 'w') as writ
                     for elt in line.split(maxsplit=23):
                         newline += f"{elt.strip()}\t"
                 
-            writer.write(newline + '\n')
+        writer.write(newline + '\n')
         
 
 
