@@ -15,7 +15,7 @@ with open(per_domain_file) as reader, open(tabulated_per_domain_file, 'w') as wr
             for elt in line.split(maxsplit=23):
                 writer.write(f"{elt.strip()}\t")
             writer.write('\n')
-
+reader.close()
 #with open(tabulated_per_domain_file) as reader, open(summary_per_domain_file, 'w') as writer:
 with open(per_domain_file) as reader, open(summary_per_domain_file, 'w') as writer:
     seq_ID = ''
