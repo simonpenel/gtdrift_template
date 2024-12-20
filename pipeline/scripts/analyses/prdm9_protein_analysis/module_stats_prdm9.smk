@@ -56,7 +56,7 @@ rule build_prdm_blastdb:
         "mkdir {output.prdmdb} && formatdb -i {input.fasta} -t prdmdb -n {output.prdmdb}/prdm_family -p T -o T"
 
 # -------------------------------------------------------------------
-# get_blastdb
+# build_proteome_blastdb
 # Build a blast database from the proteome wich should be stored in
 # the genome_assembly directory. These data were collected with the
 # "collecting_genome_annotation" pipeline. Use of formatdb instead
@@ -64,7 +64,7 @@ rule build_prdm_blastdb:
 # Alternatively, it is possible to use an old version of makeblasdb
 # by modify the PATH in your bash  environment.
 # -------------------------------------------------------------------
-rule get_blastdb:
+rule build_proteome_blastdb:
     """
     Genere a blast db 
     """
@@ -211,7 +211,7 @@ rule summarize_hmm_results:
 
 
 # -------------------------------------------------------------------
-# prdm_paralog_check
+# check_for_prdm_paralog
 # Extracts the SET domain in the sequence selected by hmm search for
 # an organism and runs a blastp analysis of the domain against the
 # Human PRDM genes family. If the best match is PRDM9, the value is
@@ -223,7 +223,7 @@ rule summarize_hmm_results:
 # The summary_hmmsearch_prdm9_with_paralog_check_{accession}.csv is more detailed :
 # ;Unnamed: 0;SeqID;SET Query;SET E-value;SET Score;Nb SET domains;SET domain start;SET domain end;KRAB Query;KRAB E-value;KRAB Score;Nb KRAB domains;KRAB domain start;KRAB domain end;SSXRD Query;SSXRD E-value;SSXRD Score;Nb SSXRD domains;SSXRD domain start;SSXRD domain end;ZF Query;ZF E-value;ZF Score;Nb ZF domains;ZF domain start;ZF domain end;Taxid;Best Match;Bit Score;Score ratio
 # -------------------------------------------------------------------
-rule prdm_paralog_check:
+rule check_for_prdm_paralog:
     """
     Reads each summary table and runs a blastp analysis on every candidate
     """
