@@ -38,6 +38,20 @@ snakemake -s process_stats_prdm9.smk  --configfile config_dag_2.json --forceall 
 
 ```
 
+# Graphes
+
+## Graphe pour 1 assemblage
+
+![Image graphe](https://raw.githubusercontent.com/simonpenel/gtdrift_template/refs/heads/master/pipeline/scripts/analyses/prdm9_protein_analysis/dag_single_process_stats_prdm9.png "Graphe pour un assemblage")
+
+On constate que les sorties HMM par domaines sont génerées pour les 4 domaines.
+
+Par contre les sorties HMM par seéquences sont génerées pour  le domaine SET (comme liste de séquences en entrée de _summarize_hmm_results_ ) le domaine KRAB (comme entrée de _create_global_krab_table_) et le domaine ZF (comme entrée de _create_global_krab_table_).
+
+
+## Graphe pour 2 assemblages
+
+![Image graphe](https://raw.githubusercontent.com/simonpenel/gtdrift_template/refs/heads/master/pipeline/scripts/analyses/prdm9_protein_analysis/dag_2_process_stats_prdm9.png "Graphe pour 2 assemblages")
 
 # Problèmes d'annotation absente
 
@@ -91,15 +105,6 @@ echo "]}" >> config.json.clean
 et virer la dernière virgule dans config.json.clean.
 On peut remplacer le fichier de configuration par le fichier généré et  relancer le pipeline _process_stats_prdm9.smk_ .
 
-# Graphes
 
-## Graphe pour 1 assemblage
-
-![Image graphe](https://raw.githubusercontent.com/simonpenel/gtdrift_template/refs/heads/master/pipeline/scripts/analyses/prdm9_protein_analysis/dag_single_process_stats_prdm9.png "Graphe pour un assemblage")
-
-
-## Graphe pour 2 assemblages
-
-![Image graphe](https://raw.githubusercontent.com/simonpenel/gtdrift_template/refs/heads/master/pipeline/scripts/analyses/prdm9_protein_analysis/dag_2_process_stats_prdm9.png "Graphe pour 2 assemblages")
 
 
