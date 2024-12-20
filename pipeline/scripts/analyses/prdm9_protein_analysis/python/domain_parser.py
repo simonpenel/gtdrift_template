@@ -33,7 +33,7 @@ with open(per_domain_file) as reader, open(summary_per_domain_file, 'w') as writ
             else:
                 # overlapping zinc finger domains are merged to create one big domain with multiple repetitions.
                 test_if_zf = tabulated_per_domain_file.split("/")[-1].split("_")[0]
-                print("\n\nCheck if "+test_if_zf+ " is ZF:")
+                print("\n\nCheck if "+tabulated_per_domain_file+" : "+test_if_zf+ " is ZF:")
                 if test_if_zf == 'ZF':
                     print("Yes.")
                     line_data = line.split(maxsplit=23)
