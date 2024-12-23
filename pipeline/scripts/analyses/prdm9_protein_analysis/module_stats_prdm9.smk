@@ -154,8 +154,14 @@ rule formating_hmm_domain_hit:
         per_domain=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains",
     output:
+        # per-domain hits in tabular format
+        tabulated_per_domain=temp(pathGTDriftData
+        + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains_tabulated"),
         # per-domain hits in tabular format in which overlapping zinc finger domains are
         # merged to create one big domain with multiple repetitions 
+        # (ZF_domain_summary will differ from ZF_domain_tabulated,
+        # but there will no difference between the 2 ouputs for the
+        # other domains)
         domain_summary=pathGTDriftData
         + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/{domain}_domains_summary",
     script:
