@@ -7,14 +7,14 @@ per_domain_file = snakemake.input.per_domain
 tabulated_per_domain_file = snakemake.output.tabulated_per_domain
 summary_per_domain_file = snakemake.output.domain_summary
 
-with open(per_domain_file) as reader, open(tabulated_per_domain_file, 'w') as writer:
-    for line in reader.readlines():
-        if line.startswith('#'):
-            del(line)
-        else:
-            for elt in line.split(maxsplit=23):
-                writer.write(f"{elt.strip()}\t")
-            writer.write('\n')
+#with open(per_domain_file) as reader, open(tabulated_per_domain_file, 'w') as writer:
+#    for line in reader.readlines():
+#        if line.startswith('#'):
+#            del(line)
+#        else:
+#            for elt in line.split(maxsplit=23):
+#                writer.write(f"{elt.strip()}\t")
+#            writer.write('\n')
 
 with open(per_domain_file) as reader, open(summary_per_domain_file, 'w') as writer:
     seq_ID = ''
