@@ -16,11 +16,13 @@ with open(per_domain_file) as reader, open(tabulated_per_domain_file, 'w') as wr
                 writer.write(f"{elt.strip()}\t")
             writer.write('\n')
 
-with open(tabulated_per_domain_file) as reader, open(summary_per_domain_file, 'w') as writer:
+with open(per_domain_file) as reader, open(summary_per_domain_file, 'w') as writer:
     seq_ID = ''
     newline = ''
     for line in reader.readlines(): 
-        current_seq_ID = line.split('\t')[0]
+        if line.startswith('#'):
+            continue
+        current_seq_ID = line.split()[0]
         if current_seq_ID != seq_ID:
             seq_ID = current_seq_ID
             writer.write(newline + '\n')
