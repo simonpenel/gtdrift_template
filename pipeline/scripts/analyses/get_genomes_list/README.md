@@ -10,7 +10,7 @@ snakemake -s  get_list.smk  --cores 1
 ```
 
 Le  fichier de configuration config.json:
-```
+```json
 {    
     "query": '"\"Hominidae\"[Organism]"'
 }
