@@ -3,8 +3,8 @@ import os
 
 per_domain_file = snakemake.input.per_domain
 summary_per_domain_file = snakemake.output.domain_summary
-print("Input per domain file "+per_domain_file)
-print("Output summary domain file "+summary_per_domain_file)
+print("Input 'per domain' file "+per_domain_file)
+print("Output 'summary domain' file "+summary_per_domain_file)
 with open(per_domain_file) as reader, open(summary_per_domain_file, 'w') as writer:
     seq_ID = ''
     newline = ''
@@ -21,7 +21,6 @@ with open(per_domain_file) as reader, open(summary_per_domain_file, 'w') as writ
         else:
             # overlapping zinc finger domains are merged to create one big domain with multiple repetitions.
             test_if_zf = per_domain_file.split("/")[-1].split("_")[0]
-            print("Check if "+test_if_zf+ " is ZF :")
             if test_if_zf == 'ZF':
                 line_data = line.split(maxsplit=23)
                 newline_data = newline.split('\t')
