@@ -1,21 +1,10 @@
 import pandas as pd
 import os
-print("Input per domain file "+snakemake.input.per_domain)
-#print("Output tabulated domain file "+snakemake.output.tabulated_per_domain)
-print("Output summary domain file "+snakemake.output.domain_summary)
+
 per_domain_file = snakemake.input.per_domain
-#tabulated_per_domain_file = snakemake.output.tabulated_per_domain
 summary_per_domain_file = snakemake.output.domain_summary
-
-#with open(per_domain_file) as reader, open(tabulated_per_domain_file, 'w') as writer:
-#    for line in reader.readlines():
-#        if line.startswith('#'):
-#            del(line)
-#        else:
-#            for elt in line.split(maxsplit=23):
-#                writer.write(f"{elt.strip()}\t")
-#            writer.write('\n')
-
+print("Input per domain file "+per_domain_file)
+print("Output summary domain file "+summary_per_domain_file)
 with open(per_domain_file) as reader, open(summary_per_domain_file, 'w') as writer:
     seq_ID = ''
     newline = ''
@@ -34,7 +23,6 @@ with open(per_domain_file) as reader, open(summary_per_domain_file, 'w') as writ
             test_if_zf = per_domain_file.split("/")[-1].split("_")[0]
             print("Check if "+test_if_zf+ " is ZF :")
             if test_if_zf == 'ZF':
-                print("Yes.")
                 line_data = line.split(maxsplit=23)
                 newline_data = newline.split('\t')
                 evalue = line_data[12]
@@ -45,7 +33,6 @@ with open(per_domain_file) as reader, open(summary_per_domain_file, 'w') as writ
                 newline_data[18] = str(max(int(end), int(newline_data[18])))
                 newline = '\t'.join(newline_data)
             else:
-                print("No.")
                 writer.write(newline + '\n')
                 newline = ''
                 for elt in line.split(maxsplit=23):
