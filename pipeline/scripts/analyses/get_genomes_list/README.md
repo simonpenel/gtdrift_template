@@ -9,7 +9,8 @@ La commande pour lancer ce pipeline :
 snakemake -s  get_list.smk  --cores 1
 ```
 
-Le  fichier de configuration config.json:
+Le taxon est défini dans le fichier de configuration config.json:
+
 ```json
 {    
     "query": '"\"Hominidae\"[Organism]"'
@@ -18,11 +19,14 @@ Le  fichier de configuration config.json:
 
 Dans cet exemple de demonstration, on va récupérer tous les assemblages d'hominidés.
 
-Cela va générer le fichier suivant:
+Cela va générer le fichier de description suivant:
 
 ```
 data/resources/organisms_data 
 ```
+
+Ils'agit du même type de fichier que celui qui se trouve dans _pathGTDriftData/data_results_per_assembly/_.
+
 
 Lorsque l'on récupère tous les assemblages de métazoaires, ce fichier
  doit être copié dans pathGTDriftData/data_results_per_assembly/, il  servira de référence
