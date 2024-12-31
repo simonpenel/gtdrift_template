@@ -31,8 +31,9 @@ Les 4 répertoires suivants doivent impérativement être définis:
       * le répertoire _ref_align/Prdm9_Metazoa_Reference_alignment/_ qui contient :
           * les alignements de réferences  utilisés pour le calcul des hmm.
           * le répertoire _exon_peptide_ qui contient les fichiers fasta des exons de PRDM9 chez les métazoaires. 
-
-  * pathGTDriftScripts :
+      * le répertoire _hmm_build_ qui contient les profils hmm (calculés à partir de  _ref_align/Prdm9_Metazoa_Reference_alignment/_ lors des analyses)
+      * le répertoire _PRDM_family_HUMAN_ qui contient le fichier fasta PRDM_family_HUMAN.fa de la famille PRDM chez les métazoaires (ainsi que la base de données blast  calculée lors des analyses)
+  * pathGTDriftScripts : le répertoire des différents pipelines.
   
 
 
