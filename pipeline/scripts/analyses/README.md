@@ -18,6 +18,15 @@ Modifier ce fichier en remplaçant _my_directory_ par le répertoire dans lequel
 }
 ```
 
+Les 4 répertoires suivants doivent impérativement être définis:
+  * pathGTDriftData : contient 
+      * le fichier  _organisms_data_
+      * le répertoire _genome_assembly_
+  * pathGTDriftGlobalResults :
+  * pathGTDriftResource : 
+  * pathGTDriftScripts :
+  
+
 
 ## 2. Recupérerer la description des assemblages pour un taxon donné
 
