@@ -5,9 +5,8 @@ Importer le depot  gtdrift_template
 git clone https://github.com/simonpenel/gtdrift_template.git
 ```
 
-```{include} ./pipeline/scripts/analyses/README.md
-```
-```{include}https://github.com/simonpenel/gtdrift_template/blob/master/pipeline/scripts/analyses/README.md
-```
+Puis consulter :
 
-{!pipeline/scripts/analyses/README.md!}
+https://github.com/simonpenel/gtdrift_template/blob/master/pipeline/scripts/analyses/README.md
+
+
