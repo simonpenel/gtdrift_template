@@ -26,8 +26,12 @@ Les 4 répertoires suivants doivent impérativement être définis:
           * le repertoire _annotation_ : contient les fichiers d'annotation *gff, les fichiers fasta des protéines et des cds. S'il le génome n'est pas annoté, les fichiers contiennent un message spécifiant qu'il n'existe pas d'annotation.  
           * le repertoire _analyse_ : contient le résultat des différentes analyses.
            
-  * pathGTDriftGlobalResults :
-  * pathGTDriftResource : 
+  * pathGTDriftGlobalResults : contient les résultats globaux pour chaque analyse.
+  * pathGTDriftResource : contient des données utiles pour les analyses, entre autres:
+      * le répertoire _ref_align/Prdm9_Metazoa_Reference_alignment/_ qui contient :
+          * les alignements de réferences  utilisés pour le calcul des hmm.
+          * le répertoire _exon_peptide_ qui contient les fichiers fasta des exons de PRDM9 chez les métazoaires. 
+
   * pathGTDriftScripts :
   
 
