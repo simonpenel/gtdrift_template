@@ -1,8 +1,11 @@
-# Définir l'environnement dans lequel les calculs sont effectués:
+
+# Les étapes à suivre:
+
+## 1. Définir l'environnement dans lequel les calculs sont effectués:
 
 Le fichier _environment_path.json_ est utilisé pour définir l'organisation des répertoires:
 
-Modifier ce fichier en remplacer _my_directory_ par le répertoire dans lequel se trouve le répertoire _gtdrift_template_.
+Modifier ce fichier en remplaçant _my_directory_ par le répertoire dans lequel se trouve le répertoire _gtdrift_template_.
 
 ```json
 {
@@ -15,18 +18,16 @@ Modifier ce fichier en remplacer _my_directory_ par le répertoire dans lequel s
 }
 ```
 
-# Les étapes à suivre:
 
-
-## 1. Recupérerer la description des assemblages pour un taxon donné
+## 2. Recupérerer la description des assemblages pour un taxon donné
 
 Lancer le pipeline snakemake qui se trouve dans le répertoire _get_genomes_list_
   
-## 2. Générer la liste des assemblages au format  fichiers json 
+## 3. Générer la liste des assemblages au format  fichiers json 
 
 Lancer le  script python qui se trouve dans le répertoire _get_genomes_list_.
 
-## 3. Récupérer les données de séquence et les annotations (si elles existent)
+## 4. Récupérer les données de séquence et les annotations (si elles existent)
 
 
-## 4. Lancer les pipelines d'analyse  des données
+## 5. Lancer les pipelines d'analyse  des données
