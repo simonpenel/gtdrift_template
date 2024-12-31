@@ -20,8 +20,12 @@ Modifier ce fichier en remplaçant _my_directory_ par le répertoire dans lequel
 
 Les 4 répertoires suivants doivent impérativement être définis:
   * pathGTDriftData : contient 
-      * le fichier  _organisms_data_
-      * le répertoire _genome_assembly_
+      * le fichier  _organisms_data_ : description de assemblages
+      * le répertoire _genome_assembly_ : contient pour chaque assemblage :
+          * le repertoire _genome_seq_ : contient le fichier .fna du génome ou son chemin sur iRODS
+          * le repertoire _annotation_ : contient les fichiers d'annotation *gff, les fichiers fasta des protéines et des cds. S'il le génome n'est pas annoté, les fichiers contiennent un message spécifiant qu'il n'existe pas d'annotation.  
+          * le repertoire _analyse_ : contient le résultat des différentes analyses.
+           
   * pathGTDriftGlobalResults :
   * pathGTDriftResource : 
   * pathGTDriftScripts :
