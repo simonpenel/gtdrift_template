@@ -39,13 +39,20 @@ Les 4 répertoires suivants doivent impérativement être définis:
 
 ## 2. Recupérerer la description des assemblages pour un taxon donné
 
-Lancer le pipeline snakemake qui se trouve dans le répertoire _get_genomes_list_
+Lancer le pipeline snakemake qui se trouve dans le répertoire _get_genomes_list_.
+Cela va génerer le fichier  _organisms_data_   qui devra être copié dans le répertoire _pathGTDriftData_ et servira de référence. 
   
 ## 3. Générer la liste des assemblages au format  fichiers json 
 
 Lancer le  script python qui se trouve dans le répertoire _get_genomes_list_.
+Cela va générer des fichier json utiles pour collecter les données et lancer les analyses.
 
 ## 4. Récupérer les données de séquence et les annotations (si elles existent)
-
+Créer le fichier de configuration à l'aide des fichiers générés en *3*, puis 
+lancer le pipeline snakemake qui se trouve dans le répertoire _collecting_genome_annotation_.
+Cela va collecter les données de séquences et d'annotation des assemblages. Ces données seront stockées dans les répertoires _genome_seq_ et _annotation_ de chaque assemblage du répertoire _pathGTDriftData/genome_assembly_.
 
 ## 5. Lancer les pipelines d'analyse  des données
+Il existe un repertoire par analyse.
+Créer le fichier de configuration à l'aide des fichiers générés en *3*, puis 
+lancer le pipeline snakemake qui se trouve dans le répertoire de l'analyse.
