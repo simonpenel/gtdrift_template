@@ -1,0 +1,63 @@
+# 3 candidate PRDM9 proteins
+"ID","Num_ZF","ZFDa","ZFDg","Num_ZF_28","Num_ZF_29","Max_Tandem_Length"
+"XP_030858898.2 LOW QUALITY PROTEIN: histone-lysine N-methyltransferase PRDM7 [Gorilla gorilla gorilla]",0,NA,NA,0,0,NA
+"XP_030859242.3 histone-lysine N-methyltransferase PRDM9 isoform X2 [Gorilla gorilla gorilla]",8,0.586206896551724,0.319587628865979,7,1,7
+"XP_055223462.2 histone-lysine N-methyltransferase PRDM9 isoform X1 [Gorilla gorilla gorilla]",8,0.586206896551724,0.319587628865979,7,1,7
+
+# 18 candidate PRDM9 proteins
+"ID","Num_ZF","ZFDa","ZFDg","Num_ZF_28","Num_ZF_29","Max_Tandem_Length"
+"XP_034795469.2 histone-lysine N-methyltransferase PRDM7 [Pan paniscus]",0,NA,NA,0,0,NA
+"XP_054948214.1 histone-lysine N-methyltransferase PRDM7-like [Pan paniscus]",0,NA,NA,0,0,NA
+"XP_054949546.1 histone-lysine N-methyltransferase PRDM7-like [Pan paniscus]",0,NA,NA,0,0,NA
+"XP_054956172.1 histone-lysine N-methyltransferase PRDM7-like [Pan paniscus]",0,NA,NA,0,0,NA
+"XP_054962570.1 LOW QUALITY PROTEIN: histone-lysine N-methyltransferase PRDM7 isoform X1 [Pan paniscus]",0,NA,NA,0,0,NA
+"XP_054966863.2 histone-lysine N-methyltransferase PRDM7-like [Pan paniscus]",0,NA,NA,0,0,NA
+"XP_054968459.1 histone-lysine N-methyltransferase PRDM9 isoform X1 [Pan paniscus]",7,0.711111111111111,0.343558282208589,6,1,6
+"XP_054968460.1 histone-lysine N-methyltransferase PRDM9 isoform X2 [Pan paniscus]",7,0.711111111111111,0.343558282208589,6,1,6
+"XP_054968461.1 histone-lysine N-methyltransferase PRDM9 isoform X3 [Pan paniscus]",7,0.711111111111111,0.343558282208589,6,1,6
+"XP_054968462.1 histone-lysine N-methyltransferase PRDM9 isoform X3 [Pan paniscus]",7,0.711111111111111,0.343558282208589,6,1,6
+"XP_054968463.1 histone-lysine N-methyltransferase PRDM9 isoform X4 [Pan paniscus]",7,0.711111111111111,0.343558282208589,6,1,6
+"XP_054972152.2 histone-lysine N-methyltransferase PRDM7-like [Pan paniscus]",0,NA,NA,0,0,NA
+"XP_054973320.1 histone-lysine N-methyltransferase PRDM7-like [Pan paniscus]",0,NA,NA,0,0,NA
+"XP_063449884.1 histone-lysine N-methyltransferase PRDM7-like [Pan paniscus]",0,NA,NA,0,0,NA
+"XP_063451741.1 histone-lysine N-methyltransferase PRDM7-like [Pan paniscus]",0,NA,NA,0,0,NA
+"XP_063458098.1 histone-lysine N-methyltransferase PRDM7 isoform X2 [Pan paniscus]",0,NA,NA,0,0,NA
+"XP_063461644.1 histone-lysine N-methyltransferase PRDM7-like [Pan paniscus]",0,NA,NA,0,0,NA
+"XP_063462589.1 histone-lysine N-methyltransferase PRDM7-like [Pan paniscus]",0,NA,NA,0,0,NA
+
+# 5 candidate PRDM9 proteins
+"ID","Num_ZF","ZFDa","ZFDg","Num_ZF_28","Num_ZF_29","Max_Tandem_Length"
+"XP_054309519.2 LOW QUALITY PROTEIN: histone-lysine N-methyltransferase PRDM7 [Pongo pygmaeus]",0,NA,NA,0,0,NA
+"XP_054344288.1 histone-lysine N-methyltransferase PRDM9 isoform X1 [Pongo pygmaeus]",9,0.533333333333333,0.345323741007194,8,1,8
+"XP_054344289.1 histone-lysine N-methyltransferase PRDM9 isoform X1 [Pongo pygmaeus]",9,0.533333333333333,0.345323741007194,8,1,8
+"XP_054344290.1 histone-lysine N-methyltransferase PRDM9 isoform X2 [Pongo pygmaeus]",9,0.533333333333333,0.345323741007194,8,1,8
+"XP_054344291.1 histone-lysine N-methyltransferase PRDM9 isoform X2 [Pongo pygmaeus]",9,0.533333333333333,0.345323741007194,8,1,8
+
+# 10 candidate PRDM9 proteins
+"ID","Num_ZF","ZFDa","ZFDg","Num_ZF_28","Num_ZF_29","Max_Tandem_Length"
+"XP_016808991.4 histone-lysine N-methyltransferase PRDM9 isoform X1 [Pan troglodytes]",13,0.693989071038251,0.419664268585132,12,1,12
+"XP_054514594.2 histone-lysine N-methyltransferase PRDM7-like [Pan troglodytes]",0,NA,NA,0,0,NA
+"XP_054532868.1 histone-lysine N-methyltransferase PRDM7-like isoform X1 [Pan troglodytes]",0,NA,NA,0,0,NA
+"XP_054540415.2 histone-lysine N-methyltransferase PRDM9 isoform X1 [Pan troglodytes]",13,0.693989071038251,0.419664268585132,12,1,12
+"XP_054540416.2 histone-lysine N-methyltransferase PRDM9 isoform X1 [Pan troglodytes]",13,0.693989071038251,0.419664268585132,12,1,12
+"XP_054540417.2 histone-lysine N-methyltransferase PRDM9 isoform X1 [Pan troglodytes]",13,0.693989071038251,0.419664268585132,12,1,12
+"XP_054540418.2 histone-lysine N-methyltransferase PRDM9 isoform X2 [Pan troglodytes]",13,0.693989071038251,0.419664268585132,12,1,12
+"XP_054540419.2 histone-lysine N-methyltransferase PRDM9 isoform X2 [Pan troglodytes]",13,0.693989071038251,0.419664268585132,12,1,12
+"XP_054541538.1 LOW QUALITY PROTEIN: histone-lysine N-methyltransferase PRDM7-like [Pan troglodytes]",0,NA,NA,0,0,NA
+"XP_063647097.1 histone-lysine N-methyltransferase PRDM7-like [Pan troglodytes]",0,NA,NA,0,0,NA
+
+# 2 candidate PRDM9 proteins
+"ID","Num_ZF","ZFDa","ZFDg","Num_ZF_28","Num_ZF_29","Max_Tandem_Length"
+"XP_009249362.3 LOW QUALITY PROTEIN: histone-lysine N-methyltransferase PRDM7 [Pongo abelii]",0,NA,NA,0,0,NA
+"XP_054411252.1 histone-lysine N-methyltransferase PRDM9 [Pongo abelii]",13,0.570866141732283,0.392276422764228,12,1,12
+
+# 7 candidate PRDM9 proteins
+"ID","Num_ZF","ZFDa","ZFDg","Num_ZF_28","Num_ZF_29","Max_Tandem_Length"
+"NP_001091643.1 histone-lysine N-methyltransferase PRDM7 [Homo sapiens]",0,NA,NA,0,0,NA
+"NP_001363829.1 histone-lysine N-methyltransferase PRDM9 isoform PRDM9 B [Homo sapiens]",13,0.579766536964981,0.397979797979798,12,1,12
+"NP_064612.2 histone-lysine N-methyltransferase PRDM9 isoform PRDM9 B [Homo sapiens]",13,0.579766536964981,0.397979797979798,12,1,12
+"XP_011521131.1 histone-lysine N-methyltransferase PRDM7 isoform X2 [Homo sapiens]",0,NA,NA,0,0,NA
+"XP_016878371.1 histone-lysine N-methyltransferase PRDM7 isoform X1 [Homo sapiens]",0,NA,NA,0,0,NA
+"XP_016878372.1 histone-lysine N-methyltransferase PRDM7 isoform X1 [Homo sapiens]",0,NA,NA,0,0,NA
+"XP_016878373.1 histone-lysine N-methyltransferase PRDM7 isoform X3 [Homo sapiens]",0,NA,NA,0,0,NA
+
