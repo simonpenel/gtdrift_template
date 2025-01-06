@@ -43,10 +43,33 @@ Les 4 répertoires suivants doivent impérativement être définis:
 ## 2. Recupérerer la description des assemblages pour un taxon donné
 
 Se déplacer dans le répertoire  _get_genomes_list_ et lancer le pipeline snakemake _get_list.smk_.
+
+La commande pour lancer ce pipeline :
+
+``` bash
+snakemake -s  get_list.smk  --cores 1
+```
+
+Le taxon est défini dans le fichier de configuration config.json:
+
+```json
+{    
+    "query": '"\"Metazoa\"[Organism]"'
+}
+```
+
 Cela va génerer le fichier  _data/resources/organisms_data_   qui devra être copié dans le répertoire _pathGTDriftData_ pour servir de référence.
 
 > Le fichier _data/resources/organisms_data_ sera copié et utilisé comme référence dans le cas des métazaoires. Mais il est possible de générer un fichier dédié à des jeux de données plus réduits pour des test (sur les hominidés par exemple) auquel cas on ne le copira pas.
   
+Le fichier de configuration config.json pour les hominidés:
+
+```json
+{    
+    "query": '"\"Hominidae\"[Organism]"'
+}
+```
+
 ## 3. Générer la liste des assemblages au format  fichiers json 
 
 Lancer le  script _python generate_json_and_query.py_ qui se trouve dans le répertoire _get_genomes_list_.
