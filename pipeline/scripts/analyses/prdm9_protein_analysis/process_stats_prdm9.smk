@@ -51,36 +51,36 @@ rule all:
         
         # global statistics on KRAB domains
         # ---------------------------------
-        krab=pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
+        global_krab=pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
         
         # global statistics on KRAB and ZF domains
         # ----------------------------------------
-        krabzf=pathGTDriftGlobalResults
+        global_krabzf=pathGTDriftGlobalResults
         + "analyses_summaries/table_results/krabzf_data.csv",
         
         # global statistics on ZF domains count
         # -------------------------------------
-        zf=pathGTDriftGlobalResults 
+        global_zf_count=pathGTDriftGlobalResults 
         + "analyses_summaries/table_results/zf_count.csv",
         
         # global statistics on prdm9
         # --------------------------
-        table=pathGTDriftGlobalResults
+        global_table_prdm9=pathGTDriftGlobalResults
         + "analyses_summaries/table_results/table_prdm9.csv",
         
         # summary of prdm9 candidates
         # ---------------------------
-        PRDM9_candidates=pathGTDriftGlobalResults
+        global_PRDM9_candidates=pathGTDriftGlobalResults
         + "analyses_summaries/table_results/global_prdm9_candidates.csv",
         
         # statistics on zinc finger diversity
         # -----------------------------------
-        zincfinger=pathGTDriftGlobalResults
+        global_zincfinger_diversity=pathGTDriftGlobalResults
         + "analyses_summaries/table_results/zinc_finger.csv",
         
         # statistics on SET tyrosines
         # ---------------------------
-        SET_tyrosines=pathGTDriftGlobalResults
+        global_SET_tyrosines_stats=pathGTDriftGlobalResults
         + "analyses_summaries/table_results/SET_tyrosines.csv",
 
 
@@ -97,20 +97,20 @@ include: "module_stats_prdm9.smk"
 # -----------------------------------------------------------
 # module_stats_zinfinger.smk:
 # statistics on zinc fingers in protein data, summary of data
-# outputs : PRDM9_candidates, zincfinger, table
+# outputs : global_PRDM9_candidates, global_zincfinger_diversity, global_table_prdm9
 # -----------------------------------------------------------
 include: "module_stats_zincfinger.smk"
 
 # -----------------------------------------------------------
 # module_SET_tyrosines.smk:
 # statistics on SET tyrosines
-# outputs : SET_tyrosines
+# outputs : global_SET_tyrosines_stats
 # -----------------------------------------------------------
 include: "module_SET_tyrosines.smk"
 
 # -----------------------------------------------------------
 # module_concatenate_results.smk:
 # concatenate
-# outputs : krab,krabzf,zf
+# outputs : global_krab,global_krabzf,global_zf_count
 # -----------------------------------------------------------
 include: "module_concatenate_results.smk"
