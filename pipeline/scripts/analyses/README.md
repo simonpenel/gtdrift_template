@@ -89,7 +89,7 @@ hominidae_assemblies.col
 ```
 
 hominidae_assemblies.col contient:
-```
+```json
   "assembly_list": [
 "GCF_029289425.2" , 
 "GCF_029281585.2" , 
@@ -102,7 +102,7 @@ hominidae_assemblies.col contient:
 ```
 
 hominidae_queries.col contient:
-```
+```json
 (GCF_029289425) 
  OR (GCF_029281585) 
  OR (GCF_028885625) 
@@ -129,7 +129,7 @@ python3 generate_json_and_query.py  data/resources/organisms_data  hominidae_ass
 ```
 Le fichier hominidae_assemblies_with_annot.col contient:
 
-```
+```json
 "assembly_list": [
 "GCF_029281585.2" , 
 "GCF_029289425.2" , 
@@ -142,7 +142,7 @@ Le fichier hominidae_assemblies_with_annot.col contient:
 
 Le fichier hominidae_queries_with_annot.col  contient:
 
-```
+```json
 (GCF_029281585) 
  OR (GCF_029289425) 
  OR (GCF_028885625) 
@@ -160,9 +160,41 @@ n'est plus présent.
 
 
 ## 4. Récupérer les données de séquence et les annotations (si elles existent)
-Créer le fichier de configuration à l'aide des fichiers générés en *3*, puis 
-lancer le pipeline snakemake qui se trouve dans le répertoire _collecting_genome_annotation_.
-Cela va collecter les données de séquences et d'annotation des assemblages. Ces données seront stockées dans les répertoires _genome_seq_ et _annotation_ de chaque assemblage du répertoire _pathGTDriftData/genome_assembly_.
+Ce pipeline permet de télécharger les génomes et leurs annotations étant donné une liste d'assemblage. Des liens symboliques seront créés pour faciliter les analyses. Parfois le téléchargement en simultané de plusieurs fichiers bug.
+
+Se déplacer dans le répertoire _collecting_genome_annotation_. Créer le fichier de configuration à l'aide des fichiers générés en *3*, puis lancer le pipeline snakemake _collecting_annotations.smk_.
+>Cela va collecter les données de séquences et d'annotation des assemblages. Ces données seront stockées dans les répertoires _genome_seq_ et _annotation_ de chaque assemblage du répertoire _pathGTDriftData/genome_assembly_
+
+
+Pour les hominidés, le fichier de configuration est sous la forme:
+
+```json
+{
+  "storagetype": "irods",
+  "assembly_list": [
+"GCF_029281585.2" , 
+"GCF_029289425.2" , 
+"GCF_028885625.2" , 
+"GCF_028858775.2" , 
+"GCF_028885655.2" , 
+"GCF_000001405.40" 
+]  
+}
+```
+Le champ "storagetype" indique si la séquence du génome (fichier *.fna) doit être stockéé localement (_local_) ou sur irods (_irods_).
+
+Le champ "assembly_list" donne la liste des assemblages à téléchager. La valeur de ce champ peut être générée en utilisant le script décrit en *3*.
+
+
+La commande pour lancer ce pipeline :
+
+``` bash
+snakemake -s  collecting_annotations.smk --configfile config.json  --cores 1
+```
+
+
+
+
 
 ## 5. Lancer les pipelines d'analyse  des données
 Il existe un repertoire par analyse.
