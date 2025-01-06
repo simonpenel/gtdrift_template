@@ -21,6 +21,7 @@ Modifier ce fichier en remplaçant _my_directory_ par le répertoire dans lequel
 Les 4 répertoires suivants doivent impérativement être définis:
   * pathGTDriftData : contient 
       * le fichier  _organisms_data_ : description de assemblages
+      > Ce fichier est généré par le pipeline snakemake get_genomes_list/get_list.smk
       * le répertoire _genome_assembly_ : contient pour chaque assemblage :
           * le repertoire _genome_seq_ : contient le fichier .fna du génome ou son chemin sur iRODS
           * le repertoire _annotation_ : contient les fichiers d'annotation *gff, les fichiers fasta des protéines et des cds. S'il le génome n'est pas annoté, les fichiers contiennent un message spécifiant qu'il n'existe pas d'annotation.  
@@ -39,7 +40,7 @@ Les 4 répertoires suivants doivent impérativement être définis:
 
 ## 2. Recupérerer la description des assemblages pour un taxon donné
 
-Lancer le pipeline snakemake qui se trouve dans le répertoire _get_genomes_list_.
+Se déplacer dans le répertoire  _get_genomes_list_ et lancer le pipeline snakemake _get_list.smk_.
 Cela va génerer le fichier  _organisms_data_   qui devra être copié dans le répertoire _pathGTDriftData_ et servira de référence. 
   
 ## 3. Générer la liste des assemblages au format  fichiers json 
