@@ -54,7 +54,7 @@ Le taxon est défini dans le fichier de configuration config.json:
 
 ```json
 {    
-    "query": '"\"Metazoa\"[Organism]"'
+    "query": "\"Metazoa\"[Organism]"
 }
 ```
 
@@ -66,7 +66,7 @@ Le fichier de configuration config.json pour les hominidés:
 
 ```json
 {    
-    "query": '"\"Hominidae\"[Organism]"'
+    "query": "\"Hominidae\"[Organism]"
 }
 ```
 
