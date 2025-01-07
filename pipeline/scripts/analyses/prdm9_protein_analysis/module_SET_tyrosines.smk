@@ -30,7 +30,7 @@ rule combine_set_tyrosines:
     input:
         expand(pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/SET_tyrosines.csv", accession=ACCESSNB)
     output:
-        combined_csv = pathGTDriftGlobalResults + "analyses_summaries/table_results/SET_tyrosines.csv"
+        combined_csv = pathGTDriftGlobalResults + GLOBAL_RESULTS + "table_results/SET_tyrosines.csv"
     run:
         # Combine all CSV files into one DataFrame
         dfs = [pd.read_csv(file) for file in input]

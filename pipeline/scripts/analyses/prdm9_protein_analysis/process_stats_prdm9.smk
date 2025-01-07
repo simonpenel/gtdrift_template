@@ -28,6 +28,7 @@ configfile: "config.json"
 
 ACCESSNB = config["assembly_list"]
 DOMAIN = ["KRAB", "SET", "SSXRD", "ZF"]
+GLOBAL_RESULTS = "prm9_protein_analysis/"
 
 # Rules
 # -----
@@ -51,37 +52,37 @@ rule all:
         
         # global statistics on KRAB domains
         # ---------------------------------
-        global_krab=pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
+        global_krab=pathGTDriftGlobalResults + GLOBAL_RESULTS + "table_results/krab_data.csv",
         
         # global statistics on KRAB and ZF domains
         # ----------------------------------------
         global_krabzf=pathGTDriftGlobalResults
-        + "analyses_summaries/table_results/krabzf_data.csv",
+        + GLOBAL_RESULTS + "table_results/krabzf_data.csv",
         
         # global statistics on ZF domains count
         # -------------------------------------
         global_zf_count=pathGTDriftGlobalResults 
-        + "analyses_summaries/table_results/zf_count.csv",
+        + GLOBAL_RESULTS + "table_results/zf_count.csv",
         
         # global statistics on prdm9
         # --------------------------
         global_table_prdm9=pathGTDriftGlobalResults
-        + "analyses_summaries/table_results/table_prdm9.csv",
+        + GLOBAL_RESULTS + "table_results/table_prdm9.csv",
         
         # summary of prdm9 candidates
         # ---------------------------
         global_PRDM9_candidates=pathGTDriftGlobalResults
-        + "analyses_summaries/table_results/global_prdm9_candidates.csv",
+        + GLOBAL_RESULTS + "table_results/global_prdm9_candidates.csv",
         
         # statistics on zinc finger diversity
         # -----------------------------------
         global_zincfinger_diversity=pathGTDriftGlobalResults
-        + "analyses_summaries/table_results/zinc_finger.csv",
+        + GLOBAL_RESULTS + "table_results/zinc_finger.csv",
         
         # statistics on SET tyrosines
         # ---------------------------
         global_SET_tyrosines_stats=pathGTDriftGlobalResults
-        + "analyses_summaries/table_results/SET_tyrosines.csv",
+        + GLOBAL_RESULTS + "table_results/SET_tyrosines.csv",
 
 
 # Modules snakemake

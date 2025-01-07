@@ -12,7 +12,7 @@ configfile: "config.json"
 
 ACCESSNB = config["assembly_list"]
 DOMAIN = ["KRAB", "SET", "SSXRD", "ZF"]
-
+#GLOBAL_RESULTS = "prm9_protein_analysis/"
 
 # Function to load JSON files
 # ---------------------------
@@ -47,7 +47,7 @@ rule create_global_krab_table:
             accession=ACCESSNB,
         ),
     output:
-        pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
+        pathGTDriftGlobalResults + GLOBAL_RESULTS + "table_results/krab_data.csv",
     params:
         path=pathGTDriftData + "genome_assembly"
     
@@ -65,14 +65,14 @@ rule create_global_krabzf_table:
     Creation of global krab and zf result table
     """
     input:
-        krab=pathGTDriftGlobalResults + "analyses_summaries/table_results/krab_data.csv",
+        krab=pathGTDriftGlobalResults + GLOBAL_RESULTS + "table_results/krab_data.csv",
         zf_tabs=expand(
             pathGTDriftData
             + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/tbl/ZF_tabulated",
             accession=ACCESSNB,
         ),
     output:
-        pathGTDriftGlobalResults + "analyses_summaries/table_results/krabzf_data.csv",
+        pathGTDriftGlobalResults + GLOBAL_RESULTS + "table_results/krabzf_data.csv",
     params:
         path=pathGTDriftData + "genome_assembly"        
     script:
@@ -95,7 +95,7 @@ rule create_global_zf_table:
             accession=ACCESSNB,
         ),
     output:
-        pathGTDriftGlobalResults + "analyses_summaries/table_results/zf_count.csv",
+        pathGTDriftGlobalResults + GLOBAL_RESULTS + "table_results/zf_count.csv",
     params:
         path=pathGTDriftData + "genome_assembly"      
     script:

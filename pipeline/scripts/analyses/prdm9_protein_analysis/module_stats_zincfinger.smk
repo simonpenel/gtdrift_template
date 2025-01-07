@@ -32,7 +32,7 @@ rule merge_prdm9_candidates:
     input:
         expand(pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/prdm9_candidates.csv", accession=ACCESSNB)
     output:
-        merged_candidates = pathGTDriftGlobalResults + "analyses_summaries/table_results/global_prdm9_candidates.csv"
+        merged_candidates = pathGTDriftGlobalResults + GLOBAL_RESULTS + "table_results/global_prdm9_candidates.csv"
     run:
         # Combine all CSV files into one DataFrame
         dfs = [pd.read_csv(file, sep=';') for file in input]
@@ -69,7 +69,7 @@ rule zincfinger_analysis:
     input:
         protein_seq = pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/candidates_prdm9.fasta"
     output:
-        zincfinger_out = pathGTDriftGlobalResults + "analyses_summaries/zinc_finger/ZFD_{accession}.csv"
+        zincfinger_out = pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger/ZFD_{accession}.csv"
     
     run:
         # Verify if the input file exists
@@ -85,9 +85,9 @@ rule combine_zinc_finger:
     Combine all ZFD_{accession}.csv files into one zinc_finger.csv.
     """
     input:
-        zfd_files = expand(pathGTDriftGlobalResults + "analyses_summaries/zinc_finger/ZFD_{accession}.csv", accession=ACCESSNB)
+        zfd_files = expand(pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger/ZFD_{accession}.csv", accession=ACCESSNB)
     output:
-        zinc_finger_combined = pathGTDriftGlobalResults + "analyses_summaries/table_results/zinc_finger.csv"
+        zinc_finger_combined = pathGTDriftGlobalResults + GLOBAL_RESULTS + "table_results/zinc_finger.csv"
     run:
         # Check if there are input files before trying to combine
         if not input.zfd_files:
@@ -105,9 +105,9 @@ rule general_table:
     Generate a general table of PRDM9 candidates
     """
     input:
-        merged_candidates = pathGTDriftGlobalResults + "analyses_summaries/table_results/global_prdm9_candidates.csv"
+        merged_candidates = pathGTDriftGlobalResults + GLOBAL_RESULTS + "table_results/global_prdm9_candidates.csv"
     output:
-        general_table = pathGTDriftGlobalResults + "analyses_summaries/table_results/table_prdm9.csv"
+        general_table = pathGTDriftGlobalResults + GLOBAL_RESULTS + "table_results/table_prdm9.csv"
     shell:
         """
         python3 python/general_table_prdm9.py -i {input} -o {output}
