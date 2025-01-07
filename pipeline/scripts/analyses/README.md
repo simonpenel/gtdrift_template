@@ -101,16 +101,7 @@ hominidae_assemblies.col contient:
 ]
 ```
 
-hominidae_queries.col contient:
-```json
-(GCF_029289425) 
- OR (GCF_029281585) 
- OR (GCF_028885625) 
- OR (GCF_028858775) 
- OR (GCF_028885655) 
- OR (GCA_963575185) 
- OR (GCF_000001405) 
-```
+
 
 La redondance entre assemblages GCA et GCF dans organisms_data a été supprimée. Si GCA et GCF sont présent on garde GCF:
 
@@ -138,17 +129,6 @@ Le fichier hominidae_assemblies_with_annot.col contient:
 "GCF_028885655.2" , 
 "GCF_000001405.40" 
 ]
-```
-
-Le fichier hominidae_queries_with_annot.col  contient:
-
-```json
-(GCF_029281585) 
- OR (GCF_029289425) 
- OR (GCF_028885625) 
- OR (GCF_028858775) 
- OR (GCF_028885655) 
- OR (GCF_000001405)
 ```
 
 L'assemblage  GCA_963575185.1
