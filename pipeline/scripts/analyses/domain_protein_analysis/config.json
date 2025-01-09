@@ -1,0 +1,13 @@
+{ 
+  "mode": "guix",
+  "domain_hmm_dir": "domain_example",
+  "assembly_list": [
+"GCF_029281585.2" , 
+"GCF_029289425.2" , 
+"GCF_028885625.2" , 
+"GCF_028858775.2" , 
+"GCF_028885655.2" , 
+"GCF_000001405.40" 
+]  
+}
+
