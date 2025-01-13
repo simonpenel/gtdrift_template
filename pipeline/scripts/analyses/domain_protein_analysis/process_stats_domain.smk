@@ -29,6 +29,10 @@ ACCESSNB = config["assembly_list"]
 
 DOMAIN_HMM_DIR  = config["domain_hmm_dir"]
 
+REFERENCE_DOMAIN_HMM = config["reference_domain_hmm"]
+
+REFERENCE = config["reference"]
+
 DOMAINS = config["domains"]
 
 GLOBAL_RESULTS = config["global_results_dir"]
@@ -60,6 +64,13 @@ rule all:
             + "summary_hmmsearch_{accession}.csv",
             accession=ACCESSNB,
         ),
+        # Candidates after pararlog checks
+        candidates=expand(
+            pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+            + "candidates.fasta",
+            accession=ACCESSNB,
+        ),
         
         
 
@@ -73,5 +84,5 @@ rule all:
 # -----------------------------------------------------------
 include: "module_stats_domain.smk"
 
-
+include: "module_check_paralogs.smk"
 
