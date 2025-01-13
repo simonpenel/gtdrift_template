@@ -1,4 +1,4 @@
-## Main snakemake for prdm9 analysis on protein data
+## Main snakemake for domain analysis on protein data
 ## Date : Decembre 2024
 ## Authors :
 
@@ -25,12 +25,22 @@ globals().update(load_json("../environment_path.json"))
 # -------------
 configfile: "config.json"
 
-
 ACCESSNB = config["assembly_list"]
-DOMAIN = ["KRAB"]
 
-GLOBAL_RESULTS = "domain_protein_analysis/"
-GENOME_RESULTS = "domain_protein_analysis/"
+DOMAIN_HMM_DIR  = config["domain_hmm_dir"]
+
+DOMAINS = config["domains"]
+
+GLOBAL_RESULTS = config["global_results_dir"]
+
+GENOME_RESULTS = config["genome_results_dir"]
+
+if config["mode"] == "guix":
+    RUNCMD = "guix shell hmmer -- "
+else:
+    RUNCMD = ""
+    
+
 # Rules
 # -----
 
@@ -39,15 +49,15 @@ GENOME_RESULTS = "domain_protein_analysis/"
 # --------------------------------------------------------------
 rule all:
     """
-    Get the prdm9 stats on protein data
+    Get the domain stats on protein data
     """
     input:
-        # summary of prdm9 hmmsearch on the proteome for each assembly.
+        # summary of domain hmmsearch on the proteome for each assembly.
         # -------------------------------------------------------------
         stats_domain=expand(
             pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + 
-            + "summary_hmmsearch_prdm9_{accession}.csv",
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+            + "summary_hmmsearch_{accession}.csv",
             accession=ACCESSNB,
         ),
         
