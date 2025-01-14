@@ -56,14 +56,6 @@ rule all:
     Get the domain stats on protein data
     """
     input:
-        # summary of domain hmmsearch on the proteome for each assembly.
-        # -------------------------------------------------------------
-        stats_domain=expand(
-            pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
-            + "summary_hmmsearch_{accession}.csv",
-            accession=ACCESSNB,
-        ),
         # Candidates after pararlog checks
         candidates=expand(
             pathGTDriftData
@@ -82,7 +74,7 @@ rule all:
 # general statistics on domain search in protein data.
 # outputs : stats_domain
 # -----------------------------------------------------------
-include: "module_stats_domain.smk"
+include: "../utils/module_stats_domain.smk"
 
-include: "module_check_paralogs.smk"
+include: "../utils/module_check_paralogs.smk"
 
