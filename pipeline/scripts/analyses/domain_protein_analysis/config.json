@@ -1,5 +1,5 @@
 { 
-  "mode": "guix",
+  "mode": "",
   "domain_hmm_dir": "domain_example/",
   "reference_domain_hmm" : "SET_PRDMs_Metazoa_Reference_alignment/concatenated_SET_PRDMs_alignments.hmm",
   "reference" : "PRDM9",
