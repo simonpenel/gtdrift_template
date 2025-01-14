@@ -104,9 +104,8 @@ def accession_nb(wildcards):
 # ------------------------------------------------------------
 # summarize_hmm_results
 # write results of hmm search  for each assembly.
-# Output format:
+# Output format example:
 # ;SeqID;SET Query;SET E-value;SET Score;Nb SET domains;SET domain start;SET domain end;KRAB Query;KRAB E-value;KRAB Score;Nb KRAB domains;KRAB domain start;KRAB domain end;SSXRD Query;SSXRD E-value;SSXRD Score;Nb SSXRD domains;SSXRD domain start;SSXRD domain end;ZF Query;ZF E-value;ZF Score;Nb ZF domains;ZF domain start;ZF domain end;Taxid
-#### A AMELIORER : LORSQU'UN DOMAINE A PLUSIEUR HITS, LE DERNIER EST RETENU ALORS QUE C'EST LE MOINS STATISTIQUEMENT SIGNIFIANT
 # ------------------------------------------------------------
 rule summarize_hmm_results:
     """
@@ -115,7 +114,7 @@ rule summarize_hmm_results:
     input:
         # organisms_data file
         organisms_file=pathGTDriftData + "organisms_data",
-        # tabulated results of hmm search on SET domain
+        # path of all per-sequence hits in tabular format 
         domain_per_sequence_tabulated=expand(pathGTDriftData + "genome_assembly/{{accession}}/analyses/" + GENOME_RESULTS + "hmm_search/tbl/{domain}_tabulated",domain=DOMAINS),
         # path of all per-domain hits in tabular format with overlapping zinc finger domains                     
         domain_per_domain_summary=expand(pathGTDriftData + "genome_assembly/{{accession}}/analyses/" + GENOME_RESULTS + "hmm_search/domtbl/{domain}_domains_summary", domain=DOMAINS),        
