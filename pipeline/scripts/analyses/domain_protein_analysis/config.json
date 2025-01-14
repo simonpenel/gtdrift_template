@@ -2,7 +2,7 @@
   "mode": "guix",
   "domain_hmm_dir": "domain_example/",
   "reference_domain_hmm" : "SET_PRDMs_Metazoa_Reference_alignment/concatenated_SET_PRDMs_alignments.hmm",
-  "reference" : "PRDM11",
+  "reference" : "PRDM9",
   "global_results_dir": "domain_protein_analysis/",
   "genome_results_dir": "domain_protein_analysis/",
   "domains" : ["SET","KRAB"],
