@@ -18,7 +18,8 @@ def run_hmmscan(hmm_file, fasta_file, output_file):
     Ejecuta hmmscan con los argumentos especificados.
     """
     subprocess.run([
-        "/beegfs/data/soft_legacy/hmmer-3.1b2/bin/hmmscan",
+        #"/beegfs/data/soft_legacy/hmmer-3.1b2/bin/hmmscan",
+        "hmmscan",
         "--tblout", output_file,
         hmm_file,
         fasta_file
