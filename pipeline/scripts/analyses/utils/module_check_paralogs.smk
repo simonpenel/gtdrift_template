@@ -46,10 +46,6 @@ rule curate_prdm9_candidates:
         domain_reference=REFERENCE,
     script:
         "../utils/python/select_candidates_bestmatch.py"
-#    shell:
-#       """
-#       python3 ../utils/python/select_candidates_bestmatch.py {input.candidate_table_curated} {input.assembly_info_file} {output}
-#       """
 
 
 

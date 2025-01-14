@@ -31,15 +31,6 @@ def extract_seq_ids(input_file, output_file):
                 f.write(f"{seq_id}\n")
 
 if __name__ == "__main__":
-    # Command-line argument setup
-    #parser = argparse.ArgumentParser(description="Extract SeqID column values from a CSV file")
-    
-    # Input and output file arguments
-    #parser.add_argument('input_file', type=str, help="Path to the input CSV file")
-    #parser.add_argument('output_file', type=str, help="Path to the output file (extracted IDs)")
-
-    # Parse the arguments
-    #args = parser.parse_args()
 
     # Call the function to extract SeqIDs
     extract_seq_ids(snakemake.input.candidates, snakemake.output.candidate_list)
