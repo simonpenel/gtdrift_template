@@ -116,9 +116,9 @@ rule summarize_hmm_results:
         # organisms_data file
         organisms_file=pathGTDriftData + "organisms_data",
         # tabulated results of hmm search on SET domain
-        domain_per_sequence_tabulated=expand(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "hmm_search/tbl/{domain}_tabulated",domain=DOMAINS, accession=ACCESSNB),
+        domain_per_sequence_tabulated=expand(pathGTDriftData + "genome_assembly/{{accession}}/analyses/" + GENOME_RESULTS + "hmm_search/tbl/{domain}_tabulated",domain=DOMAINS),
         # path of all per-domain hits in tabular format with overlapping zinc finger domains                     
-        domain_per_domain_summary=expand(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "hmm_search/domtbl/{domain}_domains_summary", domain=DOMAINS, accession=ACCESSNB),
+        domain_per_domain_summary=expand(pathGTDriftData + "genome_assembly/{{accession}}/analyses/" + GENOME_RESULTS + "hmm_search/domtbl/{domain}_domains_summary", domain=DOMAINS),        
     output:
         # domain protein statistics for each assembly.
         pathGTDriftData
