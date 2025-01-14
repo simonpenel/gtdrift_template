@@ -24,7 +24,7 @@ rule run_seqkit_extract:
 
 rule hmmscan:
     input:
-        hmm_db = pathGTDriftResource + "ref_align/" + REFERENCE_DOMAIN_HMM,
+        hmm_db = pathGTDriftResource  + REFERENCE_DOMAIN_HMM,
         fasta = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_1.fasta",
         candidate_table = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "summary_hmmsearch_{accession}.csv"
     output:
