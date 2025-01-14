@@ -31,14 +31,28 @@ ACCESSNB = config["assembly_list"]
 # -----------------------------------------------------------------------
 DOMAIN_HMM_DIR  = config["domain_hmm_dir"]
 
+
+# Path of the HMM profile used to check for paralogs. 
+# The path is related  to pathGTDriftResource/
+# ---------------------------------------------------
 REFERENCE_DOMAIN_HMM = config["reference_domain_hmm"]
 
+# The reference domain used to filter out paralogs
+# ------------------------------------------------
 REFERENCE = config["reference"]
 
+# List of domains. Preliminary candidates are selected only if the first domain is present.
+# -----------------------------------------------------------------------------------------
 DOMAINS = config["domains"]
 
+# Name of global results directory.
+# The directory is located in pathGTDriftGlobalResults
+# ----------------------------------------------------
 GLOBAL_RESULTS = config["global_results_dir"]
 
+# Name of genome specific results directory.
+# The directory is located in genome_assembly/{accession}/analyses/
+# -----------------------------------------------------------------
 GENOME_RESULTS = config["genome_results_dir"]
 
 if config["mode"] == "guix":
@@ -55,7 +69,7 @@ else:
 # --------------------------------------------------------------
 rule all:
     """
-    Get the domain stats on protein data
+    Get the candidates in fasta format
     """
     input:
         # Candidates after pararlog checks
@@ -71,12 +85,6 @@ rule all:
 # Modules snakemake
 # -----------------
 
-# -----------------------------------------------------------
-# module_stats_domain.smk:
-# general statistics on domain search in protein data.
-# outputs : stats_domain
-# -----------------------------------------------------------
 include: "../utils/module_stats_domain.smk"
-
 include: "../utils/module_check_paralogs.smk"
 
