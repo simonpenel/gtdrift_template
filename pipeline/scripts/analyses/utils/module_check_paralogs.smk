@@ -5,13 +5,11 @@ import pandas as pd
 
 rule generate_prdm9_candidates_IDs:
     input:
-        prdm9_prot_dir = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "summary_hmmsearch_{accession}.csv",
+        candidates = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "summary_hmmsearch_{accession}.csv",
     output:
         candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_1_ID.txt"
-    shell:
-        """
-        python3 ../utils/python/extract_domain_candidates_ID.py {input} {output}
-        """
+    script:
+        "../utils/python/extract_domain_candidates_ID.py"
 
 rule run_seqkit_extract:
     input:
@@ -57,13 +55,11 @@ rule curate_prdm9_candidates:
 
 rule curate_prdm9_candidates_IDs:
     input:
-        prdm9_prot_dir = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates.csv",
+         candidates = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates.csv",
     output:
         candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_ID.txt"
-    shell:
-        """
-        python3 ../utils/python/extract_domain_candidates_ID.py {input} {output}
-        """
+    script:
+        "../utils/python/extract_domain_candidates_ID.py"
 
 rule run_seqkit_extraction_curated:
     input:
