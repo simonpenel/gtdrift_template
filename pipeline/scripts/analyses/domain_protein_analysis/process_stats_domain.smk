@@ -8,13 +8,11 @@
 import os
 import json
 
-
 # Function to load JSON files
 # ---------------------------
 def load_json(file_path):
     with open(file_path, "r") as file:
         return json.load(file)
-
 
 # Assign environment variables
 # ----------------------------
@@ -25,8 +23,12 @@ globals().update(load_json("../environment_path.json"))
 # -------------
 configfile: "config.json"
 
+# List of assemblies
 ACCESSNB = config["assembly_list"]
 
+# Name of the directory containing fasta alignment files for each domain. 
+# The directory is located in pathGTDriftResource/ref_align/
+# -----------------------------------------------------------------------
 DOMAIN_HMM_DIR  = config["domain_hmm_dir"]
 
 REFERENCE_DOMAIN_HMM = config["reference_domain_hmm"]
