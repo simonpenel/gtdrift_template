@@ -79,14 +79,9 @@ rule all:
             + "candidates_{domain}.fasta",
             accession=ACCESSNB,domain=DOMAINS
         ),
+        # Hmm profiles for paralogy checking
         hmm_db = expand(pathGTDriftResource + "hmm_build/paralogy_check/" + DOMAIN_HMM_DIR +"profil_{domain}.hmm",domain=DOMAINS),
-        # Summary
-        #summary=expand(
-        #    pathGTDriftData
-        #    + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
-        #    + "summary_hmmsearch_{accession}_{domain}.csv",
-        #    accession=ACCESSNB,domain=DOMAINS
-        #),
+
                
         
 
