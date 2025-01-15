@@ -3,14 +3,6 @@ import os
 import pandas as pd
 
 
-#rule generate_prdm9_candidates_IDs:
-#    input:
-#        candidates = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + #"summary_hmmsearch_{accession}.csv",
-#    output:
-#        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + #"candidates_1_ID.txt"
-#    script:
-#        "../utils/python/extract_domain_candidates_ID.py"
-
 
 rule generate_domain_candidates_IDs:
     input:
@@ -34,16 +26,7 @@ rule run_seqkit_extract:
         """
         seqkit grep -f {input.candidate_list} {input.multifasta} -o {output.fasta_output}
         """
-rule hmm_for_paralogs:
-    input:
-        alignments_dir = expand(pathGTDriftResource + "ref_align_for_paralogy_check/" + DOMAIN_HMM_DIR +"{domain}",domain=DOMAINS),
-    output:
-        hmm_db = expand(pathGTDriftResource + "hmm_build/paralogy_check/" + DOMAIN_HMM_DIR +"{domain}.hmm",domain=DOMAINS),
-    shell:
-        """
-        for file in `ls /beegfs/banque/peneldb/gtdrift_template/pipeline/resources/ref_align_for_paralogy_check/domain_example/SET/*fst`; do echo $file; done &
-
-        """       
+ 
         
 rule hmmscan:
     input:
