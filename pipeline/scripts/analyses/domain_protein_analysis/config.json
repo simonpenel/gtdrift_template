@@ -5,7 +5,7 @@
   "reference" : "PRDM9",
   "global_results_dir": "domain_protein_analysis/",
   "genome_results_dir": "domain_protein_analysis/",
-  "domains" : ["SET","KRAB"],
+   "domains" : ["SET"],
   "assembly_list": [
 "GCF_029281585.2" , 
 "GCF_029289425.2" , 

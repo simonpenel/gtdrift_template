@@ -79,12 +79,14 @@ rule all:
             + "candidates_{domain}.fasta",
             accession=ACCESSNB,domain=DOMAINS
         ),
-        summary=expand(
-            pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
-            + "summary_hmmsearch_{accession}_{domain}.csv",
-            accession=ACCESSNB,domain=DOMAINS
-        ),
+        hmm_db = expand(pathGTDriftResource + "hmm_build/paralogy_check/" + DOMAIN_HMM_DIR +"profil_{domain}.hmm",domain=DOMAINS),
+        # Summary
+        #summary=expand(
+        #    pathGTDriftData
+        #    + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+        #    + "summary_hmmsearch_{accession}_{domain}.csv",
+        #    accession=ACCESSNB,domain=DOMAINS
+        #),
                
         
 
@@ -93,4 +95,4 @@ rule all:
 
 include: "../utils/module_stats_domain.smk"
 include: "../utils/module_check_paralogs.smk"
-
+include: "../utils/module_build_paralogs.smk"

@@ -34,10 +34,20 @@ rule run_seqkit_extract:
         """
         seqkit grep -f {input.candidate_list} {input.multifasta} -o {output.fasta_output}
         """
+rule hmm_for_paralogs:
+    input:
+        alignments_dir = expand(pathGTDriftResource + "ref_align_for_paralogy_check/" + DOMAIN_HMM_DIR +"{domain}",domain=DOMAINS),
+    output:
+        hmm_db = expand(pathGTDriftResource + "hmm_build/paralogy_check/" + DOMAIN_HMM_DIR +"{domain}.hmm",domain=DOMAINS),
+    shell:
+        """
+        for file in `ls /beegfs/banque/peneldb/gtdrift_template/pipeline/resources/ref_align_for_paralogy_check/domain_example/SET/*fst`; do echo $file; done &
 
+        """       
+        
 rule hmmscan:
     input:
-        hmm_db = pathGTDriftResource + REFERENCE_DOMAIN_HMM,
+        hmm_db = pathGTDriftResource + "hmm_build/paralogy_check/" + DOMAIN_HMM_DIR +"profil_{domain}.hmm",
         fasta = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_1_{domain}.fasta",
         candidate_table = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "summary_hmmsearch_{accession}_{domain}.csv"
     output:
