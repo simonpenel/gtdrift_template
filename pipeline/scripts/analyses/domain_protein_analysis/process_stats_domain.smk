@@ -75,11 +75,17 @@ rule all:
         # Candidates after pararlog checks
         candidates=expand(
             pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
-            + "candidates.fasta",
-            accession=ACCESSNB,
+           + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+            + "candidates_{domain}.fasta",
+            accession=ACCESSNB,domain=DOMAINS
         ),
-        
+        summary=expand(
+            pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+            + "summary_hmmsearch_{accession}_{domain}.csv",
+            accession=ACCESSNB,domain=DOMAINS
+        ),
+               
         
 
 # Modules snakemake
