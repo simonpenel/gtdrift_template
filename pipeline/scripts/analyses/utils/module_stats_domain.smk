@@ -21,7 +21,7 @@ rule hmm_build:
         + "ref_align/" + DOMAIN_HMM_DIR + "{domain}.fa",
     output:
         # the hmm profile for the domain
-        pathGTDriftResource + "hmm_build/" + DOMAIN_HMM_DIR + "{domain}.hmm",
+        pathGTDriftResource + "hmm_build/search/" + DOMAIN_HMM_DIR + "{domain}.hmm",
     shell:
         "{RUNCMD} hmmbuild {output} {input}"
 
@@ -36,7 +36,7 @@ rule hmm_search:
     """
     input:
         # the hmm profile of the domain
-        model=pathGTDriftResource + "hmm_build/" + DOMAIN_HMM_DIR + "{domain}.hmm",
+        model=pathGTDriftResource + "hmm_build/search/" + DOMAIN_HMM_DIR + "{domain}.hmm",
         # the proteome
         protein=pathGTDriftData + "genome_assembly/{accession}/annotation/protein.faa",
     output:
