@@ -24,25 +24,29 @@ globals().update(load_json("../environment_path.json"))
 configfile: "config.json"
 
 # List of assemblies
+# ------------------
 ACCESSNB = config["assembly_list"]
 
-# Name of the directory containing fasta alignment files for each domain. 
-# The directory is located in pathGTDriftResource/ref_align/
+# Name of the subdirectory used in several places for hmm calculations:
+# - in pathGTDriftResource/ref_align/:
+#   it contains the fasta alignment files for each domain. 
+# - in pathGTDriftResource/hmm_build/search/
+#   it contains the hmm profile for each domain.
+# - in pathGTDriftResource/ref_align_for_paralogy_check/
+#   it contains a directory for each domain, wich contains several 
+#   alignnments of the domain, which will be used to build a hmm database
+#   for each domain.
+# - in pathGTDriftResource/hmm_build/paralogy_check/
+#   it contains the hmm database for each domain for paralogy checks. 
 # -----------------------------------------------------------------------
 DOMAIN_HMM_DIR  = config["domain_hmm_dir"]
 
-
-# Path of the HMM profile used to check for paralogs. 
-# The path is related  to pathGTDriftResource/
-# ---------------------------------------------------
-REFERENCE_DOMAIN_HMM = config["reference_domain_hmm"]
-
-# The reference domain used to filter out paralogs
-# ------------------------------------------------
+# The reference domain used to filter out paralogs during paralogy checks
+# -----------------------------------------------------------------------
 REFERENCE = config["reference"]
 
-# List of domains. Preliminary candidates are selected only if the first domain is present.
-# -----------------------------------------------------------------------------------------
+# List of domains to be processed. 
+# ------------'-------------------
 DOMAINS = config["domains"]
 
 # Name of global results directory.
@@ -60,7 +64,6 @@ if config["mode"] == "guix":
 else:
     RUNCMD = ""
     
-
 # Rules
 # -----
 
@@ -73,6 +76,7 @@ rule all:
     """
     input:
         # Candidates after pararlog checks
+        # --------------------------------
         candidates=expand(
             pathGTDriftData
            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
@@ -80,6 +84,7 @@ rule all:
             accession=ACCESSNB,domain=DOMAINS
         ),
         # Hmm profiles for paralogy checking
+        # ----------------------------------
         hmm_db = expand(pathGTDriftResource + "hmm_build/paralogy_check/" + DOMAIN_HMM_DIR +"profil_{domain}.hmm",domain=DOMAINS),
 
                

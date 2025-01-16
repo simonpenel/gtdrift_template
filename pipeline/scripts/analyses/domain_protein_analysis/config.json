@@ -1,10 +1,9 @@
 { 
   "mode": "",
   "domain_hmm_dir": "domain_example/",
-  "reference_domain_hmm" : "SET_PRDMs_Metazoa_Reference_alignment/concatenated_SET_PRDMs_alignments.hmm",
   "reference" : "PRDM9",
-  "global_results_dir": "domain_protein_analysis/",
-  "genome_results_dir": "domain_protein_analysis/",
+  "global_results_dir": "domain_example_analysis/",
+  "genome_results_dir": "domain_example_analysis/",
    "domains" : ["SET"],
   "assembly_list": [
 "GCF_029281585.2" , 
