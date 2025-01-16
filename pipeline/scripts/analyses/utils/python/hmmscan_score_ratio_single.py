@@ -13,13 +13,14 @@ def check_fasta_not_empty(fasta_file):
                 return True
     return False
 
-def run_hmmscan(hmm_file, fasta_file, output_file):
+def run_hmmscan(hmm_file, fasta_file, output_file,log_file):
     """
     Ejecuta hmmscan con los argumentos especificados.
     """
     subprocess.run([
         #"/beegfs/data/soft_legacy/hmmer-3.1b2/bin/hmmscan",
         "hmmscan",
+        "-o", log_file,        
         "--tblout", output_file,
         hmm_file,
         fasta_file
@@ -132,7 +133,9 @@ def main():
         return
 
     # Si el FASTA no está vacío, proceder con el análisis normal
-    run_hmmscan(args.hmm_db, args.input_fasta, args.output_name)
+    logfile = os.path.splitext(args.output_name)[0] + ".log"
+    print("HMMSCAN HMMFILE = " + args.hmm_db + " FASTA = " + args.input_fasta)
+    run_hmmscan(args.hmm_db, args.input_fasta, args.output_name,logfile)
     results = parse_hmmscan_output(args.output_name)
     write_output_table(results, args.output_table)
 
