@@ -49,6 +49,10 @@ REFERENCE = config["reference"]
 # ------------'-------------------
 DOMAINS = config["domains"]
 
+# List of domains to be processed. 
+# ------------'-------------------
+DOMAINS_SIMPLE = config["domains_simple"]
+
 # Name of global results directory.
 # The directory is located in pathGTDriftGlobalResults
 # ----------------------------------------------------
@@ -64,6 +68,10 @@ if config["mode"] == "guix":
 else:
     RUNCMD = ""
     
+def get_reference(wildcards):
+    fname = DOMAINS.get(wildcards.domain, "")
+    return fname 
+
 # Rules
 # -----
 
@@ -86,7 +94,18 @@ rule all:
         # Hmm profiles for paralogy checking
         # ----------------------------------
         hmm_db = expand(pathGTDriftResource + "hmm_build/paralogy_check/" + DOMAIN_HMM_DIR +"profil_{domain}.hmm",domain=DOMAINS),
-
+        # Candidates without pararlog checks
+        # --------------------------------
+        candidates_simple=expand(
+            pathGTDriftData
+           + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+            + "candidates_1_{domain}.fasta",
+            accession=ACCESSNB,domain=DOMAINS_SIMPLE
+        ),
+        summary_simple=expand(
+            pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +"summary_hmmsearch_{accession}_{domain}.csv",
+            accession=ACCESSNB,domain=DOMAINS_SIMPLE)
                
         
 

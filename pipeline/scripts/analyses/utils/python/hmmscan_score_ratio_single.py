@@ -50,7 +50,8 @@ def parse_hmmscan_output(output_file):
             parts = line.split()
             try:
                 query_name = parts[2]
-                target_name = extract_second_word(parts[0])
+                #target_name = extract_second_word(parts[0])
+                target_name = parts[0]
                 print("debug " +parts[0]+" ==> "+target_name)
                 full_sequence_score = float(parts[5])
 

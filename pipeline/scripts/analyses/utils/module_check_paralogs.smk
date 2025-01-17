@@ -42,6 +42,7 @@ rule hmmscan:
         python3 ../utils/python/hmmscan_score_ratio_single.py --hmm_db {input.hmm_db} --output_name {output.hmm} --input_fasta {input.fasta} --output_table {output.table} --csv_file {input.candidate_table}
         """ 
 
+
 rule curate_prdm9_candidates:
     input:
         candidate_table_curated = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "summary_hmmsearch_{accession}_{domain}_curated.csv",
@@ -49,7 +50,7 @@ rule curate_prdm9_candidates:
     output:
         candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/"  + GENOME_RESULTS +  "candidates_{domain}.csv"
     params:
-        domain_reference=REFERENCE,
+        domain_reference=get_reference,
     script:
         "../utils/python/select_candidates_bestmatch.py"
 
