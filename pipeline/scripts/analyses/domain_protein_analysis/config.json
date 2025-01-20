@@ -1,11 +1,9 @@
 { 
   "mode": "",
-  "domain_hmm_dir": "domain_example/",
-  "reference" : "PRDM9",
-  "global_results_dir": "domain_example_analysis/",
-  "genome_results_dir": "domain_example_analysis/",
-   "domains" : {"SET":"SET_PRDM9_domain_alignment"},
-   "domains_simple" : ["KRAB"],   
+  "analyse_dir_name": "domain_example/",
+  "domain_references" : {"SET":"Domain_SET_ReferenceAlignment2024","KRAB":"Domain_KRAB_ReferenceAlignment2024"},
+  "domains" :  ["SET","KRAB"],    
+  "domains_simple" : [],   
   "assembly_list": [
 "GCF_029281585.2" , 
 "GCF_029289425.2" , 

@@ -11,19 +11,19 @@
 # build the HMM from the reference alignments for each
 # domain.
 # ------------------------------------------------------------------
-rule hmm_build:
-    """
-    HMM creation.
-    """
-    input:
-        # the domain alignment in fasta format
-        pathGTDriftResource
-        + "ref_align/" + DOMAIN_HMM_DIR + "{domain}.fa",
-    output:
-        # the hmm profile for the domain
-        pathGTDriftResource + "hmm_build/search/" + DOMAIN_HMM_DIR + "{domain}.hmm",
-    shell:
-        "{RUNCMD} hmmbuild {output} {input}"
+#rule hmm_build:
+#   """
+#    HMM creation.
+#    """
+#    input:
+#        # the domain alignment in fasta format
+#        pathGTDriftResource
+#        + "ref_align/" + DOMAIN_HMM_DIR + "{domain}.fa",
+#    output:
+#        # the hmm profile for the domain
+#        pathGTDriftResource + "hmm_build/search/" + DOMAIN_HMM_DIR + "{domain}.hmm",
+#    shell:
+#        "{RUNCMD} hmmbuild {output} {input}"
 
 
 # ------------------------------------------------------
@@ -36,7 +36,9 @@ rule hmm_search:
     """
     input:
         # the hmm profile of the domain
-        model=pathGTDriftResource + "hmm_build/search/" + DOMAIN_HMM_DIR + "{domain}.hmm",
+        #model=pathGTDriftResource + ANALYSE_DIR + "hmm_profiles/{domain}/{file}.hmm",
+        model=get_reference_file,
+        #model=pathGTDriftResource + ANALYSE_DIR + "hmm_profiles/{domain}/"+get_reference +".hmm",
         # the proteome
         protein=pathGTDriftData + "genome_assembly/{accession}/annotation/protein.faa",
     output:
