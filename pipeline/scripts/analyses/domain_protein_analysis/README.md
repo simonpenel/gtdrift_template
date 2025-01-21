@@ -1,6 +1,6 @@
-# Lancer la recherche de PRDM9 dans les protéomes
+# Lancer la recherche de de plusieurs domaines dans les protéomes
 
-Ce pipeline lance la recherche de PRDM9 dans les protéomes.
+Ce pipeline lance la recherche de plusieurs dans les protéomes.
 
 
 Le fichier de configuration est sous la forme
@@ -28,13 +28,14 @@ Le fichier de configuration est sous la forme
 ]  
 }
 ```
-Le champ "mode" indique si les calculs hmm doivent utiliser l'executable via guix (_guix_).
 
-Le champ "assembly_list" donne la liste des assemblages à analyser. La valeur de ce champ peut être 
+- Le champ "mode" indique si les calculs hmm doivent utiliser l'executable via guix (_guix_).
+
+- Le champ "assembly_list" donne la liste des assemblages à analyser. La valeur de ce champ peut être 
 générée en utilisant le script décrit dans le pipeline  get_genomes_list (cf https://github.com/simonpenel/gtdrift_template/tree/master/pipeline/scripts/analyses#3-g%C3%A9n%C3%A9rer-la-liste-des-assemblages-au-format--fichiers-json).
 
 
-Lancer l'analyse avec la commande:
+> Lancer l'analyse avec la commande:
 
 ```
 snakemake -s process_stats_domain.smk -c 1
