@@ -1,0 +1,3 @@
+This directory will contains HMM profiles for domain SET.
+For the moment, all domains which will be fully processed ( i.e. paralogs search) should have an empty
+directory like this at the start.
