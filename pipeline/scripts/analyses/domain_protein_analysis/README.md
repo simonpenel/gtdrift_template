@@ -1,6 +1,6 @@
 # Lancer la recherche de de plusieurs domaines dans les protéomes
 
-Ce pipeline lance la recherche de plusieurs dans les protéomes.
+Ce pipeline lance la recherche de plusieurs domaines dans les protéomes.
 
 > Variables d'environnement
 
