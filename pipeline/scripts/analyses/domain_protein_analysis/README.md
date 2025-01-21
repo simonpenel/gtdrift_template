@@ -2,6 +2,41 @@
 
 Ce pipeline lance la recherche de plusieurs dans les protéomes.
 
+> Variables d'environnement
+
+Le fichier _environment_path.json_ est utilisé pour définir l'organisation des répertoires:
+
+Modifier ce fichier en remplaçant _my_directory_ par le répertoire dans lequel se trouve le répertoire _gtdrift_template_.
+
+```json
+{
+  "pathGTDriftData": "/my_directory/gtdrift_template/data_results_per_assembly/",
+  "pathGTDriftGlobalResults": "/my_directory/gtdrift_template/global_results/",
+  "pathGTDriftResource": "/my_directory/gtdrift_template/pipeline/resources/",
+  "pathGTDriftScripts": "/my_directory/gtdrift_template/pipeline/scripts/",
+  "pathGTDriftComputEnv": "/my_directory/gtdrift_template/pipeline/computing_environments/",
+  "pathGTDriftLog": "/my_directory/gtdrift_template/temp/log/"
+}
+```
+
+Les 4 répertoires suivants doivent impérativement être définis:
+  * pathGTDriftData : contient 
+      * le fichier  _organisms_data_ : description de assemblages
+      > Ce fichier est généré par le pipeline snakemake _get_genomes_list/get_list.smk_
+      * le répertoire _genome_assembly_ : contient pour chaque assemblage :
+          * le répertoire _genome_seq_ : contient le fichier .fna du génome ou son chemin sur iRODS
+          > Ce répertoire est rempli par le pipeline snakemake _collecting_genome_annotation/collecting_annotations.smk_
+          * le repertoire _annotation_ : contient les fichiers d'annotation *gff, les fichiers fasta des protéines et des cds. S'il le génome n'est pas annoté, les fichiers contiennent un message spécifiant qu'il n'existe pas d'annotation. 
+          > Ce répertoire est rempli par le pipeline snakemake _collecting_genome_annotation/collecting_annotations.smk_ 
+          * le repertoire _analyse_ : contient le résultat des différentes analyses.
+           
+  * pathGTDriftGlobalResults : contient les résultats globaux pour chaque analyse.
+  * pathGTDriftResource : contient, pour chaque analmyse,  des données utiles pour les analyses.
+  * pathGTDriftScripts : le répertoire des différents pipelines.
+  
+
+
+
 > Fichier de configuration
 
 Le fichier de configuration est sous la forme
