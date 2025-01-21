@@ -31,7 +31,7 @@ Les 4 répertoires suivants doivent impérativement être définis:
           * le repertoire _analyse_ : contient le résultat des différentes analyses.
            
   * pathGTDriftGlobalResults : contient les résultats globaux pour chaque analyse.
-  * pathGTDriftResource : contient, pour chaque analmyse,  des données utiles pour les analyses.
+  * pathGTDriftResource : contient, pour chaque analyse,  des données utiles pour les analyses.
   * pathGTDriftScripts : le répertoire des différents pipelines.
   
 
