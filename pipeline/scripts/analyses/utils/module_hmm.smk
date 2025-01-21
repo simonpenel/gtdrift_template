@@ -11,7 +11,10 @@ import json
 # Rules
 # -----
 
-           
+# ------------------------------------------
+# calc_hmm_profiles
+# Calculate a hmm profile from an alignment.   
+# ------------------------------------------  
 rule calc_hmm_profiles:
     input:
         pathGTDriftResource + ANALYSE_DIR + "reference_alignments/{dir}/{file}.fst",
@@ -20,6 +23,10 @@ rule calc_hmm_profiles:
     shell:
         "{RUNCMD} hmmbuild {output} {input}"        
 
+# ------------------------------------------------------------
+# calc_hmm_database
+# Concatenate the hmm profiles of a domain into a hmm database.
+# -------------------------------------------------------------
 rule calc_hmm_database:
     input:
         dir=pathGTDriftResource + ANALYSE_DIR + "hmm_profiles/{dir}",
@@ -32,6 +39,10 @@ rule calc_hmm_database:
     shell:
         "cat {input.dir}/*.hmm > {output.database}"          
 
+# -------------------------------
+# index_hmm_database
+# indexation of the hmm database.
+# ------------------------------- 
 rule index_hmm_database:
     input:
         pathGTDriftResource + ANALYSE_DIR + "hmm_databases/database_{dir}.hmm",
