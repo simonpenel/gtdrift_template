@@ -2,6 +2,19 @@ import json
 import os
 import pandas as pd
 
+directories = glob_wildcards("/data01/{dir}")
+files = glob_wildcards(pathGTDriftResource + "ref_align_for_paralogy_check/" + DOMAIN_HMM_DIR +"{dir}/{file}")
+
+rule build_all_profiles:
+    input:
+        alignments_dir = pathGTDriftResource + "ref_align_for_paralogy_check/" + DOMAIN_HMM_DIR +"{domain}",
+    output:
+       alignments_dir = pathGTDriftResource + "ref_align_for_paralogy_check/" + DOMAIN_HMM_DIR +"{domain}.test",
+    shell:
+        """
+        echo {input} > {output}
+        """
+
 rule build_hmm_for_paralogs:
     input:
         alignments_dir = pathGTDriftResource + "ref_align_for_paralogy_check/" + DOMAIN_HMM_DIR +"{domain}",

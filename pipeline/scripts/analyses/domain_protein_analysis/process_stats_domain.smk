@@ -82,28 +82,14 @@ directories, files = glob_wildcards(pathGTDriftResource + ANALYSE_DIR + "referen
 # Rules
 # -----
 
-rule hmm:
-    """
-    Generate the hmm profiles, get the candidates in fasta format
-    """
-    input:
-        # All hmm profiles
-        # ----------------
-        all_hmm_profiles=expand(pathGTDriftResource + ANALYSE_DIR + "hmm_profiles/{dir}/{file}.hmm",
-               zip, dir=directories, file=files),
 # -----------------------------------------------
 # all : inputs define the to be files generated . 
 # -----------------------------------------------
 rule all:
     """
-    Generate the hmm profiles, get the candidates in fasta format
+    Generate the candidates in fasta format
     """
-    input:
-        # All hmm profiles
-        # ----------------
-        #all_hmm_profiles=expand(pathGTDriftResource + ANALYSE_DIR + "hmm_profiles/{dir}/{file}.hmm",
-        #       zip, dir=directories, file=files),
-        #      
+    input:  
         # Candidates after paralog checks
         # --------------------------------
         candidates=expand(
@@ -121,6 +107,8 @@ rule all:
            + "candidates_1_{domain}.fasta",
             accession=ACCESSNB,domain=DOMAINS_SIMPLE
         ),
+        # Summaries without paralog checks
+        # --------------------------------        
         summary_simple=expand(
             pathGTDriftData
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
