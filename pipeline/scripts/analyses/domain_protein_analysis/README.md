@@ -71,9 +71,9 @@ Le fichier de configuration est sous la forme
 
 * Le champ "domain_references" associe un alignement de référence à chaque domaine.
 
-* Le champ "domains" indique les domaines pour lesquels une recherche complete (avec verification des paralogues) est effectuée.
+* Le champ "domains" indique les domaines pour lesquels une recherche complète (avec vérification des paralogues) est effectuée.
 
-* Le champ "domains_simple" indique les domaines pour lesquels une recherche simple (sans verification des paralogues) est effectuée.
+* Le champ "domains_simple" indique les domaines pour lesquels une recherche simple (sans vérification des paralogues) est effectuée.
 
 * Le champ "assembly_list" donne la liste des assemblages à analyser. La valeur de ce champ peut être 
 générée en utilisant le script décrit dans le pipeline  get_genomes_list (cf https://github.com/simonpenel/gtdrift_template/tree/master/pipeline/scripts/analyses#3-g%C3%A9n%C3%A9rer-la-liste-des-assemblages-au-format--fichiers-json).
