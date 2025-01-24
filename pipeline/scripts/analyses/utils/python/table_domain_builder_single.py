@@ -71,25 +71,8 @@ with open(domain_per_sequence_tabulated_file) as reader:
 
 
 process_domain_tabulated(domain,domain_per_domain_summary_file)
-#        #print("Debug 2",summarised_data)  
-process_domain_summary(domain,domain_per_domain_summary_file) 
-print("Debug 3",summarised_data)  
-#for accession in accessions:
-#    print("\n\nProcessing genome "+accession)
-#    files_seq =  dico_per_seq[accession]
-#    files_dom = dico_per_dom[accession]
-#    file_output = dico_output[accession][0]  #ce tableau ne doit avoir qu'1 element
-
-
-
-#    for file in       files_dom:
-#        print(".... Processing file " + file)
-#        domain = file.split("/")[-1].split("_")[0]
-#        print(".... Associated domain " + domain)
-#        process_domain_tabulated(domain,file)
-#        #print("Debug 2",summarised_data)  
- #       process_domain_summary(domain,file) 
- #       #print("Debug 3",summarised_data)  
+process_domain_summary(domain,domain_per_domain_summary_file)  
+ 
  
 getTaxid()                
 summarised_data = summarised_data.fillna(0)    
