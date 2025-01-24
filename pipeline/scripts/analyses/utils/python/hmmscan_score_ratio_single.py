@@ -52,7 +52,6 @@ def parse_hmmscan_output(output_file):
                 query_name = parts[2]
                 #target_name = extract_second_word(parts[0])
                 target_name = parts[0]
-                print("debug " +parts[0]+" ==> "+target_name)
                 full_sequence_score = float(parts[5])
 
                 if query_name not in results:
@@ -107,9 +106,7 @@ def update_csv_with_results(csv_file, formatted_results):
                 df.at[index, 'Score ratio'] = score_ratio
 
         # Crear el nuevo archivo con un sufijo "_curated"
-        #print("DEBUG "+curated_csv_file)
         curated_csv_file = os.path.splitext(csv_file)[0] + "_curated.csv"
-        print("DEBUG "+curated_csv_file)
         df.to_csv(curated_csv_file, sep=";", encoding="utf-8")
 
 def main():
