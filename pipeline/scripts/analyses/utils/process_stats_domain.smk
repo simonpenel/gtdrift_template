@@ -154,9 +154,13 @@ rule all:
             pathGTDriftData
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
             + "whole_summary.csv",
-            accession=ACCESSNB)
-                      
-
+            accession=ACCESSNB),
+            
+         # Concatenation of assemblies results
+         # -----------------------------------
+         concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.txt"  
+        
+            
 
 # Modules snakemake
 # -----------------
