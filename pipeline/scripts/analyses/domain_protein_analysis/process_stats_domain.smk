@@ -136,9 +136,17 @@ rule all:
             pathGTDriftData
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
             + "summary_hmmsearch_{accession}_{domain}.csv",
-            accession=ACCESSNB,domain=DOMAINS_SIMPLE)
+            accession=ACCESSNB,domain=DOMAINS_SIMPLE),
+            
+         # Whole analyse summary
+         # ---------------------
+         whole_summary=expand(
+            pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "whole_summary.csv",
+            accession=ACCESSNB)
                       
-        
+
 
 # Modules snakemake
 # -----------------
@@ -146,4 +154,5 @@ rule all:
 include: "../utils/module_stats_domain.smk"
 include: "../utils/module_check_paralogs.smk"
 include: "../utils/module_hmm.smk"
+include: "../utils/module_concatenate.smk"
 
