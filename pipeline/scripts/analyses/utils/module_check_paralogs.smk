@@ -69,6 +69,7 @@ rule curate_prdm9_candidates:
         candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/"  + GENOME_RESULTS +  "candidates_{domain}.csv"
     params:
         domain_reference=get_reference,
+        domain=get_domain,
     script:
         "../utils/python/select_candidates_bestmatch.py"
 

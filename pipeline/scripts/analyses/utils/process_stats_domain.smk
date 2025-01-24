@@ -21,7 +21,9 @@ globals().update(load_json("../environment_path.json"))
 
 # Configuration
 # -------------
-configfile: "config.json"
+configfile: "analyse.json"
+configfile: "assemblies.json"
+
 
 # List of assemblies
 # ------------------
@@ -85,6 +87,14 @@ if config["mode"] == "guix":
 else:
     RUNCMD = ""
     
+    
+    
+# function to get the name of the reference alignment for a domain
+# ----------------------------------------------------------------
+def get_domain(wildcards):
+    domain = wildcards.domain
+    return domain 
+      
 # function to get the name of the reference alignment for a domain
 # ----------------------------------------------------------------
 def get_reference(wildcards):
