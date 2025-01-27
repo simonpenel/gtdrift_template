@@ -24,6 +24,7 @@ output_file = snakemake.output[0]
 
 data_list = []
 i = 0;
+flag_multiple_taxid = False
 for file in input_files:
     df = pd.read_csv(file, sep=';', header=0)
     # remove first unamed column 
@@ -38,13 +39,16 @@ for file in input_files:
                 domain = test[0]
                 break
     df = df.rename(columns={'Best Match': domain + ' Best Match','Bit Score': domain + ' Bit Score','Score ratio': domain + ' Score ratio'})
-     
+    print("Processing "+file) 
     if i == 0 :
         # First file
         df_cont = df
+        taxid = df_cont["Taxid"][0]
     else :
         # Folowing files
         # Remove redundant Taxid field
+        if df_cont["Taxid"][0] != taxid :
+            flag_multiple_taxid = True
         df = df.drop(["Taxid"],axis=1)
         # Put the types of the new dataframe in a dict
         orig = df.dtypes.to_dict()
@@ -53,6 +57,11 @@ for file in input_files:
         # Join the dataframes according to SeqId
         newdf = df_cont.join(df.set_index('SeqID'),on='SeqID', how="outer",lsuffix='_caller', rsuffix='_other')
         # Set missing data to 0
+        if flag_multiple_taxid : 
+            sys.exit('Multiple Taxids in the input files.')
+        # Set missing taxid
+        newdf["Taxid"] = newdf["Taxid"].fillna(value=taxid)
+        # Set other missing data to 0
         df_cont = newdf.fillna(0)
         # Apply types   
         df_cont = df_cont.apply(lambda x: x.astype(orig[x.name]))
