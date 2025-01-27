@@ -37,9 +37,11 @@ Les 4 répertoires suivants doivent impérativement être définis:
 
 
 
-## Fichier de configuration
+## Fichiers de configuration
 
-Le fichier de configuration est sous la forme
+Il y a 2 fichiers de configuration, _analyse.json_ et  _assemblies.json_.
+ 
+Le premier fichier de configuration _analyse.json_ est sous la forme:
 
 ```json
 
@@ -54,14 +56,6 @@ Le fichier de configuration est sous la forme
 },
   "domains" :  ["SET"],    
   "domains_simple" : ["KRAB","SSXRD","ZF"],   
-  "assembly_list": [
-"GCF_029281585.2" , 
-"GCF_029289425.2" , 
-"GCF_028885625.2" , 
-"GCF_028858775.2" , 
-"GCF_028885655.2" , 
-"GCF_000001405.40" 
-]  
 }
 ```
 
@@ -75,9 +69,25 @@ Le fichier de configuration est sous la forme
 
 * Le champ "domains_simple" indique les domaines pour lesquels une recherche simple (sans vérification des paralogues) est effectuée.
 
+Le second fichier de configuration _assemblies.json_ est sous la forme:
+
+```json
+{   
+  "assembly_list": [
+"GCF_029281585.2" , 
+"GCF_029289425.2" , 
+"GCF_028885625.2" , 
+"GCF_028858775.2" , 
+"GCF_028885655.2" , 
+"GCF_000001405.40" 
+]  
+}
+```
+
 * Le champ "assembly_list" donne la liste des assemblages à analyser. 
   > La valeur de ce champ peut être 
 générée en utilisant le script décrit dans le pipeline  get_genomes_list (cf https://github.com/simonpenel/gtdrift_template/tree/master/pipeline/scripts/analyses#3-g%C3%A9n%C3%A9rer-la-liste-des-assemblages-au-format--fichiers-json).
+
 
 ## Organisation des répertoires ressources:
 
@@ -117,7 +127,12 @@ Les sorties sont dans le répertoire _analyse_dir_name_ de chaque répertoire _a
 ## Lancer l'analyse avec la commande:
 
 ```
-snakemake -s process_stats_domain.smk -c 1
+snakemake -s ../utils/process_stats_domain.smk -c 1
 ```
 
+## Génerer un graphe:
+
+```
+snakemake -s ../utils/process_stats_domain.smk   --configfile config_dag1.json  --forceall --dag|dot -Tpng > dag.png
+```
 
