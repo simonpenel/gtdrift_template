@@ -41,11 +41,16 @@ def getTaxid(accession_number=accession_number,input_file=organisms_file):
     df = pd.read_csv(organisms_file, sep='\t', header=0)
     taxid = df.loc[df['Assembly Accession'] == accession_number, 'Taxid'].values[0]    
     summarised_data["Taxid"] = taxid
-    
+
+def getSpecies(accession_number=accession_number,input_file=organisms_file):
+    df = pd.read_csv(organisms_file, sep='\t', header=0)
+    species = df.loc[df['Assembly Accession'] == accession_number, 'Species Name'].values[0]    
+    summarised_data["Species"] = species    
 
 domain = domain_per_sequence_tabulated_file.split("/")[-1].split("_")[0]  
 
 noms_colonnes = ['SeqID']
+noms_colonnes.append('Assembly')
 noms_colonnes.append(domain+' Query')
 noms_colonnes.append(domain+' E-value')
 noms_colonnes.append(domain+' Score')
@@ -65,7 +70,7 @@ print(".... Processing file "+domain_per_sequence_tabulated_file)
 with open(domain_per_sequence_tabulated_file) as reader:
     for line in reader:
         line_data = line.strip().split('\t')
-        to_add = {'SeqID': line_data[0], domain+' Query': line_data[2], domain+' E-value': line_data[7], domain+' Score': line_data[8]}
+        to_add = {'SeqID': line_data[0], 'Assembly':accession_number, domain+' Query': line_data[2], domain+' E-value': line_data[7], domain+' Score': line_data[8]}
         data_list.append(to_add)
     summarised_data = pd.DataFrame(data_list, columns=noms_colonnes)
 
@@ -75,6 +80,7 @@ process_domain_summary(domain,domain_per_domain_summary_file)
  
  
 getTaxid()                
+getSpecies()                
 summarised_data = summarised_data.fillna(0)    
 print("Output file = "+output_file)                 
 summarised_data.to_csv(output_file, sep=';')
