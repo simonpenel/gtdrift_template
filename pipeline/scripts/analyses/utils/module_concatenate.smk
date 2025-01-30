@@ -29,7 +29,7 @@ rule concatenate_assemblies:
         # Concatenation of assemblies results
         # -----------------------------------
         pathGTDriftGlobalResults
-        + GLOBAL_RESULTS + "results.txt"
+        + GLOBAL_RESULTS + "results.csv"
     shell:
         """
         cat {input} > {output}.tmp &&
