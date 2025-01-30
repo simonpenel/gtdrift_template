@@ -158,7 +158,7 @@ rule all:
             
          # Concatenation of assemblies results
          # -----------------------------------
-         concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.txt"  
+         concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv"  
         
             
 
