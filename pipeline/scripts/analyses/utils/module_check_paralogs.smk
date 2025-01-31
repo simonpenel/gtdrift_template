@@ -40,11 +40,11 @@ rule run_seqkit_extract:
 # -------------------------------------------------------------      
 rule hmmscan:
     input:
-        hmm_db = pathGTDriftResource + ANALYSE_DIR + "hmm_databases/database_{domain}.hmm",
-        hmm_database_index1=pathGTDriftResource + ANALYSE_DIR + "hmm_databases/database_{domain}.hmm.h3f", 
-        hmm_database_index2=pathGTDriftResource + ANALYSE_DIR + "hmm_databases/database_{domain}.hmm.h3i",
-        hmm_database_index3=pathGTDriftResource + ANALYSE_DIR + "hmm_databases/database_{domain}.hmm.h3m",
-        hmm_database_index4=pathGTDriftResource + ANALYSE_DIR + "hmm_databases/database_{domain}.hmm.h3p",  
+        hmm_db = pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_databases/database_{domain}.hmm",
+        hmm_database_index1=pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_databases/database_{domain}.hmm.h3f", 
+        hmm_database_index2=pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_databases/database_{domain}.hmm.h3i",
+        hmm_database_index3=pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_databases/database_{domain}.hmm.h3m",
+        hmm_database_index4=pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_databases/database_{domain}.hmm.h3p",  
         fasta = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_1_{domain}.fasta",
         candidate_table = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "summary_hmmsearch_{accession}_{domain}.csv"
     output:

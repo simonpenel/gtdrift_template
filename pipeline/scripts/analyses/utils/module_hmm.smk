@@ -17,9 +17,9 @@ import json
 # ------------------------------------------  
 rule calc_hmm_profiles:
     input:
-        pathGTDriftResource + ANALYSE_DIR + "reference_alignments/{dir}/{file}.fst",
+        pathGTDriftResource + RESOURCES_DIR_NAME + "reference_alignments/{dir}/{file}.fst",
     output:
-        pathGTDriftResource + ANALYSE_DIR + "hmm_profiles/{dir}/{file}.hmm",
+        pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_profiles/{dir}/{file}.hmm",
     shell:
         "{RUNCMD} hmmbuild {output} {input}"        
 
@@ -29,13 +29,13 @@ rule calc_hmm_profiles:
 # -------------------------------------------------------------
 rule calc_hmm_database:
     input:
-        dir=pathGTDriftResource + ANALYSE_DIR + "hmm_profiles/{dir}",
+        dir=pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_profiles/{dir}",
         # This is not an input for the shell, but it should be present to force the calculation
         # of all the hmm profiles if necessary (and not only the reference hmm profile)
-        hmm_profiles=expand(pathGTDriftResource + ANALYSE_DIR + "hmm_profiles/{dir}/{file}.hmm",
+        hmm_profiles=expand(pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_profiles/{dir}/{file}.hmm",
                zip, dir=directories, file=files),
     output:
-        database=pathGTDriftResource + ANALYSE_DIR + "hmm_databases/database_{dir}.hmm",
+        database=pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_databases/database_{dir}.hmm",
     shell:
         "cat {input.dir}/*.hmm > {output.database}"          
 
@@ -45,12 +45,12 @@ rule calc_hmm_database:
 # ------------------------------- 
 rule index_hmm_database:
     input:
-        pathGTDriftResource + ANALYSE_DIR + "hmm_databases/database_{dir}.hmm",
+        pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_databases/database_{dir}.hmm",
     output:
-        pathGTDriftResource + ANALYSE_DIR + "hmm_databases/database_{dir}.hmm.h3f",
-        pathGTDriftResource + ANALYSE_DIR + "hmm_databases/database_{dir}.hmm.h3i",
-        pathGTDriftResource + ANALYSE_DIR + "hmm_databases/database_{dir}.hmm.h3m",
-        pathGTDriftResource + ANALYSE_DIR + "hmm_databases/database_{dir}.hmm.h3p",
+        pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_databases/database_{dir}.hmm.h3f",
+        pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_databases/database_{dir}.hmm.h3i",
+        pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_databases/database_{dir}.hmm.h3m",
+        pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_databases/database_{dir}.hmm.h3p",
     shell:
         "{RUNCMD} hmmpress  {input}"   
 
