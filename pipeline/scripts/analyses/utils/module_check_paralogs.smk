@@ -8,8 +8,7 @@ import pandas as pd
 # ---------------------------------------------------------------------------------------
 rule generate_domain_candidates_IDs:
     input:
-        domain_per_sequence_tabulated=expand(pathGTDriftData + "genome_assembly/{{accession}}/analyses/" + GENOME_RESULTS + "hmm_search/tbl/{domain}_tabulated",domain=DOMAINS),
-        #candidates = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "summary_hmmsearch_{accession}.csv",
+        domain_per_sequence_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "hmm_search/tbl/{domain}_tabulated"
     output:
         candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_1_ID_{domain}.txt"    
     shell:
@@ -17,7 +16,7 @@ rule generate_domain_candidates_IDs:
         echo process {input.domain_per_sequence_tabulated} &&
         cut -f1 {input.domain_per_sequence_tabulated} > {output.candidate_list}
         """
-
+        
 # --------------------------------------------------------------------
 # run_seqkit_extract
 # Extract the fasta sequence of the candidates from its sequence name.
