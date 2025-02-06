@@ -21,10 +21,13 @@
 import pandas as pd
 input_files = snakemake.input
 output_file = snakemake.output[0]
+accession = snakemake.params.accession
 
 data_list = []
 i = 0;
-flag_multiple = False
+assembly = accession
+taxid = "undefined"
+species = "undefined"
 for file in input_files:
     df = pd.read_csv(file, sep=';', header=0)
     # remove first unamed column 
@@ -40,21 +43,32 @@ for file in input_files:
                 break
     df = df.rename(columns={'Best Match': domain + ' Best Match','Bit Score': domain + ' Bit Score','Score ratio': domain + ' Score ratio'})
     print("Processing "+file) 
+    print("Data = ",df)
+    print("Is empty  de merde= " ,df.empty)
     if i == 0 :
         # First file
         df_cont = df
-        taxid = df_cont["Taxid"][0]
-        assembly = df_cont["Assembly"][0]
-        species = df_cont["Species"][0]     
+        if not df.empty:
+            taxid = df_cont["Taxid"][0]
+            assembly = df_cont["Assembly"][0]
+            species = df_cont["Species"][0]     
     else :
+        print("merde")
         # Folowing files
         # Remove redundant Taxid Assembly and Species fields
-        if df["Taxid"][0] != taxid :
-            flag_multiple = True
-        if df["Assembly"][0] != assembly :
-            flag_multiple = True     
-        if df["Species"][0] != species :
-            flag_multiple = True                        
+        if not df.empty :
+            if taxid == "undefined":
+                taxid = df["Taxid"][0]
+                #assembly = df["Assembly"][0]
+                species = df["Species"][0]  
+            print("df =" ,df)
+            
+            if df["Taxid"][0] != taxid :
+                 sys.exit('Multiple Taxids, Species ot Assembly in the input files.')
+            if df["Assembly"][0] != assembly :
+                 sys.exit('Assembly in the file is different from the parameter')    
+            if df["Species"][0] != species :
+                 sys.exit('Multiple Taxids, Species ot Assembly in the input files.')                       
         df = df.drop(["Taxid"],axis=1)
         df = df.drop(["Assembly"],axis=1)    
         df = df.drop(["Species"],axis=1)              
@@ -67,8 +81,8 @@ for file in input_files:
         # Reset index 
         newdf = newdf.reset_index(drop=True)
         # Set missing data to 0
-        if flag_multiple : 
-            sys.exit('Multiple Taxids, Species ot Assembly in the input files.')
+        #if flag_multiple : 
+        #    sys.exit('Multiple Taxids, Species ot Assembly in the input files.')
         # Set missing taxid,species and assembly
         newdf["Taxid"] = newdf["Taxid"].fillna(value=taxid)
         newdf["Assembly"] = newdf["Assembly"].fillna(value=assembly)
