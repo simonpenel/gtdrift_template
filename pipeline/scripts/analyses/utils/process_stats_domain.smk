@@ -162,9 +162,27 @@ rule all:
             
          # Concatenation of assemblies results
          # -----------------------------------
-         concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv"  
+         concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv",  
         
+
+        
+        simple_domain_stats=expand(pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "simple_statistics_{domain}.csv",
+            accession=ACCESSNB, domain=DOMAINS_SIMPLE+DOMAINS),
+
+# a virer
+#        domain_stats=expand(pathGTDriftData
+#            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+#            + "statistics_{domain}.csv",
+#            accession=ACCESSNB, domain=DOMAINS),
+# a virer            
+#        all_domains_stats=expand(pathGTDriftData
+#            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+#            + "statistics_all_domains.csv",
+#            accession=ACCESSNB),            
             
+        all_domains_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "statistics_summary.csv"           
 
 # Modules snakemake
 # -----------------
