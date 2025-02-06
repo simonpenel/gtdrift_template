@@ -1,6 +1,8 @@
-# Lancer la recherche de de plusieurs domaines dans les protéomes
+# Lancer la recherche de plusieurs domaines dans les protéomes
 
 Ce pipeline lance la recherche de plusieurs domaines dans les protéomes.
+
+Une recherche de profils HMM pour chaque domaines dans les protéomes, puis pour certains domaines, une recherche des candidats ainsi obtenus dans une base de profils HMM pour vérifier si le candidat n'est pas un paralogue.
 
 ## Variables d'environnement
 
