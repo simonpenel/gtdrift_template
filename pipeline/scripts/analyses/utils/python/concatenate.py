@@ -43,17 +43,14 @@ for file in input_files:
                 break
     df = df.rename(columns={'Best Match': domain + ' Best Match','Bit Score': domain + ' Bit Score','Score ratio': domain + ' Score ratio'})
     print("Processing "+file) 
-    print("Data = ",df)
-    print("Is empty  de merde= " ,df.empty)
     if i == 0 :
         # First file
         df_cont = df
         if not df.empty:
             taxid = df_cont["Taxid"][0]
-            assembly = df_cont["Assembly"][0]
+            #assembly = df_cont["Assembly"][0]
             species = df_cont["Species"][0]     
     else :
-        print("merde")
         # Folowing files
         # Remove redundant Taxid Assembly and Species fields
         if not df.empty :
@@ -61,7 +58,6 @@ for file in input_files:
                 taxid = df["Taxid"][0]
                 #assembly = df["Assembly"][0]
                 species = df["Species"][0]  
-            print("df =" ,df)
             
             if df["Taxid"][0] != taxid :
                  sys.exit('Multiple Taxids, Species ot Assembly in the input files.')
