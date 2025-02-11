@@ -126,8 +126,7 @@ rule all:
     """
     Generate the candidates in fasta format and a summary of candidates in genomes.
     """
-    input:  
-    
+    input:
         # Candidates after paralog checks
         # --------------------------------
         candidates=expand(
