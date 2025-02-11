@@ -46,6 +46,8 @@ input_df = pd.read_csv(res_file, sep=';', header=0)
 input_df = input_df.dropna(how='any')
 nb_hits = len(input_df)
 
+candidates = input_df["SeqID"].tolist()
+
 nb_prot = 0
 for line in open(protein_file, 'r') :
     if re.search(">", line) :
