@@ -124,9 +124,10 @@ directories, files = glob_wildcards(pathGTDriftResource + RESOURCES_DIR_NAME + "
 # -----------------------------------------------
 rule all:
     """
-    Generate the candidates in fasta format
+    Generate the candidates in fasta format and a summary of candidates in genomes.
     """
     input:  
+    
         # Candidates after paralog checks
         # --------------------------------
         candidates=expand(
@@ -136,8 +137,8 @@ rule all:
             accession=ACCESSNB,domain=DOMAINS
         ),
 
-        # Candidates without paralog checks
-        # --------------------------------
+        # Candidates with no paralog checks
+        # ---------------------------------
         candidates_simple=expand(
             pathGTDriftData
            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
