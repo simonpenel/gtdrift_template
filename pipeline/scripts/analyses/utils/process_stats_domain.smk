@@ -144,6 +144,8 @@ rule all:
            + "candidates_1_{domain}.fasta",
             accession=ACCESSNB,domain=DOMAINS_SIMPLE
         ),
+        
+        
         # Summaries without paralog checks
         # --------------------------------        
         summary_simple=expand(
@@ -151,6 +153,14 @@ rule all:
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
             + "summary_hmmsearch_{accession}_{domain}.csv",
             accession=ACCESSNB,domain=DOMAINS_SIMPLE),
+            
+            
+        # Statistics for each domains and for each genome
+        # -----------------------------------------------           
+        simple_domain_stats=expand(pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "simple_statistics_{domain}.csv",
+            accession=ACCESSNB, domain=DOMAINS_SIMPLE+DOMAINS),            
             
          # Whole analyse summary
          # ---------------------
@@ -160,29 +170,32 @@ rule all:
             + "whole_summary.csv",
             accession=ACCESSNB),
             
-         # Concatenation of assemblies results
-         # -----------------------------------
-         concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv",  
-        
-
-        
-        simple_domain_stats=expand(pathGTDriftData
+         # Candidates with all domains for each  genome
+         # --------------------------------------------
+         candidates_wad=expand(pathGTDriftData
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-            + "simple_statistics_{domain}.csv",
-            accession=ACCESSNB, domain=DOMAINS_SIMPLE+DOMAINS),
-
-# a virer
-#        domain_stats=expand(pathGTDriftData
-#            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-#            + "statistics_{domain}.csv",
-#            accession=ACCESSNB, domain=DOMAINS),
-# a virer            
-#        all_domains_stats=expand(pathGTDriftData
-#            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-#            + "statistics_all_domains.csv",
-#            accession=ACCESSNB),            
+            + "candidates_with_all_domains.csv",
+            accession=ACCESSNB),
+         
+         # Statistics on candidates with all domains for each genome
+         # ----------------------------------------------------------   
+          candidates_wad_stats=expand(pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "statistics_wad.csv",
+            accession=ACCESSNB),
+                        
             
-        all_domains_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "statistics_summary.csv"           
+        # Concatenation of all genome results
+        # ----------------------------------------
+        concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv",              
+          
+        # Statistics on all domains for all genomes
+        # -----------------------------------------                
+        all_domains_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "statistics_summary.csv",
+  
+        # Statistics on candidates with all domains for all genomes
+        # ---------------------------------------------------------           
+        all_candidates_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "candidate_statistics_summary.csv"           
 
 # Modules snakemake
 # -----------------

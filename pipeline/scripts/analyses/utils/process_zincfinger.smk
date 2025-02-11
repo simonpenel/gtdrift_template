@@ -154,7 +154,9 @@ rule create_global_zf_table:
     input:
         expand(
             pathGTDriftData
-            + "genome_assembly/{accession}/analyses/prdm9_prot/hmm_search/domtbl/ZF_domains_summary",
+            + "genome_assembly/{accession}/analyses/" 
+            + GENOME_RESULTS 
+            + "hmm_search/domtbl/ZF_domains_summary",
             accession=ACCESSNB,
         ),
     output:

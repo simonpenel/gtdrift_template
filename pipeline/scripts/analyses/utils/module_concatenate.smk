@@ -48,7 +48,32 @@ rule statistics_domain:
         type="confirmed"     
     script:
         "../utils/python/statistics_simple.py"  
-        
+
+# -------------------------
+# statistics_candidates_wad
+# -------------------------
+# For a genome, give:
+# - the number of sequences with all the domains (wad)
+# - the number of sequences
+# - the taxid and the species 
+
+rule statistics_candidates_wad:
+    input:
+        res=pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "candidates_with_all_domains.csv",
+        protein=pathGTDriftData 
+            + "genome_assembly/{accession}/annotation/protein.faa",
+        organisms_file=pathGTDriftData + "organisms_data"  
+    output:
+           pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "statistics_wad.csv"
+    params:        
+        accession=accession_nb,     
+    script:
+        "../utils/python/statistics_wad.py"  
+   
 rule statistics_all_domain:
     input:
            domains=expand(pathGTDriftData
@@ -65,6 +90,39 @@ rule statistics_all_domain:
     script:
         "../utils/python/concatenate_domain_stats.py"          
 
+# ----------------------------------
+# select_candidates_with_all_domains
+# ----------------------------------
+
+rule select_candidates_with_all_domains:
+    input:
+         candidates_confirmed=expand(pathGTDriftData 
+         + "genome_assembly/{{accession}}/analyses/" 
+         + GENOME_RESULTS + "candidates_{domain}.csv",
+         domain=DOMAINS),
+         candidates_simple=expand(pathGTDriftData 
+         + "genome_assembly/{{accession}}/analyses/" 
+         + GENOME_RESULTS + "candidates_1_ID_{domain}.txt",
+         domain=DOMAINS_SIMPLE),                      
+    output:
+           pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "candidates_with_all_domains.csv"    
+    script:
+        "../utils/python/select_candidates_wad.py" 
+        
+rule statistics_candidate_summary:     
+    input:
+        all_domains_stats=expand(pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "statistics_wad.csv",
+            accession=ACCESSNB),
+    output:
+        pathGTDriftGlobalResults + GLOBAL_RESULTS + "candidate_statistics_summary.csv"
+    script:
+        "../utils/python/merge_stats.py"                 
+
+
 rule statistics_all_domain_summary:     
     input:
         all_domains_stats=expand(pathGTDriftData
@@ -74,8 +132,8 @@ rule statistics_all_domain_summary:
     output:
         pathGTDriftGlobalResults + GLOBAL_RESULTS + "statistics_summary.csv"
     script:
-        "../utils/python/merge_stats.py"                 
-            
+        "../utils/python/merge_stats.py"  
+                   
 rule concat:
     input:
         expand(

@@ -27,14 +27,17 @@ output_file = snakemake.output[0]
 domain = snakemake.params.domain
 accession = snakemake.params.accession
 restype = snakemake.params.type
-file=open(res_file, 'r')
 if restype == "simple" :
+    file=open(res_file, 'r')
     nb_hits = len(file.readlines())
+    file.close()
 elif restype == "confirmed" :
-    nb_hits = len(file.readlines()) - 1 
+    input_df = pd.read_csv(res_file, sep=';', header=0)
+    nb_hits = len(input_df.dropna(how='any')   )
+    
 else :
-    sys.exiyt("Type inconnu")
-file.close()
+    sys.exit("Type inconnu")
+
 
 nb_prot = 0
 for line in open(protein_file, 'r') :
