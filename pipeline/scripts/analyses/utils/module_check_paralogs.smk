@@ -106,9 +106,9 @@ rule run_seqkit_extraction_curated:
 # ---------------------------------------------------------------------------------------
 rule generate_candidates_wad_IDs:
     input:
-        candidates = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_with_all_domains.csv"
+        candidates = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "selected_candidates.csv"
     output:
-        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_with_all_domains.txt"   
+        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "selected_candidates.txt"   
     script:
         "../utils/python/extract_domain_candidates_ID.py"
         
@@ -120,10 +120,10 @@ rule generate_candidates_wad_IDs:
 # ------------------------------------------------------------------------------  
 rule run_seqkit_extraction_wad_fasta:
     input:
-        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_with_all_domains.txt",
+        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "selected_candidates.txt",
         multifasta = pathGTDriftData + "genome_assembly/{accession}/annotation/protein.faa"
     output:
-        fasta_output = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates.fasta"
+        fasta_output = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "selected_candidates.fasta"
     shell:
         """
         seqkit grep -f {input.candidate_list} {input.multifasta} -o {output.fasta_output}

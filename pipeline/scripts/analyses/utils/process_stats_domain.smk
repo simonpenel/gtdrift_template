@@ -134,7 +134,14 @@ rule all:
         candidates_wad_fasta=expand(
             pathGTDriftData
            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
-           + "candidates.fasta", accession=ACCESSNB),
+           + "selected_candidates.fasta", accession=ACCESSNB),
+  
+        # Candidates sequences with 1 confirmed domain in fasta format for each genome
+        # -----------------------------------------------------------------------------         
+        candidates_domain_fasta=expand(
+            pathGTDriftData
+           + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+           + "candidates_{domain}.fasta", accession=ACCESSNB,domain=DOMAINS),
                               
         # Concatenation of results on all genomes
         # ----------------------------------------
@@ -146,7 +153,9 @@ rule all:
   
         # Statistics on candidates with all domains for all genomes
         # ---------------------------------------------------------           
-        all_candidates_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "candidate_statistics_summary.csv"           
+        all_candidates_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "candidate_statistics_summary.csv"    
+        
+               
 
 # Modules snakemake
 # -----------------

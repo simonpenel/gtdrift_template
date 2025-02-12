@@ -61,7 +61,7 @@ rule statistics_candidates_wad:
     input:
         res=pathGTDriftData
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-            + "candidates_with_all_domains.csv",
+            + "selected_candidates.csv",
         protein=pathGTDriftData 
             + "genome_assembly/{accession}/annotation/protein.faa",
         organisms_file=pathGTDriftData + "organisms_data"  
@@ -107,7 +107,7 @@ rule select_candidates_with_all_domains:
     output:
            pathGTDriftData
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-            + "candidates_with_all_domains.csv"    
+            + "selected_candidates.csv"    
     script:
         "../utils/python/select_candidates_wad.py" 
         
