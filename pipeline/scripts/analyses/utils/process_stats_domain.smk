@@ -91,8 +91,10 @@ if config["mode"] == "guix":
 else:
     RUNCMD = ""
     
-    
-    
+for domain in    DOMAINS :
+    if domain in DOMAINS_SIMPLE:
+        print("Error : the domain "+domain+" is both in DOMAINS and DOMAINS_SIMPLE")
+        sys.exit()
 # function to get the name of the reference alignment for a domain
 # ----------------------------------------------------------------
 def get_domain(wildcards):
@@ -127,65 +129,14 @@ rule all:
     Generate the candidates in fasta format and a summary of candidates in genomes.
     """
     input:
-        # Candidates after paralog checks
-        # --------------------------------
-        candidates=expand(
-            pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
-            + "candidates_{domain}.fasta",
-            accession=ACCESSNB,domain=DOMAINS
-        ),
-
-        # Candidates with no paralog checks
-        # ---------------------------------
-        candidates_simple=expand(
+        # Candidates sequences with all domains ("wad") in fasta format for each genome
+        # -----------------------------------------------------------------------------
+        candidates_wad_fasta=expand(
             pathGTDriftData
            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
-           + "candidates_1_{domain}.fasta",
-            accession=ACCESSNB,domain=DOMAINS_SIMPLE
-        ),
-        
-        
-        # Summaries without paralog checks
-        # --------------------------------        
-        summary_simple=expand(
-            pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-            + "summary_hmmsearch_{accession}_{domain}.csv",
-            accession=ACCESSNB,domain=DOMAINS_SIMPLE),
-            
-            
-        # Statistics for each domains and for each genome
-        # -----------------------------------------------           
-        simple_domain_stats=expand(pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-            + "simple_statistics_{domain}.csv",
-            accession=ACCESSNB, domain=DOMAINS_SIMPLE+DOMAINS),            
-            
-         # Whole analyse summary
-         # ---------------------
-         whole_summary=expand(
-            pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-            + "whole_summary.csv",
-            accession=ACCESSNB),
-            
-         # Candidates with all domains for each  genome
-         # --------------------------------------------
-         candidates_wad=expand(pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-            + "candidates_with_all_domains.csv",
-            accession=ACCESSNB),
-         
-         # Statistics on candidates with all domains for each genome
-         # ----------------------------------------------------------   
-          candidates_wad_stats=expand(pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-            + "statistics_wad.csv",
-            accession=ACCESSNB),
-                        
-            
-        # Concatenation of all genome results
+           + "candidates.fasta", accession=ACCESSNB),
+                              
+        # Concatenation of results on all genomes
         # ----------------------------------------
         concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv",              
           
@@ -204,4 +155,3 @@ include: "../utils/module_stats_domain.smk"
 include: "../utils/module_check_paralogs.smk"
 include: "../utils/module_hmm.smk"
 include: "../utils/module_concatenate.smk"
-
