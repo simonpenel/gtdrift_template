@@ -10,7 +10,7 @@ rule generate_domain_candidates_IDs:
     input:
         domain_per_sequence_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "hmm_search/tbl/{domain}_tabulated"
     output:
-        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_1_ID_{domain}.txt"    
+        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_simple_{domain}.txt"    
     shell:
         """
         echo process {input.domain_per_sequence_tabulated} &&
@@ -23,7 +23,7 @@ rule generate_domain_candidates_IDs:
 # --------------------------------------------------------------------      
 rule run_seqkit_extract:
     input:
-        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_1_ID_{domain}.txt",
+        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_simple_{domain}.txt",
         multifasta = pathGTDriftData + "genome_assembly/{accession}/annotation/protein.faa"
     output:
         fasta_output = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_1_{domain}.fasta"

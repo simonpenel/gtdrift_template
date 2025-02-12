@@ -3,7 +3,7 @@ rule statistics_simple:
         res=expand(
             pathGTDriftData
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-            + "candidates_1_ID_{{domain}}.txt",accession=ACCESSNB),
+            + "candidates_simple_{{domain}}.txt",accession=ACCESSNB),
         protein=expand(pathGTDriftData + "genome_assembly/{accession}/annotation/protein.faa",accession=ACCESSNB)   
     output:
         pathGTDriftGlobalResults
@@ -17,7 +17,7 @@ rule simple_statistics_domain:
     input:
         res=pathGTDriftData
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-            + "candidates_1_ID_{domain}.txt",
+            + "candidates_simple_{domain}.txt",
         protein=pathGTDriftData 
             + "genome_assembly/{accession}/annotation/protein.faa"
     output:
@@ -102,7 +102,7 @@ rule select_candidates_with_all_domains:
          domain=DOMAINS),
          candidates_simple=expand(pathGTDriftData 
          + "genome_assembly/{{accession}}/analyses/" 
-         + GENOME_RESULTS + "candidates_1_ID_{domain}.txt",
+         + GENOME_RESULTS + "candidates_simple_{domain}.txt",
          domain=DOMAINS_SIMPLE),                      
     output:
            pathGTDriftData
