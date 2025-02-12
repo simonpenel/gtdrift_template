@@ -59,7 +59,6 @@ rule hmmscan:
 # curate_prdm9_candidates
 # Select the candidate if the best hmm match is the reference.
 # ------------------------------------------------------------
-
 rule curate_prdm9_candidates:
     input:
         candidate_table_curated = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "summary_hmmsearch_{accession}_{domain}_curated.csv",
@@ -99,6 +98,39 @@ rule run_seqkit_extraction_curated:
         """
         seqkit grep -f {input.candidate_list} {input.multifasta} -o {output.fasta_output}
         """
+
+
+# ---------------------------------------------------------------------------------------
+# generate_domain_candidates_wad_IDs
+# Extract the list of candidates with all domains from the csv from the search of a hmm profile domain in the proteome.
+# ---------------------------------------------------------------------------------------
+rule generate_candidates_wad_IDs:
+    input:
+        candidates = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_with_all_domains.csv"
+    output:
+        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_with_all_domains.txt"   
+    script:
+        "../utils/python/extract_domain_candidates_ID.py"
+        
+        
+        
+# -----------------------------------------------------------------------------
+# run_seqkit_extraction_candidates_wad
+# Extract the fasta sequence of the candidates from its sequence name.
+# ------------------------------------------------------------------------------  
+rule run_seqkit_extraction_wad_fasta:
+    input:
+        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_with_all_domains.txt",
+        multifasta = pathGTDriftData + "genome_assembly/{accession}/annotation/protein.faa"
+    output:
+        fasta_output = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates.fasta"
+    shell:
+        """
+        seqkit grep -f {input.candidate_list} {input.multifasta} -o {output.fasta_output}
+        """
+
+
+
 
 
 
