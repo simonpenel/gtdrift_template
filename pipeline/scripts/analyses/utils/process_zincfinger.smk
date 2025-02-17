@@ -105,8 +105,7 @@ rule zincfinger_analysis:
         # --------------------------------
         protein_seq = pathGTDriftData
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
-            + "candidates_SET.fasta",
-
+            + "selected_candidates.fasta",
         #protein_seq = pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/candidates_prdm9.fasta"
     output:
         zincfinger_out = pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger/zinc_finger_details/ZFD_{accession}.csv"
