@@ -43,7 +43,8 @@ rule analyze_prdm9_candidates:
     input:
         fasta_file = pathGTDriftData
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
-            + "selected_candidates.fasta",
+#            + "selected_candidates.fasta",
+            + "candidates_SET.fasta",
     output:
         csv_output = pathGTDriftData
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
