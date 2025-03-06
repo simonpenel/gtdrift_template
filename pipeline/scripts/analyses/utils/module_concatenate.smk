@@ -168,11 +168,5 @@ rule concatenate_assemblies:
         # -----------------------------------
         pathGTDriftGlobalResults
         + GLOBAL_RESULTS + "results.csv"
-    shell:
-        """
-        cat {input} > {output}.tmp &&
-        head -1 {output}.tmp > {output}.tmp2 &&
-        grep -v SeqID {output}.tmp >> {output}.tmp2 &&
-        cp {output}.tmp2 {output}
-        rm {output}.tmp {output}.tmp2 
-        """
+    script:
+        "../utils/python/merge.py"
