@@ -37,6 +37,59 @@ def process_domain_summary(domain, domain_summary_file, accession_number=accessi
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain start"] = line_data[17]
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain end"]= line_data[18]
       
+      
+def process_hmm_cov(domain, domain_summary_file, accession_number=accession_number):
+    '''
+    '''
+    dico = {}
+    with open(domain_summary_file) as reader:
+        for line in reader.readlines()[1:]:
+            line_data = line.split('\t')
+            seq_id = line_data[0]
+            hmm_id = line_data[3]
+            prot_len = int(line_data[2])
+            hmm_len = int(line_data[5])
+            hmm_range = [int(line_data[15]),int(line_data[16])]
+            prot_range = [int(line_data[19]),int(line_data[20])]
+            if seq_id in dico :
+                _val = dico[seq_id]
+                hmm = _val[0]
+                sequence = _val[1]
+                for i in range(hmm_range[0],hmm_range[1]) :
+                    hmm[i-1] += 1
+                for i in range(prot_range[0],prot_range[1]) :
+                    sequence[i-1] += 1
+                dico[seq_id] = [hmm,sequence]
+
+            else :
+                hmm = [0] * hmm_len
+                for i in range(hmm_range[0],hmm_range[1]) :
+                    hmm[i-1] = 1
+                sequence  = [0] * prot_len
+                for i in range(prot_range[0],prot_range[1]) :
+                    sequence[i-1] = 1
+                dico[seq_id] = [hmm,sequence]
+
+    for seq_id in  dico:
+        _val = dico[seq_id]
+        hmm = _val[0]
+        couv_hmm = 0
+        for i in hmm:
+            if i > 0 :
+                couv_hmm += 1
+        score_hmm = int (100 * couv_hmm / len(hmm))/100
+
+        prot = _val[1]
+        couv_prot = 0
+        for i in prot:
+            if i > 0 :
+                couv_prot += 1
+        score_prot = int (100 * couv_prot / len(hmm))/100        
+
+        if seq_id in summarised_data['SeqID'].values:
+            summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} HMM cov."] = score_hmm 
+            summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} Prot cov."] = score_prot 
+      
 def getTaxid(accession_number=accession_number,input_file=organisms_file):
     df = pd.read_csv(organisms_file, sep='\t', header=0)
     taxid = df.loc[df['Assembly Accession'] == accession_number, 'Taxid'].values[0]    
@@ -57,7 +110,8 @@ noms_colonnes.append(domain+' Score')
 noms_colonnes.append('Nb '+domain+' domains')
 noms_colonnes.append(domain+' domain start')
 noms_colonnes.append(domain+' domain end')
-
+noms_colonnes.append(domain+' HMM cov.')
+noms_colonnes.append(domain+' Prot cov.')
 
 data_list = []
 
@@ -77,7 +131,7 @@ with open(domain_per_sequence_tabulated_file) as reader:
 
 process_domain_tabulated(domain,domain_per_domain_summary_file)
 process_domain_summary(domain,domain_per_domain_summary_file)  
- 
+process_hmm_cov(domain,domain_per_domain_summary_file)   
  
 getTaxid()                
 getSpecies()                
