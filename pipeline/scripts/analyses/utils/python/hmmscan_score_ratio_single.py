@@ -96,15 +96,16 @@ def update_csv_with_results(csv_file, formatted_results):
 
         # Eliminar filas duplicadas basadas en la columna SeqID, conservando solo la primera
         df = df[~df.duplicated(subset='SeqID', keep='first')]
-
         for target_name, query, best_score, score_ratio in formatted_results:
-            match_row = df[df['SeqID'].str.contains(query, na=False)]
+            #match_row = df[df['SeqID'].str.contains(query, na=False)]
+            match_row = df[df['SeqID'].str.fullmatch(query, na=False)]
             if not match_row.empty:
                 index = match_row.index[0]
                 df.at[index, 'Best Match'] = target_name
                 df.at[index, 'Bit Score'] = best_score
                 df.at[index, 'Score ratio'] = score_ratio
-
+            else:
+                print("DEBUG SIMON " + target_name +" "+ query)
         # Crear el nuevo archivo con un sufijo "_curated"
         curated_csv_file = os.path.splitext(csv_file)[0] + "_curated.csv"
         df.to_csv(curated_csv_file, sep=";", encoding="utf-8")
