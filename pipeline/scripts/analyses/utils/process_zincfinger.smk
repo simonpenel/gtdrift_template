@@ -96,6 +96,54 @@ rule all:
         global_zf_count=pathGTDriftGlobalResults 
         + GLOBAL_RESULTS + "zinc_finger/zf_count.csv",
 
+# ----------------------------------
+# select_candidates_zf
+# select sequence with zinc finger and confirmed SET domain
+# ----------------------------------
+
+rule select_candidates_zf:
+    input:
+         candidates_confirmed=[pathGTDriftData 
+         + "genome_assembly/{accession}/analyses/" 
+         + GENOME_RESULTS + "candidates_SET.csv"],
+         candidates_simple=[pathGTDriftData 
+         + "genome_assembly/{accession}/analyses/" 
+         + GENOME_RESULTS + "candidates_simple_ZF.txt"],                      
+    output:
+           pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "candidates_for_zf_analysis.csv"    
+    script:
+        "../utils/python/select_candidates_wad.py" 
+        
+# ---------------------------------------------------------------------------------------
+# generate_candidates_zf
+# Extract the list of candidates with ZF domains and confirmed SET from the csv from the search of a hmm profile domain in the proteome.
+# ---------------------------------------------------------------------------------------
+rule generate_candidates_zf:
+    input:
+        candidates = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_for_zf_analysis.csv"
+    output:
+        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_for_zf_analysis.txt"   
+    script:
+        "../utils/python/extract_domain_candidates_ID.py"
+        
+# -----------------------------------------------------------------------------
+# run_seqkit_extraction_candidates_zf
+# Extract the fasta sequence of the candidates from its sequence name.
+# ------------------------------------------------------------------------------  
+rule run_seqkit_extraction_zf:
+    input:
+        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_for_zf_analysis.txt",
+        multifasta = pathGTDriftData + "genome_assembly/{accession}/annotation/protein.faa"
+    output:
+        fasta_output = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_for_zf_analysis.fasta"
+    shell:
+        """
+        seqkit grep -f {input.candidate_list} {input.multifasta} -o {output.fasta_output}
+        """
+
+
 rule zincfinger_analysis:
     """
     Run the zinc finger analysis on each protein sequence using R.
@@ -105,7 +153,7 @@ rule zincfinger_analysis:
         # --------------------------------
         protein_seq = pathGTDriftData
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
-            + "selected_candidates.fasta",
+            + "candidates_for_zf_analysis.fasta",
         #protein_seq = pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/candidates_prdm9.fasta"
     output:
         zincfinger_out = pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger/zinc_finger_details/ZFD_{accession}.csv"
