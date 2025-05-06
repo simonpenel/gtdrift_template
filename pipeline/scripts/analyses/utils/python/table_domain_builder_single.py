@@ -57,8 +57,12 @@ def process_hmm_cov(domain, domain_summary_file, accession_number=accession_numb
                 sequence = _val[1]
                 for i in range(hmm_range[0],hmm_range[1]) :
                     hmm[i-1] += 1
+                    if hmm[i-1] > 1 :
+                        hmm[i-1] = 1
                 for i in range(prot_range[0],prot_range[1]) :
                     sequence[i-1] += 1
+                    if sequence[i-1] > 1 :
+                        sequence[i-1] = 1
                 dico[seq_id] = [hmm,sequence]
 
             else :
@@ -74,9 +78,26 @@ def process_hmm_cov(domain, domain_summary_file, accession_number=accession_numb
         _val = dico[seq_id]
         hmm = _val[0]
         couv_hmm = 0
+        ii = 0 # (index)
+        limit = [] # [debut, fin] de la couverture
+        limits = []
+        curr_val = hmm[ii]
+        
+        if curr_val == 1 :
+            limit.append( ii + 1 ) #ajoute 1 car la 1ere position est 1
         for i in hmm:
+            if i != curr_val:
+                if i == 1 :
+                    limit = []
+                    limit.append( ii + 1 )
+                    curr_val = i
+                if i == 0 :
+                    limit.append( ii  )
+                    limits.append(limit)
+                    curr_val = i   # on ne rajoute pas 1 ici car i+1 est un 0
             if i > 0 :
                 couv_hmm += 1
+            ii += 1
         score_hmm = int (100 * couv_hmm / len(hmm))/100
 
         prot = _val[1]
@@ -88,6 +109,7 @@ def process_hmm_cov(domain, domain_summary_file, accession_number=accession_numb
 
         if seq_id in summarised_data['SeqID'].values:
             summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} HMM cov."] = score_hmm 
+            summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} HMM cov. pos."] = str(limits) 
             summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} Prot cov."] = score_prot 
       
 def getTaxid(accession_number=accession_number,input_file=organisms_file):
@@ -100,8 +122,10 @@ def getSpecies(accession_number=accession_number,input_file=organisms_file):
     species = df.loc[df['Assembly Accession'] == accession_number, 'Species Name'].values[0]    
     summarised_data["Species"] = species    
 
-domain = domain_per_sequence_tabulated_file.split("/")[-1].split("_")[0]  
-
+#domain = domain_per_sequence_tabulated_file.split("/")[-1].split("_")[0]  
+domain_split = domain_per_sequence_tabulated_file.split("/")[-1].split("_")
+domain_split.pop()
+domain = "_".join(domain_split)
 noms_colonnes = ['SeqID']
 noms_colonnes.append('Assembly')
 noms_colonnes.append(domain+' Query')
@@ -111,6 +135,7 @@ noms_colonnes.append('Nb '+domain+' domains')
 noms_colonnes.append(domain+' domain start')
 noms_colonnes.append(domain+' domain end')
 noms_colonnes.append(domain+' HMM cov.')
+noms_colonnes.append(domain+' HMM cov. pos.')
 noms_colonnes.append(domain+' Prot cov.')
 
 data_list = []
@@ -138,3 +163,4 @@ getSpecies()
 summarised_data = summarised_data.fillna(0)    
 print("Output file = "+output_file)                 
 summarised_data.to_csv(output_file, sep=';')
+
