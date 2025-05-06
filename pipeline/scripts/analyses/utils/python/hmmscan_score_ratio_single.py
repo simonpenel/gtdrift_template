@@ -90,7 +90,9 @@ def update_csv_with_results(csv_file, formatted_results):
     """
     if os.path.exists(csv_file):
         df = pd.read_csv(csv_file, sep=";", index_col=0)
-
+        # Traitement specifique genewise (crade)
+        if "Stop/Shift Positions" in df:
+            df = pd.read_csv(csv_file, sep=";", index_col=0,dtype={"Stop/Shift Positions": str})
         if df.empty:
             return
 
