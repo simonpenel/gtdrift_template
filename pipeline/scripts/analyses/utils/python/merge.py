@@ -14,6 +14,8 @@ for file in input_files:
         df_cont = pd.concat([df_cont, df], ignore_index=True)
     i += 1
 
-df_cont = df_cont.fillna(0.0)  
+#df_cont = df_cont.fillna(0.0)  
+df_cont = df_cont.fillna(0)  
 # Write output
+df_cont.drop(df_cont.columns[df_cont.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)
 df_cont.to_csv(output_file, sep=';')
