@@ -131,11 +131,18 @@ rule all:
     input:
         # Candidates sequences with all domains ("wad") in fasta format for each genome
         # -----------------------------------------------------------------------------
-        candidates_wad_fasta=expand(
-            pathGTDriftData
-           + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
-           + "selected_candidates.fasta", accession=ACCESSNB),
-  
+        # je vire pour l'instant candidates_wad_fasta=expand(
+        #  pathGTDriftData
+        #   + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+        #   + "selected_candidates.fasta", accession=ACCESSNB),
+        #   
+        # Detailed results for sequences with all domains ("wad")  for each genome
+        # -----------------------------------------------------------------------------
+        #je vire pour l'instant candidates_wad_stats=expand(
+        #    pathGTDriftData
+        #   + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+        #   + "whole_summary_selected.csv", accession=ACCESSNB),        
+        #
         # Candidates sequences with 1 confirmed domain in fasta format for each genome
         # -----------------------------------------------------------------------------         
         candidates_domain_fasta=expand(
@@ -149,11 +156,11 @@ rule all:
           
         # Statistics on all domains for all genomes
         # -----------------------------------------                
-        all_domains_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "statistics_summary.csv",
+        # je vire pour l'instant all_domains_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "statistics_summary.csv",
   
         # Statistics on candidates with all domains for all genomes
         # ---------------------------------------------------------           
-        all_candidates_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "candidate_statistics_summary.csv"    
+        # je vire pour l'instant all_candidates_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "candidate_statistics_summary.csv"    
         
                
 
