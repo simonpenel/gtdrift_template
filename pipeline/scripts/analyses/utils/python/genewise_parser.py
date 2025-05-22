@@ -88,22 +88,28 @@ with open(args.input, 'r') as reader:
                 intronstart = line.strip().split(' ')[2]
 
 ## Getting sequence
-## -Modified by Simon : adding rstrip() after readline()
+## -Modified by Simon :remove_cr
         elif '>' in line and '.pep' in line:
-            line = reader.readline().rstrip()
+            line = reader.readline()
+            print(line)
             print("Reading sequence for " + title)
             while not '/' in line:
                 seq += line
-                line = reader.readline().rstrip()
+                line = reader.readline()
+                print(line)
+            remove_cr = 0    
             for i in range(len(seq)):
+                print("debug "+seq[i])
+                if seq[i] == '\n':
+                    remove_cr += 1
                 if seq[i] == 'X':
-                    stop_shift.append(i)
+                    stop_shift.append(i - remove_cr + 1)
                     print("Stop codon or frameshift detected in " + title)
             output[args.accession+'-'+TargetID+'-'+title] = [TargetID, AdjustedRange, strand, QueryID, stop_shift, introns, seq, alignstart, pseudoStatus]
             print(title + " finished parsing")
             overall_num += 1
-        line = reader.readline().rstrip()
-
+        line = reader.readline()
+        print(line)
 ## Writing on both the fasta output and the text output
 with open(args.output, 'w') as writer, open(args.fasta, 'w') as faawriter:
 
