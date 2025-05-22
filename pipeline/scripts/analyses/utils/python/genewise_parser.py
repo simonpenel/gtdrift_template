@@ -96,10 +96,8 @@ with open(args.input, 'r') as reader:
             while not '/' in line:
                 seq += line
                 line = reader.readline()
-                print(line)
             remove_cr = 0    
             for i in range(len(seq)):
-                print("debug "+seq[i])
                 if seq[i] == '\n':
                     remove_cr += 1
                 if seq[i] == 'X':
