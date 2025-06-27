@@ -172,9 +172,6 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             sequence_pos = []
             print("SEQUENCE "+seq_record.id+" / transcrit "+str(num_cds))
             print(contig_mrna)
-            # a virer
-            genome_seq  = dico_genome[contig_mrna[0]]
-            raw_seq = genome_seq.seq
             if (contig_mrna[0],contig_mrna[1]) in dico_exons_pos:
                 flog.write("Transcrit "+str(num_cds) + ": " +contig_mrna[0]+" "+contig_mrna[1]+"\n")
                 # get the cds associated to the couple (contig, mrna)
@@ -223,20 +220,21 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         flog.write("["+str(start)+"-"+str(end)+"]")
                         # get the postion of exon from the cds start to the cds end
                         for pos in range(start -1 , end -2 , -1):
-                            flog.write("\ndebug "+str(pos)+ "   ["+str(start)+" - "+str(end-1)+"[\n")
-                            flog.write("      "+str(pos)+ " >= "+str(start_prot - 1 )+" < "+str(end_prot)+"]\n")
+                            #flog.write("\ndebug "+str(pos)+ "   ["+str(start)+" - "+str(end-1)+"[\n")
+                            #flog.write("      "+str(pos)+ " >= "+str(start_prot - 1 )+" < "+str(end_prot)+"]\n")
                             if pos >= start_prot - 1  and pos < end_prot :
-                                flog.write("adding "+raw_seq[pos]+"\n") 
+                                #flog.write("adding "+raw_seq[pos]+"\n") 
                                 sequence_pos.append(pos)  
-                                                      
+                    reverse_seq=list(reversed(sequence_pos))
+                    sequence_pos = reverse_seq                                  
                 flog.write("\n")
             else:
                 print("Pas d'exons")
                 sys.exit("Pas d'exons.")
                 
-            if  cds_strand  == "-" :
-                reverse_seq=list(reversed(sequence_pos))
-                sequence_pos = reverse_seq
+            #if  cds_strand  == "-" :
+            #    reverse_seq=list(reversed(sequence_pos))
+            #    sequence_pos = reverse_seq
             # get the dna sequence of the contig 
             flog.write("DNA SEQUENCE LENGTH :"+str(len(sequence_pos))+"\n")   
             genome_seq  = dico_genome[contig_mrna[0]]
@@ -249,7 +247,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             flog.write(dna_seq)
             flog.write("\n")   
             bio_dna_seq = Seq(dna_seq)
-            trans_dna_seq = bio_dna_seq.translate()
+            if  cds_strand  == "+" :
+                trans_dna_seq = bio_dna_seq.translate()
+            else :
+                trans_dna_seq = bio_dna_seq.reverse_complement().translate()
             flog.write("TRANSLATED DNA SEQUENCE:\n")
             flog.write(str(trans_dna_seq))
             flog.write("\n") 
@@ -314,9 +315,35 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 # get the positions sequence of the protein 
                 seq_dna = seq_genomic[1]
                 raw_seq_extract = ""
+                
+                
+                debug = ""
+                for i in seq_dna:
+                    debug += raw_seq[i]
+                flog.write("DEBUG DNA SEQUENCE:\n")
+                flog.write(debug)
+                flog.write("\n")   
+                bio_debug = Seq(debug)
+                flog.write("CDS STRAND :"+cds_strand+"\n")
+                if  cds_strand  == "+" :
+                    trans_debug = bio_debug.translate()
+                else :
+                    trans_debug = bio_debug.reverse_complement().translate()
+                flog.write("DEBUG TRANSLATED DNA SEQUENCE:\n")
+                flog.write(str(trans_debug))
+                flog.write("\n")   
+                
                 # build the dna sequence of the matching part of the protein
                 if modified == False :
-                    for pos_prot in range((match.span()[0]),(match.span()[1])):
+                    #for pos_prot in range((match.span()[0]),(match.span()[1])):
+                    st = match.span()[0]
+                    en = match.span()[1]
+                    flog.write("debug start end = "+str(st) + ","+str(en)+"\n")  
+                    st = len(sequence) - match.span()[1] + 1 
+                    en = st + match.span()[1] - match.span()[0]
+                    flog.write("debug start end = "+str(st) + ","+str(en)+"\n")  
+                    #for pos_prot in range((match.span()[1]),(len(sequence) - match.span()[0] -1)):
+                    for pos_prot in range(st,en):
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0]]
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1]]
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2]]
@@ -336,7 +363,11 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 flog.write(raw_seq_extract+"\n")   
                 bioseq_dna = Seq(raw_seq_extract)
                 #compl = bioseq_dna.reverse_complement()
-                bioseq_prot = bioseq_dna.translate()
+                flog.write("CDS STRAND :"+cds_strand+"\n")
+                if  cds_strand  == "+" :
+                    bioseq_prot = bioseq_dna.translate()
+                else :
+                    bioseq_prot = bioseq_dna.reverse_complement().translate()                
                 #bioseq_prot = compl.translate()
                 flog.write("Translation:\n")
                 for aa in bioseq_prot:
