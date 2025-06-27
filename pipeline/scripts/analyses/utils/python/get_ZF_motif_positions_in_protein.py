@@ -332,27 +332,29 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 flog.write("DEBUG TRANSLATED DNA SEQUENCE:\n")
                 flog.write(str(trans_debug))
                 flog.write("\n")   
+                shift_s = 19
+                st = match.span()[0]
+                en = match.span()[1]
+                flog.write("debug start end = "+str(st) + ","+str(en)+"\n")  
+                if cds_strand  == "-" :
+                    st = len(sequence) - match.span()[1] + 1 
+                    en = st + match.span()[1] - match.span()[0]
+                    # st + x = en - 19 => x = end - 19 -st  
+                    shift_s = en - 19 - st
+                flog.write("debug start end = "+str(st) + ","+str(en)+"\n") 
                 
                 # build the dna sequence of the matching part of the protein
                 if modified == False :
-                    #for pos_prot in range((match.span()[0]),(match.span()[1])):
-                    st = match.span()[0]
-                    en = match.span()[1]
-                    flog.write("debug start end = "+str(st) + ","+str(en)+"\n")  
-                    st = len(sequence) - match.span()[1] + 1 
-                    en = st + match.span()[1] - match.span()[0]
-                    flog.write("debug start end = "+str(st) + ","+str(en)+"\n")  
-                    #for pos_prot in range((match.span()[1]),(len(sequence) - match.span()[0] -1)):
-                    for pos_prot in range(st,en):
+                    for pos_prot in range(st, en):
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0]]
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1]]
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2]]
                 else :
-                    for pos_prot in range((match.span()[0]),(match.span()[0])+ 19):
+                    for pos_prot in range(st, st + shift_s):
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0]]
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1]]
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2]]
-                    for pos_prot in range((match.span()[0]+20),(match.span()[1])):
+                    for pos_prot in range(st + shift_s + 1, en):
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0]]
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1]]
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2]]
