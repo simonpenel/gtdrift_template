@@ -21,12 +21,9 @@ parser.add_argument('-w', '--warnings', type=str, required=True, help='warnings 
 args = parser.parse_args()
 
 #-------------------------------------------------------------------------
-# Fill 3 dictionnaries : 
-# dico_exons_pos: (contig, mrna) -> liste des (start,end,strand) des exons
-# dico_cds_pos:   (contig, mrna) -> liste des (start,end,strand) des cds
-# dico_prot:      protein name   -> liste des (contig,mrna)
+# Fonction diff_seq
+# get the difference between 2 sequences. ratio = 1 if sequences are identical 
 #-------------------------------------------------------------------------
-
 def diff_seq(s1:str,s2:str):
     score = 0
     l1 = len(s1)
@@ -38,6 +35,13 @@ def diff_seq(s1:str,s2:str):
     ratio =  (2 * score / (l1 + l2))
     return ratio         
 
+#-------------------------------------------------------------------------
+# Fonction processExonsGff
+# fill 3 dictionnaries : 
+# dico_exons_pos: (contig, mrna) -> liste des (start,end,strand) des exons
+# dico_cds_pos:   (contig, mrna) -> liste des (start,end,strand) des cds
+# dico_prot:      protein name   -> liste des (contig,mrna)
+#-------------------------------------------------------------------------
 def processExonsGff(gff:str):
     with open(gff, 'r') as reader:
         print("Processing gff... (This may take several minutes)")        
@@ -122,7 +126,13 @@ def processExonsGff(gff:str):
                     else :
                         dico_cds_pos[(contig,parent)] = []
                         dico_cds_pos[(contig,parent)].append([start,end,strand])  
-  
+
+
+# output file
+f = open(args.output, "w")
+# log file 
+flog = open(args.log, "w") 
+f.write("SeqID;Pattern;Pattern num;ZF num;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length\n")
 # file of warning                                          
 fwarn = open(args.warnings, "w") 
 
@@ -140,12 +150,9 @@ processExonsGff(args.gff)
 pattern1 = r'..C..C.{12}H...H.{5}'
 pattern2 = r'..C..C.{12}H....H.{5}' 
 
-# output file
-f = open(args.output, "w")
-# log file 
-flog = open(args.log, "w") 
-f.write("SeqID;ZF num;Start in prot;End in prot;Length;uniformised ZF string;original SF string;dna sequence;dna sequence length\n")
 
+
+ # dictionnary dico_sequence:  protein name -> list of ((contig, mrna), sequence_positions)
 dico_sequence = {}
 # Processing protein sequences
 for seq_record in SeqIO.parse(args.input, "fasta"):
@@ -158,7 +165,6 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     flog.write("\n")
     flog.write(sequence)
     flog.write("\n")    
-    # dictionnary dico_sequence:  protein name -> list of ((contig, mrna), sequence_positions)
     dico_sequence[seq_record.id] = []
     if seq_record.id in dico_prot:
         contig_mrna_dico  = {}
@@ -198,7 +204,6 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     end_prot = int(last_cds[1])
                 else :
                      sys.exit("Unknown strand")
-                #cds_strand = last_cds[2]
                 flog.write("Protein range = "+str(start_prot)+"-"+str(end_prot)+"\n") 
                 flog.write("exons : ") 
                 # get the exons associated to the couple (contig, mrna)
@@ -220,10 +225,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         flog.write("["+str(start)+"-"+str(end)+"]")
                         # get the postion of exon from the cds start to the cds end
                         for pos in range(start -1 , end -2 , -1):
-                            #flog.write("\ndebug "+str(pos)+ "   ["+str(start)+" - "+str(end-1)+"[\n")
-                            #flog.write("      "+str(pos)+ " >= "+str(start_prot - 1 )+" < "+str(end_prot)+"]\n")
                             if pos >= start_prot - 1  and pos < end_prot :
-                                #flog.write("adding "+raw_seq[pos]+"\n") 
                                 sequence_pos.append(pos)  
                     reverse_seq=list(reversed(sequence_pos))
                     sequence_pos = reverse_seq                                  
@@ -231,12 +233,9 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             else:
                 print("Pas d'exons")
                 sys.exit("Pas d'exons.")
-                
-            #if  cds_strand  == "-" :
-            #    reverse_seq=list(reversed(sequence_pos))
-            #    sequence_pos = reverse_seq
-            # get the dna sequence of the contig 
+
             flog.write("DNA SEQUENCE LENGTH :"+str(len(sequence_pos))+"\n")   
+            # get the dna sequence of the contig 
             genome_seq  = dico_genome[contig_mrna[0]]
             raw_seq = genome_seq.seq
             # build the coding sequence of the protein (for information)
@@ -255,7 +254,6 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             flog.write(str(trans_dna_seq))
             flog.write("\n") 
             trans_dna_seq_nostop = str(trans_dna_seq)[:-1]
-            print("DEBUG "+trans_dna_seq_nostop)
             if trans_dna_seq_nostop != sequence :
             
                 flog.write("\n\n********\nWarning: translated sequence and protein sequence are different.\n")
@@ -288,6 +286,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     #sequence = str(seq_record.seq)
 
     # search patterns
+    pattern_nb = 1
     for pattern in [pattern1,pattern2]:
         flog.write("\nPattern "+pattern+":\n")  
         matches = re.finditer(pattern, sequence)
@@ -364,12 +363,14 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 flog.write("\n")    
                 flog.write(raw_seq_extract+"\n")   
                 bioseq_dna = Seq(raw_seq_extract)
-                #compl = bioseq_dna.reverse_complement()
+
                 flog.write("CDS STRAND :"+cds_strand+"\n")
                 if  cds_strand  == "+" :
                     bioseq_prot = bioseq_dna.translate()
+                    compl = bioseq_dna
                 else :
-                    bioseq_prot = bioseq_dna.reverse_complement().translate()                
+                    bioseq_prot = bioseq_dna.reverse_complement().translate()  
+                    compl = bioseq_dna.reverse_complement()              
                 #bioseq_prot = compl.translate()
                 flog.write("Translation:\n")
                 for aa in bioseq_prot:
@@ -402,7 +403,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         sys.exit("Error: translated sequence and protein sequence are too different")
                 else:
                     print("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
-                f.write(seq_record.id+";"+str(match_nb)+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+repr(match.group())+";"+seq_genomic[0][0]+";"+raw_seq_extract+";"+str(len(raw_seq_extract))+"\n")
+                f.write(seq_record.id+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
             
             match_nb += 1
+        pattern_nb += 1
             
