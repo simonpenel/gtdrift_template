@@ -17,6 +17,6 @@ for file in input_files:
         df_cont = pd.concat([df_cont, df], ignore_index=True)
     i += 1
 
-df_cont = df_cont.drop(["0 candidate PRDM9 proteins"],axis=1) 
+#df_cont = df_cont.drop(["0 candidate PRDM9 proteins"],axis=1) 
 # Write output
 df_cont.to_csv(output_file, sep=';')

@@ -162,7 +162,12 @@ rule all:
         # ---------------------------------------------------------           
         # je vire pour l'instant all_candidates_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "candidate_statistics_summary.csv"    
         
-               
+        # Pour l'analyase zinc finger a faire apres (pour PRDM9)
+        # -----------------------------------------------------------------------------         
+        candidates_domain_ZF=expand(
+            pathGTDriftData
+           + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+           + "candidates_simple_ZF.txt", accession=ACCESSNB),            
 
 # Modules snakemake
 # -----------------

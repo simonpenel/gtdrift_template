@@ -46,6 +46,7 @@ def process_domain_summary(domain, domain_summary_file, accession_number=accessi
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Chr End"]= pseudo[4].split('-')[1]
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Strand"]= pseudo[5]
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Protein Length"]= pseudo[3]
+                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Genewise index"]= pseudo[8]
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"ProtRefID"]= pseudo[6]
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Pseudogene (Genewise)"] = pseudo[7]
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Stop/Shift Positions"] = pseudo[1]
@@ -193,6 +194,7 @@ noms_colonnes.append('Chr Start')
 noms_colonnes.append('Chr End')
 noms_colonnes.append('Strand')
 noms_colonnes.append('Protein Length')
+noms_colonnes.append('Genewise index')
 noms_colonnes.append('ProtRefID')
 noms_colonnes.append('Pseudogene (Genewise)')
 noms_colonnes.append('Stop/Shift Positions')

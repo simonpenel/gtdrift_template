@@ -34,21 +34,22 @@ for file in input_files:
         chromo_end =  df["Chr End"][index]    
         strand = df["Strand"][index]
         prot_len = df["Protein Length"][index]
+        genewise_idx = df["Genewise index"][index]
         prot_id = df["ProtRefID"][index]    
         pseudo = df["Pseudogene (Genewise)"][index] 
         stop_shift = str(df["Stop/Shift Positions"][index])
         stop_shift = df["Stop/Shift Positions"][index]
         if seqid in dico_chromo :
-            if   dico_chromo[seqid] != (chromo, chromo_start, chromo_end,strand,prot_len,prot_id,pseudo,stop_shift) :
+            if   dico_chromo[seqid] != (chromo, chromo_start, chromo_end,strand,prot_len,prot_id,pseudo,stop_shift,genewise_idx) :
                 print("ERROR:")
                 print("Current chromosome info for "+seqid+" :")
                 print(dico_chromo[seqid])
                 print("New chromosome info for "+seqid+" :")
-                print((chromo, chromo_start, chromo_end,strand,prot_len,prot_id,pseudo,stop_shift))
+                print((chromo, chromo_start, chromo_end,strand,prot_len,prot_id,pseudo,stop_shift,genewise_idx))
                 
                 sys.exit('Multiple Chromosome')
         else :
-            dico_chromo[seqid] = (chromo, chromo_start, chromo_end,strand,prot_len,prot_id,pseudo,stop_shift) 
+            dico_chromo[seqid] = (chromo, chromo_start, chromo_end,strand,prot_len,prot_id,pseudo,stop_shift,genewise_idx) 
 
 for file in input_files:
     df = pd.read_csv(file, sep=';', header=0, dtype={"Stop/Shift Positions": str})
@@ -73,6 +74,7 @@ for file in input_files:
         df = df.drop(["Chr End"],axis=1)  
         df = df.drop(["Strand"],axis=1)
         df = df.drop(["Protein Length"],axis=1) 
+        df = df.drop(["Genewise index"],axis=1)         
         df = df.drop(["ProtRefID"],axis=1) 
         df = df.drop(["Pseudogene (Genewise)"],axis=1) 
         df = df.drop(["Stop/Shift Positions"],axis=1)   
@@ -106,6 +108,7 @@ for file in input_files:
         df = df.drop(["Chr End"],axis=1)  
         df = df.drop(["Strand"],axis=1)
         df = df.drop(["Protein Length"],axis=1) 
+        df = df.drop(["Genewise index"],axis=1)         
         df = df.drop(["ProtRefID"],axis=1) 
         df = df.drop(["Pseudogene (Genewise)"],axis=1) 
         df = df.drop(["Stop/Shift Positions"],axis=1)             
@@ -139,7 +142,7 @@ for key in  dico_chromo :
     values = dico_chromo[key]
     new_row = {"SeqID": key, "Chromosome": values[0], "Chr Start": values[1],"Chr End": values[2],
     "Strand" : values[3], "Protein Length" : values[4], "ProtRefID" : values[5],
-    "Pseudogene (Genewise)" : values[6], "Stop/Shift Positions" : values[7]}
+    "Pseudogene (Genewise)" : values[6], "Stop/Shift Positions" : values[7], "Genewise index": values[8]}
     print(new_row)
     df_chromo = df_chromo._append(new_row, ignore_index=True)
 #print(df_chromo.SeqID)

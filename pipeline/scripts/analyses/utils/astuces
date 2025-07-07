@@ -1,0 +1,5 @@
+listac=`cat assemblies.json|cut -f2 -d"\""|grep GC`
+
+for ac in $listac; do ls /beegfs/banque/peneldb/gtdrift_template/data_results_per_assembly/genome_assembly/$ac/analyses/protein_domain_PRDM9/*; done
+
+for ac in $listac; do rm /beegfs/banque/peneldb/gtdrift_template/data_results_per_assembly/genome_assembly/$ac/analyses/protein_domain_PRDM9/*; done

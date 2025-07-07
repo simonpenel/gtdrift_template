@@ -42,18 +42,18 @@ candidate_list = []
 i = 0
 # First, read the results for confirmed domains
 for file in input_files_conf:
-    print("debug process "+file)
+    print("Process "+file)
     df = pd.read_csv(file, sep=';', header=0)
-    df=df.dropna(how='any') 
-    print("debug test")
-    print(df)
+    #df=df.dropna(how='any') 
+    df=df.dropna(how='all') 
     # If there is no data for the domain, create an output file with no data and exit 
     if df.empty :
         data = []
         candidate_list = pd.DataFrame(data, columns=["SeqID","Assembly","Taxid","Species"])
         candidate_list.to_csv(output_file, sep=';')
-        print("DEBUG 1")
+        print("WARNING : EMPTY FILE "+ file)
         exit()
+    print("Debug length "+str(len(df)))   
     df = df[["SeqID","Assembly","Taxid","Species"]]    
     if i == 0 :
         # Initialise the output

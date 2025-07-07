@@ -75,6 +75,7 @@ def processExonsGff(gff:str):
                 start=split_line[3]
                 end=split_line[4]
                 strand=split_line[6]
+                phase=split_line[7]
                 cds_gene_id = "none"
                 prot_name = "none"
                 cds_info   = split_line[8]
@@ -122,10 +123,10 @@ def processExonsGff(gff:str):
                         dico_prot[prot_name] = []
                         dico_prot[prot_name].append([contig,parent])
                     if (contig,parent) in dico_cds_pos:
-                        dico_cds_pos[(contig,parent)].append([start,end,strand])
+                        dico_cds_pos[(contig,parent)].append([start,end,strand,phase])
                     else :
                         dico_cds_pos[(contig,parent)] = []
-                        dico_cds_pos[(contig,parent)].append([start,end,strand])  
+                        dico_cds_pos[(contig,parent)].append([start,end,strand,phase])  
 
 
 # output file
@@ -166,6 +167,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     flog.write(sequence)
     flog.write("\n")    
     dico_sequence[seq_record.id] = []
+    partial_start = False
+    partial_end = False
     if seq_record.id in dico_prot:
         contig_mrna_dico  = {}
         # Get the uniques couples (contig, mrna) associated to the protein
@@ -188,7 +191,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 for cds in cds_feat:
                     start = int(cds[0])
                     end = int(cds[1])
-                    flog.write("["+str(start)+"-"+str(end)+"]")
+                    phase = int(cds[3])
+                    flog.write("["+str(start)+"-"+str(end)+"] ("+str(phase)+") ")
                     if cds[2] != cds_strand :
                         sys.exit("Error: different strands")
                 flog.write("\n")
@@ -204,29 +208,93 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     end_prot = int(last_cds[1])
                 else :
                      sys.exit("Unknown strand")
-                flog.write("Protein range = "+str(start_prot)+"-"+str(end_prot)+"\n") 
-                flog.write("exons : ") 
+                flog.write("Protein range (according to CDS) = "+str(start_prot)+"-"+str(end_prot)+"\n") 
+                
                 # get the exons associated to the couple (contig, mrna)
                 exon_features = dico_exons_pos[(contig_mrna[0],contig_mrna[1])]
+               
+                
+                # Partial sequences
+                # Check if the first cds covers entirely the first exon
+                if  cds_strand  == "+" :
+                    first_exon = exon_features[0]
+                    last_exon = exon_features[len(exon_features)-1]
+                else :
+                    last_exon = exon_features[0]
+                    first_exon = exon_features[len(exon_features)-1]
+                
+                if first_exon[0] == first_cds[0] and first_exon[1] == first_cds[1] :
+                   flog.write("Note : first exon is fully covered by first CDS, potentialy partial sequence\n")
+                   if int(first_cds[3]) > 0 :
+                       partial_start = True 
+                       flog.write("       Phase is > 0, sequence is partial\n")
+                       if cds_strand  == "+" :
+                           start_prot += int(first_cds[3])
+                       else :
+                           if int(first_cds[3]) == 1 :
+                               start_prot += 1
+                           else :
+                               start_prot += 2
+                           
+                if last_exon[0] == last_cds[0] and last_exon[1] == last_cds[1] :
+                   flog.write("Note : last exon is fully covered by first CDS, potentialy partial sequence\n")
+                   if int(last_cds[3]) > 0 :
+                       partial_end = True 
+                       flog.write("       Phase is > 0, sequence is partial\n")
+                       if cds_strand  == "+" :
+                           end_prot -= int(last_cds[3]) 
+                       else :
+                           if int(last_cds[3]) == 1 :      
+                               end_prot -= 1
+                           else :
+                               end_prot -= 2
+                flog.write("exons : ") 
+                flog.write("Protein range (after check for partials) = "+str(start_prot)+"-"+str(end_prot)+"\n")
                 if cds_strand == "+" :
+                    num_exon = 1
                     for exon_feat in exon_features:
                         start = int(exon_feat[0])
                         end = int(exon_feat[1])
                         flog.write("["+str(start)+"-"+str(end)+"]")
                         # get the postion of exon from the cds start to the cds end
-                        for pos in range(start, end + 1):
-                            if pos >= start_prot - 1 and pos < end_prot :
-                                sequence_pos.append(pos)
+                        #if num_exon == 1 :
+                        if 0 == 1 :
+                            for pos in range(start-1, end + 1):
+                                if pos >= start_prot - 1 and pos < end_prot :
+                                    sequence_pos.append(pos)                        
+                        else :
+                            for pos in range(start, end + 1):
+                                #if pos >= start_prot - 1 and pos < end_prot :
+                                #    sequence_pos.append(pos)
+                                if pos >= start_prot and pos <= end_prot :
+                                    sequence_pos.append(pos-1) # pos -1 car l'indexation commence à 0 dans le fichier qui contient l'adn
+                        num_exon += 1
                 else :
+                    # brin complementaire
                     reverse = list(reversed(exon_features))
+                    num_exon = 1
+                    nb_exons = len(exon_features)
                     for exon_feat in exon_features:
                         start = int(exon_feat[1])
                         end = int(exon_feat[0])
                         flog.write("["+str(start)+"-"+str(end)+"]")
                         # get the postion of exon from the cds start to the cds end
-                        for pos in range(start -1 , end -2 , -1):
-                            if pos >= start_prot - 1  and pos < end_prot :
-                                sequence_pos.append(pos)  
+                        #if num_exon == nb_exons :
+                        if 0 == 1 :
+                            #for pos in range(start -1 , end -1 , -1):
+                            for pos in range(start  , end -1 , -1):
+                                if pos >= start_prot - 1  and pos < end_prot :
+                                    sequence_pos.append(pos)
+                        #elif num_exon == 1:
+                        elif 2 == 1:
+                              for pos in range(start   , end -2 , -1):
+                                if pos >= start_prot - 1  and pos < end_prot :
+                                    sequence_pos.append(pos)                      
+                        else :
+                            for pos in range(start , end -1 , -1):    
+                                if pos >= start_prot   and pos <= end_prot :
+                                    sequence_pos.append(pos - 1) # pos -1 a cause de l'indexation qui commence a 0                        
+                        num_exon +=1          
                     reverse_seq=list(reversed(sequence_pos))
                     sequence_pos = reverse_seq                                  
                 flog.write("\n")
@@ -245,6 +313,9 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             flog.write("DNA SEQUENCE:\n")
             flog.write(dna_seq)
             flog.write("\n")   
+            flog.write("STRAND: "+cds_strand+"\n")
+            flog.write("PARTIAL START: "+str(partial_start)+"\n")
+            flog.write("PARTIAL END: "+str(partial_end)+"\n")
             bio_dna_seq = Seq(dna_seq)
             if  cds_strand  == "+" :
                 trans_dna_seq = bio_dna_seq.translate()
@@ -253,7 +324,12 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             flog.write("TRANSLATED DNA SEQUENCE:\n")
             flog.write(str(trans_dna_seq))
             flog.write("\n") 
-            trans_dna_seq_nostop = str(trans_dna_seq)[:-1]
+            print
+            trans_dna_seq_nostop = str(trans_dna_seq)
+            if partial_end == False and cds_strand == "+":
+                trans_dna_seq_nostop = str(trans_dna_seq)[:-1]
+            if partial_start == False and cds_strand == "-":
+                trans_dna_seq_nostop = str(trans_dna_seq)[:-1]                
             if trans_dna_seq_nostop != sequence :
             
                 flog.write("\n\n********\nWarning: translated sequence and protein sequence are different.\n")
@@ -336,7 +412,9 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 en = match.span()[1]
                 flog.write("debug start end = "+str(st) + ","+str(en)+"\n")  
                 if cds_strand  == "-" :
-                    st = len(sequence) - match.span()[1] + 1 
+                    st = len(sequence) - match.span()[1] + 1
+                    if partial_start == True :
+                        st = st 
                     en = st + match.span()[1] - match.span()[0]
                     # st + x = en - 19 => x = end - 19 -st  
                     shift_s = en - 19 - st

@@ -18,7 +18,7 @@ with open(args.input, 'r') as reader:
     line = reader.readline()
     output = {}
     overall_num = 1
-
+    index_genewise = 0
     while line:
 
         if 'ERROR DETECTED DURING GENEWISEDB' in line:
@@ -39,7 +39,7 @@ with open(args.input, 'r') as reader:
             adj          = line.strip().split(' ')[4].split(':')[1]
             GeneID       = line.strip().split(' ')[4].split(':')[2]
             titlenum     = 1
-            print(line)
+            index_genewise += 1
 
             ## Sometimes contains a c: we remove it
             if 'c' in adj:
@@ -91,7 +91,6 @@ with open(args.input, 'r') as reader:
 ## -Modified by Simon :remove_cr
         elif '>' in line and '.pep' in line:
             line = reader.readline()
-            print(line)
             print("Reading sequence for " + title)
             while not '/' in line:
                 seq += line
@@ -103,11 +102,11 @@ with open(args.input, 'r') as reader:
                 if seq[i] == 'X':
                     stop_shift.append(i - remove_cr + 1)
                     print("Stop codon or frameshift detected in " + title)
-            output[args.accession+'-'+TargetID+'-'+title] = [TargetID, AdjustedRange, strand, QueryID, stop_shift, introns, seq, alignstart, pseudoStatus]
+            output[args.accession+'-'+TargetID+'-'+title] = [TargetID, AdjustedRange, strand, QueryID, stop_shift, introns, seq, alignstart, pseudoStatus,index_genewise]
             print(title + " finished parsing")
             overall_num += 1
         line = reader.readline()
-        print(line)
+        
 ## Writing on both the fasta output and the text output
 with open(args.output, 'w') as writer, open(args.fasta, 'w') as faawriter:
 
@@ -142,7 +141,7 @@ with open(args.output, 'w') as writer, open(args.fasta, 'w') as faawriter:
         protlength = len(output[elt][6].replace('\n', ''))
         faawriter.write(f">{elt} {output[elt][0].split(':')[0]},{';'.join(shiftlist)},")
         faawriter.write(f"{';'.join(intronlist)},{str(protlength)},{str(output[elt][1][0])}-{str(output[elt][1][1])},")
-        faawriter.write(f"{output[elt][2]},{output[elt][3]},{output[elt][8]}\n")
+        faawriter.write(f"{output[elt][2]},{output[elt][3]},{output[elt][8]},{output[elt][9]}\n")
         faawriter.write(output[elt][6])
 
 ## Writing text
@@ -150,4 +149,4 @@ with open(args.output, 'w') as writer, open(args.fasta, 'w') as faawriter:
         shift_no_na = [x for x in output[elt][4] if x != 'NA']
         intron_no_na = [x for x in output[elt][5] if x != 'NA']
         writer.write(f"{elt}\t{output[elt][0].split(':')[0]}\t{output[elt][1][0]}\t{output[elt][1][1]}\t{output[elt][2]}\t{str(protlength)}")
-        writer.write(f"\t{output[elt][3]}\t{str(len(shift_no_na))}\t{';'.join(shiftlist)}\t{str(len(intron_no_na))}\t{';'.join(intronlist)}\t{output[elt][8]}\n")
+        writer.write(f"\t{output[elt][3]}\t{str(len(shift_no_na))}\t{';'.join(shiftlist)}\t{str(len(intron_no_na))}\t{';'.join(intronlist)}\t{output[elt][8]}\t{output[elt][9]}\n")

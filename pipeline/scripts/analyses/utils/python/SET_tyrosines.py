@@ -30,12 +30,13 @@ def run_blastp(query_seq, subject_file, output_csv):
             for alignment in blast_record.alignments:
                 for hsp in alignment.hsps:
                     subject_id = alignment.hit_id
-                    
+                    print("debug sunject_id = "+subject_id)
                     # Check if this subject_id has been seen before
                     if subject_id not in best_hits:
                         best_hits[subject_id] = hsp  # Store HSP as the best hit for this subject
                     else:
                         # Compare the current HSP score with the stored best hit score
+                        print("debug "+str(hsp.score) + "> " + str(best_hits[subject_id].score))
                         if hsp.score > best_hits[subject_id].score:
                             best_hits[subject_id] = hsp  # Update the best hit
 

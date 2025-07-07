@@ -1,6 +1,4 @@
-## Main snakemake for zinc finger analysis on protein data
-## Before run process_zincfinger.smk
-## First run process_stats_domain.smk
+## Main snakemake for domain analysis on protein data
 ## Date : Decembre 2024
 ## Authors :
 
@@ -116,7 +114,7 @@ rule select_candidates_zf:
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
             + "candidates_for_zf_analysis.csv"    
     script:
-        "../utils/python/select_candidates_wad.py" 
+        "../utils/python/select_candidates_wad_genewise.py" 
         
 # ---------------------------------------------------------------------------------------
 # generate_candidates_zf
@@ -137,7 +135,7 @@ rule generate_candidates_zf:
 rule run_seqkit_extraction_zf:
     input:
         candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_for_zf_analysis.txt",
-        multifasta = pathGTDriftData + "genome_assembly/{accession}/annotation/protein.faa"
+        multifasta = "results/{accession}/Step3_genewise/genewise_predicted_proteins.faa"
     output:
         fasta_output = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_for_zf_analysis.fasta"
     shell:

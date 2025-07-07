@@ -163,20 +163,20 @@ while True:
                     j = 0
                     continue
 
-## Fifth comparison: Genewise index : selecting the sequence coiming first in genewise output
-                elif itable['Genewise index'] < jtable['Genewise index']:
-                    print(f"Dropping {jtable['SeqID']} keeping {itable['SeqID']}: Genewise index")
+## Fifth comparison: Protein length, longer proteins are more likely to be complete
+                elif itable['Protein Length'] > jtable['Protein Length']:
+                    print(f"Dropping {jtable['SeqID']} keeping {itable['SeqID']}: protein length")
                     sorted.drop(index=j, inplace=True)
                     continue
                     
-                elif jtable['Genewise index'] < itable['Genewise index']:
-                    print(f"Dropping {itable['SeqID']} keeping {jtable['SeqID']}: Genewise index")
+                elif jtable['Protein Length'] > itable['Protein Length']:
+                    print(f"Dropping {itable['SeqID']} keeping {jtable['SeqID']}: protein length")
                     sorted.drop(index=i, inplace=True)
                     i = j
                     j = 0
                     continue
 
-## If passed, then both are identical: we remove one of them (This should no happen)
+## If passed, then both are identical: we remove one of them
                 else:
                     print(f"Dropping {jtable['SeqID']} keeping {itable['SeqID']}: identity")
                     sorted.drop(index=j, inplace=True)
