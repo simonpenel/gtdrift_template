@@ -164,15 +164,20 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     flog.write(seq_record.id)
     flog.write("\n===============================\n")
     flog.write("\n")
+    flog.write("Sequence:\n")
     flog.write(sequence)
     flog.write("\n")
     dico_sequence[seq_record.id] = []
     partial_start = False
     partial_end = False
-    flag_identical = False
-    # flag_identical True if the translation is
+    # flag_identical: True if the translation is
     # identical. If true, the matching should be true too.
     # (used to check the modified pattern results)
+    flag_identical = False
+    # info on phase of first and last cds. This will be useful
+    # if sequence is partial
+    phase_first_cds = 0
+    phase_last_cds = 0
     if seq_record.id in dico_prot:
         contig_mrna_dico  = {}
         # Get the uniques couples (contig, mrna) associated to the protein
@@ -183,15 +188,13 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
         num_cds = 1
         for contig_mrna in unique_contig_mrna:
             sequence_pos = []
-            print("SEQUENCE "+seq_record.id+" / transcrit "+str(num_cds))
-            print(contig_mrna)
             if (contig_mrna[0],contig_mrna[1]) in dico_exons_pos:
                 flog.write("Transcrit "+str(num_cds) + ": " +contig_mrna[0]+" "+contig_mrna[1]+"\n")
                 # get the cds associated to the couple (contig, mrna)
                 cds_feat = dico_cds_pos[(contig_mrna[0],contig_mrna[1])]
-                flog.write("CDS   : ")
                 cds_strand = cds_feat[0][2]
                 flog.write("Strand = "+cds_strand+"\n")
+                flog.write("CDS   : ")
                 for cds in cds_feat:
                     start = int(cds[0])
                     end = int(cds[1])
@@ -232,8 +235,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                    if int(first_cds[3]) > 0 :
                        if cds_strand  == "+" :
                            partial_start = True
+                           phase_first_cds = int(first_cds[3])
                        else :
                            partial_end = True
+                           phase_last_cds = int(first_cds[3])
                        flog.write("       Phase is > 0, sequence is partial\n")
                        if cds_strand  == "+" :
                            start_prot += int(first_cds[3])
@@ -248,9 +253,11 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                    if int(last_cds[3]) > 0 :
                        if cds_strand  == "+" :
                            partial_end = True
+                           phase_last_cds = int(last_cds[3])
                        else :
                            partial_start = True
-                       flog.write("       Phase is > 0, sequence is partial\n")
+                           phase_first_cds = int(last_cds[3])
+                       flog.write("       Phase is > 0, sequence is partial.\n")
                        if cds_strand  == "+" :
                            end_prot -= int(last_cds[3])
                        else :
@@ -258,6 +265,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                                end_prot -= 1
                            else :
                                end_prot -= 2
+                flog.write("Sequence  is partial at the start : "+str(partial_start)+"\n")
+                flog.write("Sequence  is partial at the end: "+str(partial_end)+"\n")
+                flog.write("First CDS phase: "+str(phase_first_cds)+"\n")
+                flog.write("Last CDS phase: "+str(phase_last_cds)+"\n")
                 flog.write("exons : ")
                 flog.write("Protein range (after check for partials) = "+str(start_prot)+"-"+str(end_prot)+"\n")
                 if cds_strand == "+" :
@@ -312,7 +323,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 print("Pas d'exons")
                 sys.exit("Pas d'exons.")
 
-            flog.write("DNA SEQUENCE LENGTH :"+str(len(sequence_pos))+"\n")
+            flog.write("DNA sequence length :"+str(len(sequence_pos))+"\n")
             # get the dna sequence of the contig
             genome_seq  = dico_genome[contig_mrna[0]]
             raw_seq = genome_seq.seq
@@ -320,21 +331,17 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             dna_seq = ""
             for i in sequence_pos:
                 dna_seq += raw_seq[i]
-            flog.write("DNA SEQUENCE:\n")
+            flog.write("DNA sequence:\n")
             flog.write(dna_seq)
             flog.write("\n")
-            flog.write("STRAND: "+cds_strand+"\n")
-            flog.write("PARTIAL START: "+str(partial_start)+"\n")
-            flog.write("PARTIAL END: "+str(partial_end)+"\n")
             bio_dna_seq = Seq(dna_seq)
             if  cds_strand  == "+" :
                 trans_dna_seq = bio_dna_seq.translate()
             else :
                 trans_dna_seq = bio_dna_seq.reverse_complement().translate()
-            flog.write("TRANSLATED DNA SEQUENCE:\n")
+            flog.write("Translated DNA sequence:\n")
             flog.write(str(trans_dna_seq))
             flog.write("\n")
-            print
             trans_dna_seq_nostop = str(trans_dna_seq)
             if partial_end == False :
                 trans_dna_seq_nostop = str(trans_dna_seq)[:-1]
@@ -361,7 +368,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         flog.write("Error: translated sequence and protein sequence are too different")
                         sys.exit("Error: translated sequence and protein sequence are too different")
             else :
-                flog.write("Sequences are identical")
+                flog.write("OK. Sequences are identical.\n")
                 flag_identical = True
 
 
@@ -375,6 +382,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     #sequence = str(seq_record.seq)
 
     # search patterns
+    flog.write("\nPattern search:\n")
     pattern_nb = 1
     for pattern in [pattern1,pattern2]:
         flog.write("\nPattern "+pattern+":\n")
@@ -408,29 +416,34 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 debug = ""
                 for i in seq_dna:
                     debug += raw_seq[i]
-                flog.write("DEBUG DNA SEQUENCE:\n")
-                flog.write(debug)
-                flog.write("\n")
+                #flog.write("DEBUG DNA SEQUENCE:\n")
+                #flog.write(debug)
+                #flog.write("\n")
                 bio_debug = Seq(debug)
-                flog.write("CDS STRAND :"+cds_strand+"\n")
+                #flog.write("CDS STRAND :"+cds_strand+"\n")
                 if  cds_strand  == "+" :
                     trans_debug = bio_debug.translate()
                 else :
                     trans_debug = bio_debug.reverse_complement().translate()
-                flog.write("DEBUG TRANSLATED DNA SEQUENCE:\n")
-                flog.write(str(trans_debug))
-                flog.write("\n")
+                #flog.write("DEBUG TRANSLATED DNA SEQUENCE:\n")
+                #flog.write(str(trans_debug))
+                #flog.write("\n")
                 shift_s = 19
                 st = match.span()[0]
                 en = match.span()[1]
-                flog.write("debug start end = "+str(st) + ","+str(en)+"\n")
+                flog.write("Protein start end = "+str(st) + ","+str(en)+"\n")
                 phase = 0
                 if cds_strand  == "-" :
+                    flog.write("Protein is on reverse strand.\n")
                     st = len(sequence) - match.span()[1] + 1
                     en = st + match.span()[1] - match.span()[0]
+
                     if partial_end == True :
-                                en = en - 1
-                                phase = 2
+                        flog.write("Protein is partial at the end.\n")
+                        flog.write("First cds phase "+str(phase_first_cds)+"\n")
+                        flog.write("Last cds phase "+str(phase_last_cds)+"\n")
+                        en = en - 1
+                        phase = 2
 
                     # st + x = en - 19 => x = end - 19 -st
                     shift_s = en - 19 - st
@@ -444,13 +457,13 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + phase]]
                 else :
                     for pos_prot in range(st, st + shift_s):
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + phase]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + phase]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + phase]]
                     for pos_prot in range(st + shift_s + 1, en):
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + phase]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + phase]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + phase]]
 
                 for aa in zf:
                     flog.write(aa+"  ")
