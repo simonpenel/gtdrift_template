@@ -257,18 +257,20 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                            flog.write("       Phase is > 0 ("+first_cds[3]+"), sequence is partial at end\n")
                            phase_last_cds = int(first_cds[3])
                        if cds_strand  == "+" :
+                           flog.write("       Increase start_prot "+first_cds[3]+"\n")
                            start_prot += int(first_cds[3])
                        else :
+                           flog.write("       DEBUG Increase start_prot "+first_cds[3]+"\n")
                            flog.write("       Increase start_prot "+first_cds[3]+"\n")
-
-                           if int(first_cds[3]) == 1 :
-                               start_prot += 1
-                           else :
-                               start_prot += 2
+                           start_prot += int(first_cds[3])
+                           #if int(first_cds[3]) == 1 :
+                           #   start_prot += 1
+                           #else :
+                        #   start_prot += 2
                 else :
                     # complete sequence, chek that cds phase is 0
                     if int(first_cds[3]) > 0 :
-                        sys.exit("probleme phase cds")
+                        flog.write("\n*************************\nPHASE PROBLEM WITH THE FIRST CDS\n*************************\n")
                 if last_exon[0] == last_cds[0] and last_exon[1] == last_cds[1] :
                    flog.write("Note : last exon is fully covered by last CDS, potentialy partial sequence\n")
                    if int(last_cds[3]) > 0 :
@@ -278,20 +280,22 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                            phase_last_cds = int(last_cds[3])
                        else :
                            partial_start = True
-                          flog.write("       Phase is > 0 ("+first_cds[3]+"), sequence is partial at start\n")
+                           flog.write("       Phase is > 0 ("+first_cds[3]+"), sequence is partial at start\n")
                            phase_first_cds = int(last_cds[3])
-                       flog.write("       Phase is > 0, sequence is partial.\n")
                        if cds_strand  == "+" :
+                           flog.write("       Decrease end_prot "+last_cds[3]+"\n")
                            end_prot -= int(last_cds[3])
                        else :
-                           if int(last_cds[3]) == 1 :
-                               end_prot -= 1
-                           else :
-                               end_prot -= 2
+                           flog.write("       Decrease end_prot "+last_cds[3]+"\n")
+                           end_prot -= int(last_cds[3])
+                           #if int(last_cds[3]) == 1 :
+                           #     end_prot -= 1
+                           #else :
+                           #   end_prot -= 2
                 else :
                     # complete sequence, chek that cds phase is 0
                     if int(last_cds[3]) > 0 :
-                        sys.exit("probleme phase cds")
+                        flog.write("\n*************************\nPHASE PROBLEM WITH THE LAST CDS\n*************************\n")                        
                 flog.write("Sequence  is partial at the start : "+str(partial_start)+"\n")
                 flog.write("Sequence  is partial at the end: "+str(partial_end)+"\n")
                 flog.write("First CDS phase: "+str(phase_first_cds)+"\n")
