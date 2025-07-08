@@ -223,6 +223,11 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
 
                 # Partial sequences
                 # Check if the first cds covers entirely the first exon
+
+                #            | ex1   | int1 | ex2 | int 
+                #         .................................
+                #complete       |cds1|      | cds2|
+                #               ^
                 if  cds_strand  == "+" :
                     first_exon = exon_features[0]
                     last_exon = exon_features[len(exon_features)-1]
@@ -235,21 +240,25 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                    if int(first_cds[3]) > 0 :
                        if cds_strand  == "+" :
                            partial_start = True
+                           flog.write("       Phase is > 0, sequence is partial at start\n")
                            phase_first_cds = int(first_cds[3])
                        else :
                            partial_end = True
+                           flog.write("       Phase is > 0, sequence is partial at end\n")
                            phase_last_cds = int(first_cds[3])
                        flog.write("       Phase is > 0, sequence is partial\n")
                        if cds_strand  == "+" :
                            start_prot += int(first_cds[3])
                        else :
+                           flog.write("       Increase start_prot "+first_cds[3]+"\n")
+
                            if int(first_cds[3]) == 1 :
                                start_prot += 1
                            else :
                                start_prot += 2
 
                 if last_exon[0] == last_cds[0] and last_exon[1] == last_cds[1] :
-                   flog.write("Note : last exon is fully covered by first CDS, potentialy partial sequence\n")
+                   flog.write("Note : last exon is fully covered by last CDS, potentialy partial sequence\n")
                    if int(last_cds[3]) > 0 :
                        if cds_strand  == "+" :
                            partial_end = True
@@ -272,23 +281,16 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 flog.write("exons : ")
                 flog.write("Protein range (after check for partials) = "+str(start_prot)+"-"+str(end_prot)+"\n")
                 if cds_strand == "+" :
+                    # brin direct
                     num_exon = 1
                     for exon_feat in exon_features:
                         start = int(exon_feat[0])
                         end = int(exon_feat[1])
                         flog.write("["+str(start)+"-"+str(end)+"]")
                         # get the postion of exon from the cds start to the cds end
-                        #if num_exon == 1 :
-                        if 0 == 1 :
-                            for pos in range(start-1, end + 1):
-                                if pos >= start_prot - 1 and pos < end_prot :
-                                    sequence_pos.append(pos)
-                        else :
-                            for pos in range(start, end + 1):
-                                #if pos >= start_prot - 1 and pos < end_prot :
-                                #    sequence_pos.append(pos)
-                                if pos >= start_prot and pos <= end_prot :
-                                    sequence_pos.append(pos-1) # pos -1 car l'indexation commence à 0 dans le fichier qui contient l'adn
+                        for pos in range(start, end + 1):
+                            if pos >= start_prot and pos <= end_prot :
+                                sequence_pos.append(pos-1) # pos -1 car l'indexation commence à 0 dans le fichier qui contient l'adn
                         num_exon += 1
                 else :
                     # brin complementaire
@@ -300,21 +302,9 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         end = int(exon_feat[0])
                         flog.write("["+str(start)+"-"+str(end)+"]")
                         # get the postion of exon from the cds start to the cds end
-                        #if num_exon == nb_exons :
-                        if 0 == 1 :
-                            #for pos in range(start -1 , end -1 , -1):
-                            for pos in range(start  , end -1 , -1):
-                                if pos >= start_prot - 1  and pos < end_prot :
-                                    sequence_pos.append(pos)
-                        #elif num_exon == 1:
-                        elif 2 == 1:
-                              for pos in range(start   , end -2 , -1):
-                                if pos >= start_prot - 1  and pos < end_prot :
-                                    sequence_pos.append(pos)
-                        else :
-                            for pos in range(start , end -1 , -1):
-                                if pos >= start_prot   and pos <= end_prot :
-                                    sequence_pos.append(pos - 1) # pos -1 a cause de l'indexation qui commence a 0
+                        for pos in range(start , end -1 , -1):
+                            if pos >= start_prot   and pos <= end_prot :
+                                sequence_pos.append(pos - 1) # pos -1 a cause de l'indexation qui commence a 0
                         num_exon +=1
                     reverse_seq=list(reversed(sequence_pos))
                     sequence_pos = reverse_seq
@@ -368,7 +358,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         flog.write("Error: translated sequence and protein sequence are too different")
                         sys.exit("Error: translated sequence and protein sequence are too different")
             else :
-                flog.write("OK. Sequences are identical.\n")
+                flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
                 flag_identical = True
 
 
