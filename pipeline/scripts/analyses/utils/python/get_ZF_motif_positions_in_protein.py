@@ -250,13 +250,12 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                    if int(first_cds[3]) > 0 :
                        if cds_strand  == "+" :
                            partial_start = True
-                           flog.write("       Phase is > 0, sequence is partial at start\n")
+                           flog.write("       Phase is > 0 ("+first_cds[3]+"), sequence is partial at start\n")
                            phase_first_cds = int(first_cds[3])
                        else :
                            partial_end = True
-                           flog.write("       Phase is > 0, sequence is partial at end\n")
+                           flog.write("       Phase is > 0 ("+first_cds[3]+"), sequence is partial at end\n")
                            phase_last_cds = int(first_cds[3])
-                       flog.write("       Phase is > 0, sequence is partial\n")
                        if cds_strand  == "+" :
                            start_prot += int(first_cds[3])
                        else :
@@ -275,9 +274,11 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                    if int(last_cds[3]) > 0 :
                        if cds_strand  == "+" :
                            partial_end = True
+                           flog.write("       Phase is > 0 ("+last_cds[3]+"), sequence is partial at end\n")
                            phase_last_cds = int(last_cds[3])
                        else :
                            partial_start = True
+                          flog.write("       Phase is > 0 ("+first_cds[3]+"), sequence is partial at start\n")
                            phase_first_cds = int(last_cds[3])
                        flog.write("       Phase is > 0, sequence is partial.\n")
                        if cds_strand  == "+" :
