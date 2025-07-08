@@ -204,6 +204,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
         unique_contig_mrna = contig_mrna_dico.keys()
         num_cds = 1
         for contig_mrna in unique_contig_mrna:
+            debug_genome_seq  = dico_genome[contig_mrna[0]]
+            debug_raw_seq = debug_genome_seq.seq
             sequence_pos = []
             if (contig_mrna[0],contig_mrna[1]) in dico_exons_pos:
                 flog.write("Transcrit "+str(num_cds) + ": " +contig_mrna[0]+" "+contig_mrna[1]+"\n")
@@ -255,6 +257,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 # frame 2      ^
                 #              4
 
+                # 123456789012345678901234567890
+                #        | 8 : CDS frame =1
+                #         ^ start 9
+                #avant | 6 = 9 -3
                 if  cds_strand  == "+" :
                     first_exon = exon_features[0]
                     last_exon = exon_features[len(exon_features)-1]
@@ -279,7 +285,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                        else :
                            flog.write("       DEBUG Increase start_prot "+first_cds[3]+"\n")
                            flog.write("       Increase start_prot "+first_cds[3]+"\n")
-                           start_prot += int(first_cds[3])
+                           #start_prot += int(first_cds[3])
+                           #start_prot -= int(first_cds[3])
+                           #start_prot += 3
+                           start_prot += 3
                            #if int(first_cds[3]) == 1 :
                            #   start_prot += 1
                            #else :
@@ -345,8 +354,11 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         end = int(exon_feat[0])
                         flog.write("["+str(start)+"-"+str(end)+"]")
                         # get the postion of exon from the cds start to the cds end
+                        flog.write("\ndebug range "+str(start)+ " "+str(end)+"-1 \n")
                         for pos in range(start , end -1 , -1):
+                            flog.write("pos "+str(pos) +" ?  >= "+str(start_prot)+" <= "+str(end_prot)+"\n")
                             if pos >= start_prot   and pos <= end_prot :
+                                flog.write("ADD "+ str(pos-1)+" : "+ debug_raw_seq[pos-1]+"\n")
                                 sequence_pos.append(pos - 1) # pos -1 a cause de l'indexation qui commence a 0
                         num_exon +=1
                     reverse_seq=list(reversed(sequence_pos))
@@ -475,8 +487,11 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         flog.write("Protein is partial at the end.\n")
                         flog.write("First cds frame "+str(frame_first_cds)+"\n")
                         flog.write("Last cds frame "+str(frame_last_cds)+"\n")
+                        #en = en - 1
+                        #frame = 2
                         en = en - 1
-                        frame = 2
+                        st = st - 1
+                        #frame = 3
 
                     # st + x = en - 19 => x = end - 19 -st
                     shift_s = en - 19 - st
