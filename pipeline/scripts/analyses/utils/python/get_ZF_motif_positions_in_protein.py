@@ -224,10 +224,15 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 # Partial sequences
                 # Check if the first cds covers entirely the first exon
 
-                #            | ex1   | int1 | ex2 | int 
-                #         .................................
+                # brin direct
+                #            | ex1   | int1 | ex2 | int
+                #        ...123456789012345678901234567890
                 #complete       |cds1|      | cds2|
                 #               ^
+                #               5
+
+
+
                 if  cds_strand  == "+" :
                     first_exon = exon_features[0]
                     last_exon = exon_features[len(exon_features)-1]
@@ -256,7 +261,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                                start_prot += 1
                            else :
                                start_prot += 2
-
+                else :
+                    # complete sequence, chek that cds phase is 0
+                    if int(first_cds[3]) > 0 :
+                        sys.exit("probleme phase cds")
                 if last_exon[0] == last_cds[0] and last_exon[1] == last_cds[1] :
                    flog.write("Note : last exon is fully covered by last CDS, potentialy partial sequence\n")
                    if int(last_cds[3]) > 0 :
@@ -274,6 +282,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                                end_prot -= 1
                            else :
                                end_prot -= 2
+                else :
+                    # complete sequence, chek that cds phase is 0
+                    if int(last_cds[3]) > 0 :
+                        sys.exit("probleme phase cds")
                 flog.write("Sequence  is partial at the start : "+str(partial_start)+"\n")
                 flog.write("Sequence  is partial at the end: "+str(partial_end)+"\n")
                 flog.write("First CDS phase: "+str(phase_first_cds)+"\n")
