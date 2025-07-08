@@ -230,8 +230,13 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 #complete       |cds1|      | cds2|
                 #               ^
                 #               5
-
-
+                #partial     |    cds1|      | cds2|
+                # phase 0    ^
+                #            2
+                # phase 1     ^
+                #             3
+                # phase 2      ^
+                #              4
 
                 if  cds_strand  == "+" :
                     first_exon = exon_features[0]
