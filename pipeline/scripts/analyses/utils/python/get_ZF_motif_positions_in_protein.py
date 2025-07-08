@@ -41,6 +41,23 @@ def diff_seq(s1:str,s2:str):
 # dico_exons_pos: (contig, mrna) -> liste des (start,end,strand) des exons
 # dico_cds_pos:   (contig, mrna) -> liste des (start,end,strand) des cds
 # dico_prot:      protein name   -> liste des (contig,mrna)
+#
+# Notes on GFF3 Fields:
+#
+# Fields must be tab-separated. Also, all but the final field in each feature line must contain a value; "empty" columns should be denoted with a '.'
+#
+#     seqname - name of the chromosome or scaffold; chromosome names can be given with or without the 'chr' prefix. Important note: the seqname must be one used within Ensembl, i.e. a standard chromosome name or an Ensembl identifier such as a scaffold ID, without any additional content such as species or assembly. See the example GFF output below.
+#     source - name of the program that generated this feature, or the data source (database or project name)
+#     feature - feature type name, e.g. Gene, Variation, Similarity
+#     start - Start position* of the feature, with sequence numbering starting at 1.
+#     end - End position* of the feature, with sequence numbering starting at 1.
+#     score - A floating point value.
+#     strand - defined as + (forward) or - (reverse).
+#     frame - One of '0', '1' or '2'. '0' indicates that the first base of the feature is the first base of a codon, '1' that the second base is the first base of a codon, and so on..
+#     attribute - A semicolon-separated list of tag-value pairs, providing additional information about each feature.
+#
+# *- Both, the start and end position are included. For example, setting start-end to 1-2 describes two bases, the first and second base in the sequence.
+#
 #-------------------------------------------------------------------------
 def processExonsGff(gff:str):
     with open(gff, 'r') as reader:
@@ -284,10 +301,14 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                            frame_first_cds = int(last_cds[3])
                        if cds_strand  == "+" :
                            flog.write("       Decrease end_prot "+last_cds[3]+"\n")
-                           end_prot -= int(last_cds[3])
+                           #end_prot -= int(last_cds[3])
+                           end_prot -= 3
+                           end_prot += int(last_cds[3])
                        else :
                            flog.write("       Decrease end_prot "+last_cds[3]+"\n")
-                           end_prot -= int(last_cds[3])
+                           #end_prot -= int(last_cds[3])
+                           end_prot -= 3
+                           end_prot += int(last_cds[3])
                            #if int(last_cds[3]) == 1 :
                            #     end_prot -= 1
                            #else :
