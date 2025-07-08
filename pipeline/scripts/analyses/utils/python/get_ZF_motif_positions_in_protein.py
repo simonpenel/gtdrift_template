@@ -184,6 +184,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     flog.write("Sequence:\n")
     flog.write(sequence)
     flog.write("\n")
+    protein_length = len(sequence)
     dico_sequence[seq_record.id] = []
     partial_start = False
     partial_end = False
@@ -354,11 +355,11 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         end = int(exon_feat[0])
                         flog.write("["+str(start)+"-"+str(end)+"]")
                         # get the postion of exon from the cds start to the cds end
-                        flog.write("\ndebug range "+str(start)+ " "+str(end)+"-1 \n")
+                        #flog.write("\ndebug range "+str(start)+ " "+str(end)+"-1 \n")
                         for pos in range(start , end -1 , -1):
-                            flog.write("pos "+str(pos) +" ?  >= "+str(start_prot)+" <= "+str(end_prot)+"\n")
+                            #flog.write("pos "+str(pos) +" ?  >= "+str(start_prot)+" <= "+str(end_prot)+"\n")
                             if pos >= start_prot   and pos <= end_prot :
-                                flog.write("ADD "+ str(pos-1)+" : "+ debug_raw_seq[pos-1]+"\n")
+                                #flog.write("ADD "+ str(pos-1)+" : "+ debug_raw_seq[pos-1]+"\n")
                                 sequence_pos.append(pos - 1) # pos -1 a cause de l'indexation qui commence a 0
                         num_exon +=1
                     reverse_seq=list(reversed(sequence_pos))
@@ -369,6 +370,16 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 sys.exit("Pas d'exons.")
 
             flog.write("DNA sequence length :"+str(len(sequence_pos))+"\n")
+            intdiv = int(len(sequence_pos) / 3)
+            if intdiv * 3 == len(sequence_pos):
+                flog.write("OK : DNA sequence length is multiple of 3\n")
+            else :
+                flog.write("WARNING : DNA sequence length is not multiple of 3\n")
+
+            if len(sequence_pos) == protein_length * 3 :
+                flog.write("OK : DNA sequence length is 3 x "+str(protein_length)+"\n")
+            else :
+                flog.write("WARNING : DNA sequence length is not  3 x "+str(protein_length)+"\n")
             # get the dna sequence of the contig
             genome_seq  = dico_genome[contig_mrna[0]]
             raw_seq = genome_seq.seq
@@ -495,6 +506,9 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
 
                     # st + x = en - 19 => x = end - 19 -st
                     shift_s = en - 19 - st
+                    #if partial_end == True :
+                    #    shift_s -= 1
+                    shift_s -= 1
                 flog.write("debug start end = "+str(st) + ","+str(en)+"\n")
 
                 # build the dna sequence of the matching part of the protein
