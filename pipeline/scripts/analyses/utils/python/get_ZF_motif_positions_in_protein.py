@@ -75,7 +75,7 @@ def processExonsGff(gff:str):
                 start=split_line[3]
                 end=split_line[4]
                 strand=split_line[6]
-                phase=split_line[7]
+                frame=split_line[7]
                 cds_gene_id = "none"
                 prot_name = "none"
                 cds_info   = split_line[8]
@@ -123,10 +123,10 @@ def processExonsGff(gff:str):
                         dico_prot[prot_name] = []
                         dico_prot[prot_name].append([contig,parent])
                     if (contig,parent) in dico_cds_pos:
-                        dico_cds_pos[(contig,parent)].append([start,end,strand,phase])
+                        dico_cds_pos[(contig,parent)].append([start,end,strand,frame])
                     else :
                         dico_cds_pos[(contig,parent)] = []
-                        dico_cds_pos[(contig,parent)].append([start,end,strand,phase])
+                        dico_cds_pos[(contig,parent)].append([start,end,strand,frame])
 
 
 # output file
@@ -174,10 +174,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     # identical. If true, the matching should be true too.
     # (used to check the modified pattern results)
     flag_identical = False
-    # info on phase of first and last cds. This will be useful
+    # info on frame of first and last cds. This will be useful
     # if sequence is partial
-    phase_first_cds = 0
-    phase_last_cds = 0
+    frame_first_cds = 0
+    frame_last_cds = 0
     if seq_record.id in dico_prot:
         contig_mrna_dico  = {}
         # Get the uniques couples (contig, mrna) associated to the protein
@@ -198,8 +198,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 for cds in cds_feat:
                     start = int(cds[0])
                     end = int(cds[1])
-                    phase = int(cds[3])
-                    flog.write("["+str(start)+"-"+str(end)+"] ("+str(phase)+") ")
+                    frame = int(cds[3])
+                    flog.write("["+str(start)+"-"+str(end)+"] ("+str(frame)+") ")
                     if cds[2] != cds_strand :
                         sys.exit("Error: different strands")
                 flog.write("\n")
@@ -231,11 +231,11 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 #               ^
                 #               5
                 #partial     |    cds1|      | cds2|
-                # phase 0    ^
+                # frame 0    ^
                 #            2
-                # phase 1     ^
+                # frame 1     ^
                 #             3
-                # phase 2      ^
+                # frame 2      ^
                 #              4
 
                 if  cds_strand  == "+" :
@@ -250,12 +250,12 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                    if int(first_cds[3]) > 0 :
                        if cds_strand  == "+" :
                            partial_start = True
-                           flog.write("       Phase is > 0 ("+first_cds[3]+"), sequence is partial at start\n")
-                           phase_first_cds = int(first_cds[3])
+                           flog.write("       frame is > 0 ("+first_cds[3]+"), sequence is partial at start\n")
+                           frame_first_cds = int(first_cds[3])
                        else :
                            partial_end = True
-                           flog.write("       Phase is > 0 ("+first_cds[3]+"), sequence is partial at end\n")
-                           phase_last_cds = int(first_cds[3])
+                           flog.write("       frame is > 0 ("+first_cds[3]+"), sequence is partial at end\n")
+                           frame_last_cds = int(first_cds[3])
                        if cds_strand  == "+" :
                            flog.write("       Increase start_prot "+first_cds[3]+"\n")
                            start_prot += int(first_cds[3])
@@ -268,20 +268,20 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                            #else :
                         #   start_prot += 2
                 else :
-                    # complete sequence, chek that cds phase is 0
+                    # complete sequence, chek that cds frame is 0
                     if int(first_cds[3]) > 0 :
-                        flog.write("\n*************************\nPHASE PROBLEM WITH THE FIRST CDS\n*************************\n")
+                        flog.write("\n*************************\nframe PROBLEM WITH THE FIRST CDS\n*************************\n")
                 if last_exon[0] == last_cds[0] and last_exon[1] == last_cds[1] :
                    flog.write("Note : last exon is fully covered by last CDS, potentialy partial sequence\n")
                    if int(last_cds[3]) > 0 :
                        if cds_strand  == "+" :
                            partial_end = True
-                           flog.write("       Phase is > 0 ("+last_cds[3]+"), sequence is partial at end\n")
-                           phase_last_cds = int(last_cds[3])
+                           flog.write("       frame is > 0 ("+last_cds[3]+"), sequence is partial at end\n")
+                           frame_last_cds = int(last_cds[3])
                        else :
                            partial_start = True
-                           flog.write("       Phase is > 0 ("+first_cds[3]+"), sequence is partial at start\n")
-                           phase_first_cds = int(last_cds[3])
+                           flog.write("       frame is > 0 ("+first_cds[3]+"), sequence is partial at start\n")
+                           frame_first_cds = int(last_cds[3])
                        if cds_strand  == "+" :
                            flog.write("       Decrease end_prot "+last_cds[3]+"\n")
                            end_prot -= int(last_cds[3])
@@ -293,13 +293,13 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                            #else :
                            #   end_prot -= 2
                 else :
-                    # complete sequence, chek that cds phase is 0
+                    # complete sequence, chek that cds frame is 0
                     if int(last_cds[3]) > 0 :
-                        flog.write("\n*************************\nPHASE PROBLEM WITH THE LAST CDS\n*************************\n")                        
+                        flog.write("\n*************************\nframe PROBLEM WITH THE LAST CDS\n*************************\n")
                 flog.write("Sequence  is partial at the start : "+str(partial_start)+"\n")
                 flog.write("Sequence  is partial at the end: "+str(partial_end)+"\n")
-                flog.write("First CDS phase: "+str(phase_first_cds)+"\n")
-                flog.write("Last CDS phase: "+str(phase_last_cds)+"\n")
+                flog.write("First CDS frame: "+str(frame_first_cds)+"\n")
+                flog.write("Last CDS frame: "+str(frame_last_cds)+"\n")
                 flog.write("exons : ")
                 flog.write("Protein range (after check for partials) = "+str(start_prot)+"-"+str(end_prot)+"\n")
                 if cds_strand == "+" :
@@ -444,7 +444,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 st = match.span()[0]
                 en = match.span()[1]
                 flog.write("Protein start end = "+str(st) + ","+str(en)+"\n")
-                phase = 0
+                frame = 0
                 if cds_strand  == "-" :
                     flog.write("Protein is on reverse strand.\n")
                     st = len(sequence) - match.span()[1] + 1
@@ -452,10 +452,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
 
                     if partial_end == True :
                         flog.write("Protein is partial at the end.\n")
-                        flog.write("First cds phase "+str(phase_first_cds)+"\n")
-                        flog.write("Last cds phase "+str(phase_last_cds)+"\n")
+                        flog.write("First cds frame "+str(frame_first_cds)+"\n")
+                        flog.write("Last cds frame "+str(frame_last_cds)+"\n")
                         en = en - 1
-                        phase = 2
+                        frame = 2
 
                     # st + x = en - 19 => x = end - 19 -st
                     shift_s = en - 19 - st
@@ -464,18 +464,18 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 # build the dna sequence of the matching part of the protein
                 if modified == False :
                     for pos_prot in range(st, en):
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + phase]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + phase]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + phase]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + frame]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + frame]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + frame]]
                 else :
                     for pos_prot in range(st, st + shift_s):
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + phase]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + phase]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + phase]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + frame]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + frame]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + frame]]
                     for pos_prot in range(st + shift_s + 1, en):
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + phase]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + phase]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + phase]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + frame]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + frame]]
+                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + frame]]
 
                 for aa in zf:
                     flog.write(aa+"  ")
