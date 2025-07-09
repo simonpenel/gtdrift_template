@@ -155,7 +155,7 @@ f.write("SeqID;Pattern;Pattern num;ZF num;Start in prot;End in prot;Length;unifo
 fwarn = open(args.warnings, "w")
 
 # load dna sequence
-print("load dna sequence...")
+print("Load dna sequence...")
 dico_genome = SeqIO.index(args.dna, 'fasta')
 print("Ok.")
 
@@ -284,8 +284,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                            flog.write("       Increase start_prot "+first_cds[3]+"\n")
                            start_prot += int(first_cds[3])
                        else :
-                           flog.write("       DEBUG Increase start_prot "+first_cds[3]+"\n")
-                           flog.write("       Increase start_prot "+first_cds[3]+"\n")
+                           flog.write("       Increase start_prot of "+str(3)+"\n")
+                           # Pourquoi?
                            #start_prot += int(first_cds[3])
                            #start_prot -= int(first_cds[3])
                            #start_prot += 3
@@ -296,8 +296,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         #   start_prot += 2
                 else :
                     # complete sequence, chek that cds frame is 0
-                    if int(first_cds[3]) > 0 :
-                        flog.write("\n*************************\nframe PROBLEM WITH THE FIRST CDS\n*************************\n")
+                    if int(first_cds[3]) > 0 and cds_strand == "+":
+                        flog.write("\n*************************\n POTENTIAL FRAME  PROBLEM WITH THE FIRST CDS\n*************************\n")
                 if last_exon[0] == last_cds[0] and last_exon[1] == last_cds[1] :
                    flog.write("Note : last exon is fully covered by last CDS, potentialy partial sequence\n")
                    if int(last_cds[3]) > 0 :
@@ -313,7 +313,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                            flog.write("       Decrease end_prot "+last_cds[3]+"\n")
                            #end_prot -= int(last_cds[3])
                            end_prot -= 3
-                           end_prot += int(last_cds[3])
+                           # Pourquoi
+                           ####end_prot += int(last_cds[3])
                        else :
                            flog.write("       Decrease end_prot "+last_cds[3]+"\n")
                            #end_prot -= int(last_cds[3])
@@ -325,16 +326,19 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                            #   end_prot -= 2
                 else :
                     # complete sequence, chek that cds frame is 0
-                    if int(last_cds[3]) > 0 :
-                        flog.write("\n*************************\nframe PROBLEM WITH THE LAST CDS\n*************************\n")
+                    if int(last_cds[3]) > 0 and cds_strand == "-" :
+                        flog.write("\n*************************\nPOTENTIAL FRAME PROBLEM WITH THE LAST CDS\n*************************\n")
                 flog.write("Sequence  is partial at the start : "+str(partial_start)+"\n")
                 flog.write("Sequence  is partial at the end: "+str(partial_end)+"\n")
                 flog.write("First CDS frame: "+str(frame_first_cds)+"\n")
                 flog.write("Last CDS frame: "+str(frame_last_cds)+"\n")
-                flog.write("exons : ")
                 flog.write("Protein range (after check for partials) = "+str(start_prot)+"-"+str(end_prot)+"\n")
+                flog.write("exons : ")
+
+                # Build the array sequence_pos containing the positions of
+                # the exons in the dna sequence
                 if cds_strand == "+" :
-                    # brin direct
+                    # direct strand
                     num_exon = 1
                     for exon_feat in exon_features:
                         start = int(exon_feat[0])
@@ -346,7 +350,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                                 sequence_pos.append(pos-1) # pos -1 car l'indexation commence à 0 dans le fichier qui contient l'adn
                         num_exon += 1
                 else :
-                    # brin complementaire
+                    # reverse strand
                     reverse = list(reversed(exon_features))
                     num_exon = 1
                     nb_exons = len(exon_features)
@@ -457,12 +461,12 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 modified = True
                 zf = sequence[match.span()[0] : match.span()[0]+19] + sequence[match.span()[0] + 20 : match.span()[1]]
             flog.write("Modified sequence : "+zf+"\n")
-            print(seq_record.id+";"+str(match_nb)+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+repr(match.group()))
+            print("Processing match "+str(match_nb))
+            print(seq_record.id+";"+str(match_nb)+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+repr(match.group())+"\n")
             for seq_genomic in dico_sequence[seq_record.id]:
                 flog.write(seq_genomic[0][0]+" "+ seq_genomic[0][1]+":\n")
                 # get the dna sequence of the contig
                 genome_seq  = dico_genome[seq_genomic[0][0]]
-                print(genome_seq)
                 raw_seq =genome_seq.seq
                 # get the positions sequence of the protein
                 seq_dna = seq_genomic[1]
@@ -527,13 +531,14 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + frame]]
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + frame]]
 
+                flog.write("CDS STRAND :"+cds_strand+"\n")
+                flog.write("Prot:   ")
                 for aa in zf:
                     flog.write(aa+"  ")
                 flog.write("\n")
+                flog.write("DNA:    ")
                 flog.write(raw_seq_extract+"\n")
                 bioseq_dna = Seq(raw_seq_extract)
-
-                flog.write("CDS STRAND :"+cds_strand+"\n")
                 if  cds_strand  == "+" :
                     bioseq_prot = bioseq_dna.translate()
                     compl = bioseq_dna
@@ -541,7 +546,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     bioseq_prot = bioseq_dna.reverse_complement().translate()
                     compl = bioseq_dna.reverse_complement()
                 #bioseq_prot = compl.translate()
-                flog.write("Translation:\n")
+                flog.write("Trans.: ")
                 for aa in bioseq_prot:
                     flog.write(aa+"  ")
                 flog.write("\n")
