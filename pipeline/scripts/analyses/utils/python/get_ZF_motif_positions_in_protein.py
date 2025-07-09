@@ -414,12 +414,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             trans_dna_seq_nostop = str(trans_dna_seq)
             if partial_end == False :
                 trans_dna_seq_nostop = str(trans_dna_seq)[:-1]
-            # if partial_end == False and cds_strand == "+":
-            #     trans_dna_seq_nostop = str(trans_dna_seq)[:-1]
-            # if partial_start == False and cds_strand == "-":
-            #     trans_dna_seq_nostop = str(trans_dna_seq)[:-1]
             if trans_dna_seq_nostop != sequence :
-
                 flog.write("\n\n********\nWarning: translated sequence and protein sequence are different.\n")
                 flog.write(str(trans_dna_seq_nostop))
                 flog.write("\n")
@@ -430,7 +425,6 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 flog.write(str(len(str(sequence))))
                 flog.write("\n")
                 ratio = diff_seq(trans_dna_seq_nostop,sequence)
-                #ratio = SequenceMatcher(None,str(trans_dna_seq_nostop), str(sequence)).ratio()
                 flog.write("Match ratio  :"+str(ratio))
                 flog.write("\n********\n\n")
                 if ratio < 0.9 :
@@ -439,16 +433,11 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             else :
                 flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
                 flag_identical = True
-
-
             dico_sequence[seq_record.id].append((contig_mrna,sequence_pos))
             num_cds +=1
     else:
         print("Sequence inconnue.")
         sys.exit("Sequence inconnue.")
-
-    # get the protein sequence
-    #sequence = str(seq_record.seq)
 
     # search patterns
     flog.write("\nPattern search:\n")
@@ -480,23 +469,14 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 # get the positions sequence of the protein
                 seq_dna = seq_genomic[1]
                 raw_seq_extract = ""
-
-
                 debug = ""
                 for i in seq_dna:
                     debug += raw_seq[i]
-                #flog.write("DEBUG DNA SEQUENCE:\n")
-                #flog.write(debug)
-                #flog.write("\n")
                 bio_debug = Seq(debug)
-                #flog.write("CDS STRAND :"+cds_strand+"\n")
                 if  cds_strand  == "+" :
                     trans_debug = bio_debug.translate()
                 else :
                     trans_debug = bio_debug.reverse_complement().translate()
-                #flog.write("DEBUG TRANSLATED DNA SEQUENCE:\n")
-                #flog.write(str(trans_debug))
-                #flog.write("\n")
                 shift_s = 19
                 st = match.span()[0]
                 en = match.span()[1]
@@ -511,16 +491,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         flog.write("Protein is partial at the end.\n")
                         flog.write("First cds frame "+str(frame_first_cds)+"\n")
                         flog.write("Last cds frame "+str(frame_last_cds)+"\n")
-                        #en = en - 1
-                        #frame = 2
                         en = en - 1
                         st = st - 1
-                        #frame = 3
 
-                    # st + x = en - 19 => x = end - 19 -st
                     shift_s = en - 19 - st
-                    #if partial_end == True :
-                    #    shift_s -= 1
                     shift_s -= 1
                 flog.write("debug start end = "+str(st) + ","+str(en)+"\n")
 
@@ -554,7 +528,6 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 else :
                     bioseq_prot = bioseq_dna.reverse_complement().translate()
                     compl = bioseq_dna.reverse_complement()
-                #bioseq_prot = compl.translate()
                 flog.write("Trans.: ")
                 for aa in bioseq_prot:
                     flog.write(aa+"  ")
@@ -568,7 +541,6 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     sys.stderr.write(str(bioseq_prot))
                     sys.stderr.write("\n")
                     ratio = diff_seq(str(zf),str(bioseq_prot))
-                    #ratio = SequenceMatcher(None, str(zf), str(bioseq_prot)).ratio()
                     sys.stderr.write("Match ratio  :"+str(ratio))
                     sys.stderr.write("\n")
 
