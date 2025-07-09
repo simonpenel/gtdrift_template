@@ -126,7 +126,6 @@ def processExonsGff(gff:str):
                         if ref[0] == "locus_tag" :
                             cds_gene_id = ref[1]
                             flag_gene = 1
-
                 if cds_gene_id == "none":
                     fwarn.write("WARNING: Unable to get gene id : ")
                     fwarn.write(cds_info)
@@ -145,7 +144,6 @@ def processExonsGff(gff:str):
                         dico_cds_pos[(contig,parent)] = []
                         dico_cds_pos[(contig,parent)].append([start,end,strand,frame])
 
-
 # output file
 f = open(args.output, "w")
 # log file
@@ -159,19 +157,20 @@ print("Load dna sequence...")
 dico_genome = SeqIO.index(args.dna, 'fasta')
 print("Ok.")
 
+# initialise dictionnaries
 dico_exons_pos = {}     # Dico ["nom Contig","nom mrna"] => liste [start exon, end exon, strand]
 dico_cds_pos = {}		# Dico ["nom Contig","nom mrna"] => liste [start cds, end cds, strand]
 dico_prot = {}  		# Dico "nom protein" => liste ["nom Contig","nom mrna"]
 
 processExonsGff(args.gff)
 
+# define patterns
 pattern1 = r'..C..C.{12}H...H.{5}'
 pattern2 = r'..C..C.{12}H....H.{5}'
 
-
-
- # dictionnary dico_sequence:  protein name -> list of ((contig, mrna), sequence_positions)
+# dictionnary dico_sequence:  protein name -> list of ((contig, mrna), sequence_positions)
 dico_sequence = {}
+
 # Processing protein sequences
 for seq_record in SeqIO.parse(args.input, "fasta"):
     print("SEQUENCE "+seq_record.id)
@@ -188,33 +187,35 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     dico_sequence[seq_record.id] = []
     partial_start = False
     partial_end = False
-    # flag_identical: True if the translation is
-    # identical. If true, the matching should be true too.
+    # flag_identical: True if the translation of dna into protein is correct.
+    # if true, the matching sequences should be true too.
     # (used to check the modified pattern results)
     flag_identical = False
-    # info on frame of first and last cds. This will be useful
-    # if sequence is partial
+    # info on frame of first and last cds. Useful if sequence is partial
     frame_first_cds = 0
     frame_last_cds = 0
     if seq_record.id in dico_prot:
         contig_mrna_dico  = {}
-        # Get the uniques couples (contig, mrna) associated to the protein
+        # get the uniques couples (contig, mrna) associated to the protein
         for contig_mrna in dico_prot[seq_record.id]:
             if not (contig_mrna[0],contig_mrna[1]) in contig_mrna_dico:
                 contig_mrna_dico[(contig_mrna[0],contig_mrna[1])] = "ok"
         unique_contig_mrna = contig_mrna_dico.keys()
         num_cds = 1
+        # loop over (contig, mrna) couples associated to the protein
         for contig_mrna in unique_contig_mrna:
-            debug_genome_seq  = dico_genome[contig_mrna[0]]
-            debug_raw_seq = debug_genome_seq.seq
+            # initialise the array of exons positions in the contig
             sequence_pos = []
+            # if (contig, mrna) is in the dictionnary
             if (contig_mrna[0],contig_mrna[1]) in dico_exons_pos:
                 flog.write("Transcrit "+str(num_cds) + ": " +contig_mrna[0]+" "+contig_mrna[1]+"\n")
                 # get the cds associated to the couple (contig, mrna)
                 cds_feat = dico_cds_pos[(contig_mrna[0],contig_mrna[1])]
+                # get the strand of the first cds (should be the same for all)
                 cds_strand = cds_feat[0][2]
                 flog.write("Strand = "+cds_strand+"\n")
                 flog.write("CDS   : ")
+                # write cds info on log and check if all the cds have the same strand
                 for cds in cds_feat:
                     start = int(cds[0])
                     end = int(cds[1])
@@ -223,6 +224,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     if cds[2] != cds_strand :
                         sys.exit("Error: different strands")
                 flog.write("\n")
+                # get the range of the protein according to the cds ranges,
+                # and the first and last cds
                 if  cds_strand  == "+" :
                     first_cds = cds_feat[0]
                     last_cds = cds_feat[len(cds_feat)-1]
@@ -240,10 +243,9 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 # get the exons associated to the couple (contig, mrna)
                 exon_features = dico_exons_pos[(contig_mrna[0],contig_mrna[1])]
 
-
-                # Partial sequences
-                # Check if the first cds covers entirely the first exon
-
+                # processing partial sequences:
+                # ----------------------------
+                # check if the first cds covers entirely the first exon
                 # brin direct
                 #            | ex1   | int1 | ex2 | int
                 #        ...123456789012345678901234567890
@@ -258,10 +260,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 # frame 2      ^
                 #              4
 
-                # 123456789012345678901234567890
-                #        | 8 : CDS frame =1
-                #         ^ start 9
-                #avant | 6 = 9 -3
+                # get first and last exons
                 if  cds_strand  == "+" :
                     first_exon = exon_features[0]
                     last_exon = exon_features[len(exon_features)-1]
@@ -269,61 +268,69 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     last_exon = exon_features[0]
                     first_exon = exon_features[len(exon_features)-1]
 
+                # in case of first exon is fully covered by first cds
                 if first_exon[0] == first_cds[0] and first_exon[1] == first_cds[1] :
                    flog.write("Note : first exon is fully covered by first CDS, potentialy partial sequence\n")
+                   # in case of the frame of the first cds is > 0
                    if int(first_cds[3]) > 0 :
+                       # direct strand : get the frame of the first cds
                        if cds_strand  == "+" :
                            partial_start = True
                            flog.write("       frame is > 0 ("+first_cds[3]+"), sequence is partial at start\n")
                            frame_first_cds = int(first_cds[3])
+                       # reverse strand : get the frame of the last cds
                        else :
                            partial_end = True
                            flog.write("       frame is > 0 ("+first_cds[3]+"), sequence is partial at end\n")
                            frame_last_cds = int(first_cds[3])
+                       # direct strand : increase the start of protein by the frame
                        if cds_strand  == "+" :
                            flog.write("       Increase start_prot "+first_cds[3]+"\n")
                            start_prot += int(first_cds[3])
+                           #sys.exit("debuging 1")
                        else :
-                           flog.write("       Increase start_prot of "+str(3)+"\n")
+                       # reverse strand : increase the start of protein by 3
+                           flog.write("       Increase start_prot of "+first_cds[3]+ " + "+str(1)+"\n")
                            # Pourquoi?
-                           #start_prot += int(first_cds[3])
-                           #start_prot -= int(first_cds[3])
-                           #start_prot += 3
-                           start_prot += 3
-                           #if int(first_cds[3]) == 1 :
-                           #   start_prot += 1
-                           #else :
-                        #   start_prot += 2
+                           start_prot += int(first_cds[3])
+                           start_prot += 1
+                           #sys.exit("debuging 2")
                 else :
                     # complete sequence, chek that cds frame is 0
                     if int(first_cds[3]) > 0 and cds_strand == "+":
                         flog.write("\n*************************\n POTENTIAL FRAME  PROBLEM WITH THE FIRST CDS\n*************************\n")
+
+                # in case of last exon is fully covered by last cds
                 if last_exon[0] == last_cds[0] and last_exon[1] == last_cds[1] :
                    flog.write("Note : last exon is fully covered by last CDS, potentialy partial sequence\n")
+                   # in case of the frame of the last cds is > 0
                    if int(last_cds[3]) > 0 :
+                       # direct strand
                        if cds_strand  == "+" :
                            partial_end = True
                            flog.write("       frame is > 0 ("+last_cds[3]+"), sequence is partial at end\n")
+                           # get the frame of the last cds
                            frame_last_cds = int(last_cds[3])
+                       # reverse strand
                        else :
                            partial_start = True
                            flog.write("       frame is > 0 ("+first_cds[3]+"), sequence is partial at start\n")
+                           # get the frame of the last cds
                            frame_first_cds = int(last_cds[3])
+
+                       # direct strand
                        if cds_strand  == "+" :
-                           flog.write("       Decrease end_prot "+last_cds[3]+"\n")
-                           #end_prot -= int(last_cds[3])
+                           # decrease the end protein by 3
+                           flog.write("       Decrease end_prot "+str(3)+"\n")
                            end_prot -= 3
-                           # Pourquoi
-                           ####end_prot += int(last_cds[3])
+                           #sys.exit("debuging 4")
+                       # reverse strand
                        else :
                            flog.write("       Decrease end_prot "+last_cds[3]+"\n")
                            #end_prot -= int(last_cds[3])
                            end_prot -= 3
                            end_prot += int(last_cds[3])
-                           #if int(last_cds[3]) == 1 :
-                           #     end_prot -= 1
-                           #else :
-                           #   end_prot -= 2
+                           sys.exit("debuging 3")
                 else :
                     # complete sequence, chek that cds frame is 0
                     if int(last_cds[3]) > 0 and cds_strand == "-" :
@@ -373,12 +380,14 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 print("Pas d'exons")
                 sys.exit("Pas d'exons.")
 
+            # Check if dna sequence is ok
             flog.write("DNA sequence length :"+str(len(sequence_pos))+"\n")
             intdiv = int(len(sequence_pos) / 3)
             if intdiv * 3 == len(sequence_pos):
                 flog.write("OK : DNA sequence length is multiple of 3\n")
             else :
                 flog.write("WARNING : DNA sequence length is not multiple of 3\n")
+                sys.exit("DNA sequence length is not multiple of 3")
 
             if len(sequence_pos) == protein_length * 3 :
                 flog.write("OK : DNA sequence length is 3 x "+str(protein_length)+"\n")
