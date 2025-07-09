@@ -271,6 +271,11 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 # in case of first exon is fully covered by first cds
                 if first_exon[0] == first_cds[0] and first_exon[1] == first_cds[1] :
                    flog.write("Note : first exon is fully covered by first CDS, potentialy partial sequence\n")
+                   # debug
+                   # if cds_strand  == "+" :
+                   #         partial_start = True
+                   # else :
+                   #         partial_end = True
                    # in case of the frame of the first cds is > 0
                    if int(first_cds[3]) > 0 :
                        # direct strand : get the frame of the first cds
@@ -290,10 +295,11 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                            #sys.exit("debuging 1")
                        else :
                        # reverse strand : increase the start of protein by 3
-                           flog.write("       Increase start_prot of "+first_cds[3]+ " + "+str(1)+"\n")
+                           flog.write("       Increase start_prot of 3\n")
                            # Pourquoi?
-                           start_prot += int(first_cds[3])
-                           start_prot += 1
+                           #start_prot += int(first_cds[3])
+                           #start_prot += 1
+                           start_prot += 3
                            #sys.exit("debuging 2")
                 else :
                     # complete sequence, chek that cds frame is 0
@@ -303,6 +309,11 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 # in case of last exon is fully covered by last cds
                 if last_exon[0] == last_cds[0] and last_exon[1] == last_cds[1] :
                    flog.write("Note : last exon is fully covered by last CDS, potentialy partial sequence\n")
+                   # debug
+                   # if cds_strand  == "+" :
+                   #         partial_end = True
+                   # else :
+                   #         partial_start = True
                    # in case of the frame of the last cds is > 0
                    if int(last_cds[3]) > 0 :
                        # direct strand
@@ -328,9 +339,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                        else :
                            flog.write("       Decrease end_prot "+last_cds[3]+"\n")
                            #end_prot -= int(last_cds[3])
-                           end_prot -= 3
-                           end_prot += int(last_cds[3])
-                           sys.exit("debuging 3")
+                           #end_prot -= 3
+                           end_prot -= 2
+                           #end_prot += int(last_cds[3])
+                           #sys.exit("debuging 3")
                 else :
                     # complete sequence, chek that cds frame is 0
                     if int(last_cds[3]) > 0 and cds_strand == "-" :
@@ -387,7 +399,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 flog.write("OK : DNA sequence length is multiple of 3\n")
             else :
                 flog.write("WARNING : DNA sequence length is not multiple of 3\n")
-                sys.exit("DNA sequence length is not multiple of 3")
+                #sys.exit("DNA sequence length is not multiple of 3")
 
             if len(sequence_pos) == protein_length * 3 :
                 flog.write("OK : DNA sequence length is 3 x "+str(protein_length)+"\n")
