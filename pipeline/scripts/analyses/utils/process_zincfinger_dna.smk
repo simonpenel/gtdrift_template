@@ -95,6 +95,7 @@ directories, files = glob_wildcards(pathGTDriftResource + RESOURCES_DIR_NAME + "
 rule all:
     input:
         zincfinger_motif = expand(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/zf_results.csv",accession=ACCESSNB),
+        fasta_list = expand(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/fasta/list_of_files.txt",accession=ACCESSNB),
 
 # --------------------------------------
 # get_genome_seq_fasta
@@ -147,4 +148,22 @@ rule zincfinger_motif:
     shell:
         """
         python3 ../utils/python/get_ZF_motif_positions_in_protein.py -i {input.protein_seq} -g {input.gff}  -d {input.fasta_dna} -o {output.results} -l {output.log} -w {output.warnings}
+        """
+
+
+# -------------------------------------------------------
+# zincfinger_motif
+# analyse of the dna sequences of the zincfinger proteins
+# -------------------------------------------------------
+rule get_fasta:
+    """
+    get the fasta file of zinc fingers.
+    """
+    input:
+        results = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/zf_results.csv",
+    output:
+        fasta_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/fasta/list_of_files.txt",
+    shell:
+        """
+        python3 ../utils/python/extract_zf_fasta.py -i {input.results} -o {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}zinc_finger_dna/fasta
         """
