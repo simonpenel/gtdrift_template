@@ -11,8 +11,8 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.Phylo.TreeConstruction import DistanceCalculator
 from Bio import AlignIO
-from sklearn import cluster
-from sklearn.cluster import AgglomerativeClustering
+#from sklearn import cluster
+#from sklearn.cluster import AgglomerativeClustering
 
 parser = argparse.ArgumentParser()
 
@@ -112,6 +112,6 @@ for seqid in seqids:
                 if len(names) > 5 :
                     nbclust = 4    
                 print("./cluster.R "+file_name+".hm 4 ./"+file_name+".clusters")
-                subprocess.run (["./cluster.R", current_working_directory+"/"+file_name+".hm", str(nbclust), current_working_directory+"/"+file_name+".clusters"])
+                subprocess.run (["./clustering.R", current_working_directory+"/"+file_name+".hm", str(nbclust), current_working_directory+"/"+file_name+".clusters"])
             #print(model.labels_)
 
