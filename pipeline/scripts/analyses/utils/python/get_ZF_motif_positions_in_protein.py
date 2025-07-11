@@ -148,7 +148,7 @@ def processExonsGff(gff:str):
 f = open(args.output, "w")
 # log file
 flog = open(args.log, "w")
-f.write("SeqID;Pattern;Pattern num;ZF num;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length\n")
+f.write("SeqID;Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length\n")
 # file of warning
 fwarn = open(args.warnings, "w")
 
@@ -457,9 +457,18 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     for pattern in [pattern1,pattern2]:
         flog.write("\nPattern "+pattern+":\n")
         matches = re.finditer(pattern, sequence)
-        match_nb = 1
+        tandem = 0 # will increment for each group of tandem zincfingers
+        match_nb = 1 # num of the match in set
+        match_tandem_nb = 1 # num of the match in set of tandem zincfingers
         for match in matches:
-            flog.write("\nMatch "+str(match_nb)+" "+str(match.span()[0]) + "-"+str(match.span()[1]))
+            if match_nb == 1 :
+                current_tandem = match.span()[1]
+            if match.span()[0] > current_tandem:
+                tandem +=1
+                #sys.exit("lol")
+                match_tandem_nb = 1
+            flog.write("\nMatch "+str(match_nb)+" "+str(match_tandem_nb)+" "+str(tandem)+" "+str(match.span()[0]) + "-"+str(match.span()[1]))
+            current_tandem = match.span()[1]
             # get the matching part of the sequence
             zf_length = match.span()[1] - match.span()[0]
             zf = sequence[match.span()[0] : match.span()[1]]
@@ -574,7 +583,14 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         sys.exit("Error: translated sequence and protein sequence are too different")
                 else:
                     flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
-                f.write(seq_record.id+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
+                zfname = "ABCDEFGHIJKL"[tandem]+str(match_tandem_nb)
+                if modified :
+                    zfname += "_29"
+                else :
+                    zfname += "_28"
+                print(zfname)
+                f.write(seq_record.id+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
 
             match_nb += 1
+            match_tandem_nb += 1
         pattern_nb += 1
