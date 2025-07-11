@@ -2,7 +2,7 @@
 ## Before run process_zincfinger_dna.smk
 ## First run process_stats_domain.smk
 ## Then run process_zincfinger.smk
-## 
+##
 ## Authors :
 
 
@@ -36,15 +36,15 @@ ACCESSNB = config["assembly_list"]
 
 RESOURCES_DIR_NAME  = config["resources_dir_name"]
 
-# The reference alignment of each domain 
+# The reference alignment of each domain
 # ---------------------------------------
 DOMAIN_REFERENCES = config["domain_references"]
 
-# List of domains to be fully processed. 
+# List of domains to be fully processed.
 # --------------------------------------
 DOMAINS = config["domains"]
 
-# List of domains to be processed without paralogy checks. 
+# List of domains to be processed without paralogy checks.
 # --------------------------------------------------------
 DOMAINS_SIMPLE = config["domains_simple"]
 
@@ -60,20 +60,20 @@ GENOME_RESULTS = config["analyse_dir_name"]
 
 storagetype  = config["storagetype"]
 
-    
-    
-    
+
+
+
 # function to get the name of the reference alignment for a domain
 # ----------------------------------------------------------------
 def get_domain(wildcards):
     domain = wildcards.domain
-    return domain 
-      
+    return domain
+
 # function to get the name of the reference alignment for a domain
 # ----------------------------------------------------------------
 def get_reference(wildcards):
     fname = DOMAIN_REFERENCES.get(wildcards.domain, "")
-    return fname 
+    return fname
 
 # function to get the path of the reference alignment for a domain
 # ----------------------------------------------------------------
@@ -83,18 +83,18 @@ def get_reference_file(wildcards):
     return pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_profiles/"+ domain+"/"+fname+".hmm"
 
 # get the files and directories describing the reference alignments
-# -----------------------------------------------------------------   
+# -----------------------------------------------------------------
 directories, files = glob_wildcards(pathGTDriftResource + RESOURCES_DIR_NAME + "reference_alignments/{dir}/{file}.fst")
 
 # Rules
 # -----
 
 # -----------------------------------------------
-# all : inputs define the to be files generated . 
+# all : inputs define the to be files generated .
 # -----------------------------------------------
 rule all:
-    input:  
-        zincfinger_motif = expand(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/zf_results.csv",accession=ACCESSNB),       
+    input:
+        zincfinger_motif = expand(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/zf_results.csv",accession=ACCESSNB),
 
 # --------------------------------------
 # get_genome_seq_fasta
@@ -102,7 +102,7 @@ rule all:
 # --------------------------------------
 rule get_genome_seq_fasta:
     input:
-        # path to the fasta file 
+        # path to the fasta file
         fasta = pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.fna.path"
     output:
         # fasta file
@@ -117,11 +117,12 @@ rule get_genome_seq_fasta:
             ls {pathGTDriftData}"genome_assembly/{wildcards.accession}/genome_seq/"
             iget -f /lbbeZone/home/penel/gtdrift/genome_seq/$genomic {output.fasta}
         else
-            ln -s {pathGTDriftData}"genome_assembly/{wildcards.accession}/genome_seq/$genomic {output.fasta}"
-        fi    
+            echo "symbolic link  {pathGTDriftData}genome_assembly/{wildcards.accession}/genome_seq/$genomic to  {output.fasta}"
+            ln -s {pathGTDriftData}genome_assembly/{wildcards.accession}/genome_seq/$genomic {output.fasta}
+        fi
         """
 
-# ------------------------------------------------------- 
+# -------------------------------------------------------
 # zincfinger_motif
 # analyse of the dna sequences of the zincfinger proteins
 # -------------------------------------------------------
@@ -136,18 +137,14 @@ rule zincfinger_motif:
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
             + "candidates_for_zf_analysis.fasta",
         # gff file of the assembly
-        gff = pathGTDriftData + "genome_assembly/{accession}/annotation/genomic.gff", 
-        # fasta of the dna sequences of the assembly 
+        gff = pathGTDriftData + "genome_assembly/{accession}/annotation/genomic.gff",
+        # fasta of the dna sequences of the assembly
         fasta_dna = pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.fna",
     output:
         results = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/zf_results.csv",
         log = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/zf_results.log",
-        warnings = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/zf_results.warnings",            
+        warnings = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/zf_results.warnings",
     shell:
         """
         python3 ../utils/python/get_ZF_motif_positions_in_protein.py -i {input.protein_seq} -g {input.gff}  -d {input.fasta_dna} -o {output.results} -l {output.log} -w {output.warnings}
         """
-
-
-
-

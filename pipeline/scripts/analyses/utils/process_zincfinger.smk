@@ -36,15 +36,15 @@ ACCESSNB = config["assembly_list"]
 
 RESOURCES_DIR_NAME  = config["resources_dir_name"]
 
-# The reference alignment of each domain 
+# The reference alignment of each domain
 # ---------------------------------------
 DOMAIN_REFERENCES = config["domain_references"]
 
-# List of domains to be fully processed. 
+# List of domains to be fully processed.
 # --------------------------------------
 DOMAINS = config["domains"]
 
-# List of domains to be processed without paralogy checks. 
+# List of domains to be processed without paralogy checks.
 # --------------------------------------------------------
 DOMAINS_SIMPLE = config["domains_simple"]
 
@@ -59,20 +59,20 @@ GLOBAL_RESULTS = config["analyse_dir_name"]
 GENOME_RESULTS = config["analyse_dir_name"]
 
 
-    
-    
-    
+
+
+
 # function to get the name of the reference alignment for a domain
 # ----------------------------------------------------------------
 def get_domain(wildcards):
     domain = wildcards.domain
-    return domain 
-      
+    return domain
+
 # function to get the name of the reference alignment for a domain
 # ----------------------------------------------------------------
 def get_reference(wildcards):
     fname = DOMAIN_REFERENCES.get(wildcards.domain, "")
-    return fname 
+    return fname
 
 # function to get the path of the reference alignment for a domain
 # ----------------------------------------------------------------
@@ -82,22 +82,22 @@ def get_reference_file(wildcards):
     return pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_profiles/"+ domain+"/"+fname+".hmm"
 
 # get the files and directories describing the reference alignments
-# -----------------------------------------------------------------   
+# -----------------------------------------------------------------
 directories, files = glob_wildcards(pathGTDriftResource + RESOURCES_DIR_NAME + "reference_alignments/{dir}/{file}.fst")
 
 # Rules
 # -----
 
 # -----------------------------------------------
-# all : inputs define the to be files generated . 
+# all : inputs define the to be files generated .
 # -----------------------------------------------
 rule all:
-    input:  
+    input:
         zincfinger_out = expand(pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger/zinc_finger_details/ZFD_{accession}.csv",accession=ACCESSNB),
         zinc_finger_combined = pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger/zinc_finger.csv",
-        global_zf_count=pathGTDriftGlobalResults 
+        global_zf_count=pathGTDriftGlobalResults
         + GLOBAL_RESULTS + "zinc_finger/zf_count.csv",
-
+        zincfinger_fasta = expand(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_for_zf_analysis.fasta",accession=ACCESSNB),
 # ----------------------------------
 # select_candidates_zf
 # select sequence with zinc finger and confirmed SET domain
@@ -105,19 +105,19 @@ rule all:
 
 rule select_candidates_zf:
     input:
-         candidates_confirmed=[pathGTDriftData 
-         + "genome_assembly/{accession}/analyses/" 
+         candidates_confirmed=[pathGTDriftData
+         + "genome_assembly/{accession}/analyses/"
          + GENOME_RESULTS + "candidates_SET.csv"],
-         candidates_simple=[pathGTDriftData 
-         + "genome_assembly/{accession}/analyses/" 
-         + GENOME_RESULTS + "candidates_simple_ZF.txt"],                      
+         candidates_simple=[pathGTDriftData
+         + "genome_assembly/{accession}/analyses/"
+         + GENOME_RESULTS + "candidates_simple_ZF.txt"],
     output:
            pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-            + "candidates_for_zf_analysis.csv"    
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+            + "candidates_for_zf_analysis.csv"
     script:
-        "../utils/python/select_candidates_wad.py" 
-        
+        "../utils/python/select_candidates_wad.py"
+
 # ---------------------------------------------------------------------------------------
 # generate_candidates_zf
 # Extract the list of candidates with ZF domains and confirmed SET from the csv from the search of a hmm profile domain in the proteome.
@@ -126,14 +126,14 @@ rule generate_candidates_zf:
     input:
         candidates = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_for_zf_analysis.csv"
     output:
-        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_for_zf_analysis.txt"   
+        candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_for_zf_analysis.txt"
     script:
         "../utils/python/extract_domain_candidates_ID.py"
-        
+
 # -----------------------------------------------------------------------------
 # run_seqkit_extraction_candidates_zf
 # Extract the fasta sequence of the candidates from its sequence name.
-# ------------------------------------------------------------------------------  
+# ------------------------------------------------------------------------------
 rule run_seqkit_extraction_zf:
     input:
         candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_for_zf_analysis.txt",
@@ -159,12 +159,12 @@ rule zincfinger_analysis:
         #protein_seq = pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/candidates_prdm9.fasta"
     output:
         zincfinger_out = pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger/zinc_finger_details/ZFD_{accession}.csv"
-    
+
     run:
         # Verify if the input file exists
         if not os.path.exists(input.protein_seq):
             raise FileNotFoundError(f"Input file does not exist: {input.protein_seq}")
-        
+
         # Run the R script
         command = f"Rscript --vanilla ../utils/zincfinger_analysis.R {input.protein_seq} {output.zincfinger_out}"
         shell(command)
@@ -181,7 +181,7 @@ rule combine_zinc_finger:
         # Check if there are input files before trying to combine
         if not input.zfd_files:
             raise FileNotFoundError("No input files found for combining.")
-        
+
         # Combine all ZFD_{accession}.csv files into one zinc_finger.csv
         with open(output.zinc_finger_combined, 'w') as outfile:
             for fname in input.zfd_files:
@@ -203,21 +203,19 @@ rule create_global_zf_table:
     input:
         expand(
             pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" 
-            + GENOME_RESULTS 
+            + "genome_assembly/{accession}/analyses/"
+            + GENOME_RESULTS
             + "hmm_search/domtbl/ZF_domains_summary",
             accession=ACCESSNB,
         ),
     output:
-        pathGTDriftGlobalResults 
+        pathGTDriftGlobalResults
         + GLOBAL_RESULTS + "zinc_finger/zf_count.csv",
     params:
-        path=pathGTDriftData + "genome_assembly"      
+        path=pathGTDriftData + "genome_assembly"
     script:
-         "../utils/python/zf_analysis.py"    
-                     
+         "../utils/python/zf_analysis.py"
+
 
 # Modules snakemake
 # -----------------
-
-
