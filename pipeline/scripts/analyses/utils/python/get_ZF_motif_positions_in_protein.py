@@ -146,6 +146,8 @@ def processExonsGff(gff:str):
 
 # output file
 f = open(args.output, "w")
+# output file
+ferr = open(args.output+".ERROR", "w")
 # log file
 flog = open(args.log, "w")
 f.write("SeqID;Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length\n")
@@ -389,8 +391,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     sequence_pos = reverse_seq
                 flog.write("\n")
             else:
-                print("Pas d'exons")
-                sys.exit("Pas d'exons.")
+                print("ERROR: No exons!")
+                ferr.write("No exons for "+seq_record.id+".\n")
+                ferr.close()
+                sys.exit()
 
             # Check if dna sequence is ok
             flog.write("DNA sequence length :"+str(len(sequence_pos))+"\n")
