@@ -392,9 +392,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 flog.write("\n")
             else:
                 print("ERROR: No exons!")
-                ferr.write("No exons for "+seq_record.id+".\n")
-                ferr.close()
-                sys.exit()
+                #ferr.write("No exons for "+seq_record.id+".\n")
+                #continue
+                #ferr.close()
+                sys.exit("ERROR: No exons!")
 
             # Check if dna sequence is ok
             flog.write("DNA sequence length :"+str(len(sequence_pos))+"\n")
