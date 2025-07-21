@@ -59,6 +59,14 @@ for seqid in seqids:
                 #print(record)
             my_records.append(record)
             zf_number +=1
+            sequences2 = sequences
+            zf_number2 = 1
+            for sequence2 in sequences2:
+                print("DEBUG ",sequence,sequence2)
+                dna_seq2 = Seq(sequence2)
+                record2 = SeqRecord(dna_seq2, id=zf_names[zf_number2 -1],description="Zinc finger ;"+description,)
+                zf_number2 += 1
+                print("DEBUG ",record,record2)
         count = SeqIO.write(my_records, args.output_dir+"/"+file_name+".fasta", "fasta")
         fl.write(file_name+".fasta\n")
 fl.close()
