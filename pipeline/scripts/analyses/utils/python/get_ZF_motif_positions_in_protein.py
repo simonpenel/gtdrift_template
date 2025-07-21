@@ -459,13 +459,31 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     # search patterns
     flog.write("\nPattern search:\n")
     pattern_nb = 1
+    list_of_matches = []
     for pattern in [pattern1,pattern2]:
         flog.write("\nPattern "+pattern+":\n")
-        matches = re.finditer(pattern, sequence)
+        matches_test = re.finditer(pattern, sequence)
+        for match in matches_test:
+            list_of_matches.append([pattern,match])
+    print("debug ",list_of_matches)
+    sorted_list_of_matches = sorted(list_of_matches, key=lambda element: element[1].span()[0])   # sort
+    print("debug ",sorted_list_of_matches)
+    for matches in sorted_list_of_matches:
+        print("debug match ",matches)
+
+    # for pattern in [pattern1,pattern2]:
+    #
+    #     flog.write("\nPattern "+pattern+":\n")
+    #     matches = re.finditer(pattern, sequence)
+
+    for element in [1]:
         tandem = 0 # will increment for each group of tandem zincfingers
         match_nb = 1 # num of the match in set
         match_tandem_nb = 1 # num of the match in set of tandem zincfingers
-        for match in matches:
+        for element in sorted_list_of_matches:
+            match  = element[1]
+            pattern = element[0]
+        #for match in matches:
             if match_nb == 1 :
                 current_tandem = match.span()[1]
             if match.span()[0] > current_tandem:
@@ -522,7 +540,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         st = st - 1
 
                     shift_s = en - 19 - st
-                    shift_s -= 1
+                    #shift_s -= 1
                 flog.write("debug start end = "+str(st) + ","+str(en)+"\n")
 
                 # build the dna sequence of the matching part of the protein
