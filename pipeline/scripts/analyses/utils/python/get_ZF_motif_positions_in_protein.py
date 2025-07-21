@@ -481,9 +481,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             flog.write("Original sequence : "+str(match.group())+"\n")
             modified = False
             # modify the matching part if needed
-            if zf_length > 28 :
+            if zf_length == 28 :
                 modified = True
-                zf = sequence[match.span()[0] : match.span()[0]+19] + sequence[match.span()[0] + 20 : match.span()[1]]
+                zf = sequence[match.span()[0] : match.span()[0]+19] + "X" + sequence[match.span()[0] + 19 : match.span()[1]]
+                #zf = sequence[match.span()[0] : match.span()[0]+19] + sequence[match.span()[0] + 20 : match.span()[1]]
             flog.write("Modified sequence : "+zf+"\n")
             print("Processing match "+str(match_nb))
             print(seq_record.id+";"+str(match_nb)+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+repr(match.group())+"\n")
@@ -535,7 +536,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + frame]]
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + frame]]
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + frame]]
-                    for pos_prot in range(st + shift_s + 1, en):
+                    #for pos_prot in range(st + shift_s + 1, en):
+                    raw_seq_extract += "NNN"
+
+                    for pos_prot in range(st + shift_s , en):
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + frame]]
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + frame]]
                         raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + frame]]
@@ -590,9 +594,9 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
                 zfname = "ABCDEFGHIJKL"[tandem]+str(match_tandem_nb)
                 if modified :
-                    zfname += "_29"
-                else :
                     zfname += "_28"
+                else :
+                    zfname += "_29"
                 print(zfname)
                 f.write(seq_record.id+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
 
