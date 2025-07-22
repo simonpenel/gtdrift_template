@@ -100,7 +100,7 @@ for seqid in seqids:
             fclustsummary.write("Nb of clusters : "+str(len(clusters))+"\n")
             fclustsummary.write("Cluster max : "+cluster_max+"\n")
             fclustsummary.write("Size cluster max : "+ str(nb_seq_max)+"\n")
-            seqs = families[cluster]
+            seqs = families[cluster_max]
             fclustsummary.write("Cluster max contents:\n")
             list_array = []
             for seq in seqs:
