@@ -465,11 +465,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
         matches_test = re.finditer(pattern, sequence)
         for match in matches_test:
             list_of_matches.append([pattern,match])
-    print("debug ",list_of_matches)
     sorted_list_of_matches = sorted(list_of_matches, key=lambda element: element[1].span()[0])   # sort
-    print("debug ",sorted_list_of_matches)
-    for matches in sorted_list_of_matches:
-        print("debug match ",matches)
+
 
     # for pattern in [pattern1,pattern2]:
     #
@@ -541,7 +538,6 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
 
                     shift_s = en - 19 - st
                     #shift_s -= 1
-                flog.write("debug start end = "+str(st) + ","+str(en)+"\n")
 
                 # build the dna sequence of the matching part of the protein
                 if modified == False :
@@ -615,7 +611,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     zfname += "_28"
                 else :
                     zfname += "_29"
-                print(zfname)
+                
                 f.write(seq_record.id+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
 
             match_nb += 1
