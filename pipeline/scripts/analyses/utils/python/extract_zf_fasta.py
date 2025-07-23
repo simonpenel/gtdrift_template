@@ -48,16 +48,17 @@ for seqid in seqids:
         description = "Sequence :"+seqid+"; Contig:"+contig
         my_records = []
         zf_number = 0
+        dico_sequence = {}
         for sequence in sequences:
             dna_seq = Seq(sequence)
             record = SeqRecord(dna_seq, id=zf_names[zf_number],description="Zinc finger ;"+description,)
             my_records.append(record)
+            dico_sequence[zf_names[zf_number]] = record
             zf_number2 = 0
             for sequence2 in sequences2:
                 distance = distance_pos_3(sequence.upper(),sequence2.upper())
                 if zf_number2 > zf_number:
                     if distance <= 2:
-                        print(zf_names[zf_number]+" "+zf_names[zf_number2]+" "+ str(distance))
                         fsilix.write(zf_names[zf_number]+" "+zf_names[zf_number2]+"\n")
                 zf_number2 += 1            
             zf_number +=1
@@ -71,7 +72,6 @@ for seqid in seqids:
         with open(args.output_dir+"/"+file_name+".clust", 'r') as reader:
             for line in reader:
                 buf = line.rstrip().split('\t')
-                print(buf)
                 if len(buf) < 2:
                     continue
                 fam = buf[0]
@@ -81,33 +81,54 @@ for seqid in seqids:
                 else:
                     families[fam] = []
                     families[fam].append(seq)
-            print(families)  
             clusters = list(families.keys())
-            cluster_max = clusters[0]
-            nb_seq_max = len(families[cluster_max])
-            for cluster in clusters:
-                seqs = families[cluster]
-                nb_seq = len(families[cluster])
-                print(cluster +": "+str(nb_seq))
-                if nb_seq > nb_seq_max :
-                    cluster_max = cluster
-                    nb_seq_max = nb_seq
-            print("Nb of clusters : "+str(len(clusters)))
-            print("Cluster max : "+cluster_max)
-            print("Size cluster max : "+ str(nb_seq_max)) 
-            fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w") 
-            fclustsummary.write("Nb of zf : "+str(len(sequences))+"\n")
-            fclustsummary.write("Nb of clusters : "+str(len(clusters))+"\n")
-            fclustsummary.write("Cluster max : "+cluster_max+"\n")
-            fclustsummary.write("Size cluster max : "+ str(nb_seq_max)+"\n")
-            seqs = families[cluster_max]
-            fclustsummary.write("Cluster max contents:\n")
-            list_array = []
-            for seq in seqs:
-                fclustsummary.write(seq+"\n")
-                arr = seq[0]
-                print(arr)
-                if not (arr in list_array) :
-                    list_array.append(arr)
-            fclustsummary.write("Nb of arrays: "+str(len(list_array))+"\n")       
+            if len(clusters) == 0:
+                fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w") 
+                fclustsummary.write("Nb of zf : "+str(len(sequences))+"\n")
+                fclustsummary.write("Nb of clusters : 0\n")
+                fclustsummary.close()
+            else:    
+                cluster_max = clusters[0]
+                nb_seq_max = len(families[cluster_max])
+                new_records = []
+                for cluster in clusters:
+                    seqs = families[cluster]
+                    for seq in seqs:
+                        #record = dico_sequence[seq]
+                        record = dico_sequence.pop(seq)
+                        dna_seq = record.seq
+                        new_record = SeqRecord(dna_seq, id=seq+"_C"+cluster,description="Zinc finger ;"+description,)
+                        new_records.append(new_record)
+                    nb_seq = len(families[cluster])
+                    print(cluster +": "+str(nb_seq))
+                    if nb_seq > nb_seq_max :
+                        cluster_max = cluster
+                        nb_seq_max = nb_seq
+                orphans = list(dico_sequence.keys())
+                for orphan in orphans:
+                    record = dico_sequence.pop(orphan)
+                    dna_seq = record.seq
+                    new_record = SeqRecord(dna_seq, id=orphan+"_orphan",description="Zinc finger ;"+description,)
+                    new_records.append(new_record)                
+                print("Nb of clusters : "+str(len(clusters)))
+                print("Cluster max : "+cluster_max)
+                print("Size cluster max : "+ str(nb_seq_max)) 
+                print("Nb of orphans : "+ str(len(orphans))) 
+                fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w") 
+                fclustsummary.write("Nb of zf : "+str(len(sequences))+"\n")
+                fclustsummary.write("Nb of clusters : "+str(len(clusters))+"\n")
+                fclustsummary.write("Cluster max : "+cluster_max+"\n")
+                fclustsummary.write("Size cluster max : "+ str(nb_seq_max)+"\n")
+                fclustsummary.write("Nb of orphans : "+ str(len(orphans))+"\n")
+                seqs = families[cluster_max]
+                fclustsummary.write("Cluster max contents:\n")
+                list_array = []
+                for seq in seqs:
+                    fclustsummary.write(seq+"_C"+cluster_max+"\n")
+                    arr = seq[0]
+                    if not (arr in list_array) :
+                        list_array.append(arr)
+                fclustsummary.write("Nb of arrays: "+str(len(list_array))+"\n") 
+                fclustsummary.close() 
+                count = SeqIO.write(new_records, args.output_dir+"/"+file_name+"_cluster.fasta", "fasta")    
 fl.close()
