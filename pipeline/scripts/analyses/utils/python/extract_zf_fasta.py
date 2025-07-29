@@ -94,9 +94,34 @@ def distance_pos_3(s1:str,s2:str):
             distance +=1
     return distance
     
+def write_divindex(zfd_data, zfd_codon_data, zfd_name):    
+    fclustsummary.write('{:45}'.format("Position : "))
+    ipos = 1 
+    for div in zfd_data:
+        fclustsummary.write('%5d' % (ipos))
+        ipos += 1       
+    fclustsummary.write("\n")      
+          
+    fclustsummary.write('{:45}'.format(zfd_name + " div. index : "))
+    for div in zfd_data:
+        fclustsummary.write('%5.2f' % (div))
+    fclustsummary.write("\n")
     
+    fclustsummary.write('{:45}'.format(zfd_name + " div. index for codons : "))
+    for div in zfd_codon_data:
+        fclustsummary.write('%5.2f' % (div))
+    fclustsummary.write("\n")    
 
-positions_contact =  [11,13,14,17] #(dans R 12, 14, 15, 18, -1 pour l'index, 
+def write_divindex_pos(zfd_data,zfd_name):
+            zfd_pos = zfsum(zfd_data,positions_contact )
+            pos_string = ' '.join(str(item) for item in positions_contact)
+            #fclustsummary.write(zfd_name + " d. i. for " + pos_string)
+            fclustsummary.write('{:45}'.format(zfd_name + " sum/tot " + pos_string+ " : "))
+            fclustsummary.write('%6.3f' % (zfd_pos))
+            fclustsummary.write("\n")
+
+positions_contact =  [11,13,14,17] #(dans R 12, 14, 15, 18, -1 pour l'index
+ 
 df = pd.read_csv(args.input, sep=';')
 seqids = np.unique(df.SeqID)
 # list of output file
@@ -215,34 +240,40 @@ for seqid in seqids:
                     families[fam] = []
                     families[fam].append(seq)
             clusters = list(families.keys())
-            if len(clusters) == 0:
-                fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w") 
-                fclustsummary.write("Nb of zf : "+str(len(sequences))+"\n")                   
-                fclustsummary.write("Global div. index  : ")
-                for div in zfd_all:
-                    fclustsummary.write('%5.2f' % (div))
-                fclustsummary.write("\n")    
-                #ZFDG = sum([zfd_all[11], zfd_all[13], zfd_all[14], zfd_all[17]]) / sum(zfd_all)
-                ZFDG = zfsum(zfd_all,positions_contact )
-                pos_string = ' '.join(str(item) for item in positions_contact)
-                fclustsummary.write("Global div. index for " + pos_string)
-                fclustsummary.write(' : %6.3f' % (ZFDG)) 
-                fclustsummary.write("\n")                   
-                fclustsummary.write("Nb of zf 28 : "+str(nb_28)+"\n")
-                fclustsummary.write("Nb of zf 29 : "+str(nb_29)+"\n")                
-                fclustsummary.write("Nb of arrays : "+str(len(list(list_array_total.keys())))+"\n")
-                fclustsummary.write("Longest array : " + array_max + "\n")
-                fclustsummary.write("Size longest array : " + str(size_array_max)+ "\n") 
-                fclustsummary.write("Longest array div. index  : ")
-                for div in zfd_array:
-                    fclustsummary.write("  '%-40s",div)
-                fclustsummary.write("\n") 
+
+            fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w") 
+            fclustsummary.write("Nb of zf : "+str(len(sequences))+"\n")   
+            
+            write_divindex(zfd_all, zfd_codon_all, "Global")
+
+            write_divindex_pos(zfd_all, "Global")    
+             
+            write_divindex_pos(zfd_codon_all, "Global codons")       
+      
+                                
+            fclustsummary.write("Nb of zf 28 : "+str(nb_28)+"\n")
+            fclustsummary.write("Nb of zf 29 : "+str(nb_29)+"\n")                
+            fclustsummary.write("Nb of arrays : "+str(len(list(list_array_total.keys())))+"\n")
+            fclustsummary.write("Longest array : " + array_max + "\n")
+            fclustsummary.write("Size longest array : " + str(size_array_max)+ "\n") 
+
+            write_divindex(zfd_array, zfd_codon_array, "Longest array")               
+                                
+            write_divindex_pos(zfd_array, "Longest array")        
+
+            write_divindex_pos(zfd_codon_array, "Longest array codons")  
+            
+                          
+            if len(clusters) == 0: 
                 fclustsummary.write("Nb of clusters : 0\n")             
                 fclustsummary.close()
             else:    
                 cluster_max = clusters[0]
                 nb_seq_max = len(families[cluster_max])
                 new_records = []
+                dico_sequence_bck  = dico_sequence.copy() # je garde une copie, car je vide le dico
+                print("debug avant")
+                print(dico_sequence_bck)
                 for cluster in clusters:
                     seqs = families[cluster]
                     for seq in seqs:
@@ -260,58 +291,15 @@ for seqid in seqids:
                 for orphan in orphans:
                     record = dico_sequence.pop(orphan)
                     dna_seq = record.seq
-                    new_record = SeqRecord(dna_seq, id=orphan+"_orphan",description="Zinc finger ;"+description,)
-                    new_records.append(new_record)                
+                    new_record = SeqRecord(dna_seq, id=orphan+"_singleton",description="Zinc finger ;"+description,)
+                    new_records.append(new_record)             
                 print("Nb of clusters : "+str(len(clusters)))
                 print("Identifier cluster max : C"+cluster_max)
                 print("Size cluster max : "+ str(nb_seq_max)) 
                 print("Nb of singletons : "+ str(len(orphans))) 
-                fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w") 
-                fclustsummary.write("Nb of zf : "+str(len(sequences))+"\n")            
-                fclustsummary.write("Global div. index            : ")
-                for div in zfd_all:
-                    fclustsummary.write('%5.2f' % (div))
-                fclustsummary.write("\n")    
-                
-                fclustsummary.write("Global div. index for codons : ")
-                for div in zfd_codon_all:
-                    fclustsummary.write('%5.2f' % (div))
-                fclustsummary.write("\n")    
-                                
-                ZFDG = zfsum(zfd_all,positions_contact )
-                pos_string = ' '.join(str(item) for item in positions_contact)
-                fclustsummary.write("Global div. index for " + pos_string)
-                fclustsummary.write(' : %6.3f' % (ZFDG))
-                fclustsummary.write("\n")
-                
-                ZFDG_codon = zfsum(zfd_codon_all,positions_contact )
-                pos_string = ' '.join(str(item) for item in positions_contact)
-                fclustsummary.write("Global div. index for codons for " + pos_string)
-                fclustsummary.write(' : %6.3f' % (ZFDG_codon))
-                fclustsummary.write("\n")   
-                   
-                fclustsummary.write("Nb of zf 28 : "+str(nb_28)+"\n")
-                fclustsummary.write("Nb of zf 29 : "+str(nb_29)+"\n")
-                fclustsummary.write("Nb of arrays : "+str(len(list(list_array_total.keys())))+"\n")
-                fclustsummary.write("Longest array : " + array_max+ "\n")
-                fclustsummary.write("Size longest array : " + str(size_array_max)+ "\n")                 
-                fclustsummary.write("Longest array div. index            : ")
-                for div in zfd_array:
-                    fclustsummary.write('%5.2f' % (div))
-                fclustsummary.write("\n") 
-                
-                fclustsummary.write("Longest array div. index for codons : ")
-                for div in zfd_codon_array:
-                    fclustsummary.write('%5.2f' % (div))
-                fclustsummary.write("\n")                 
-                
-                ZFDA = zfsum(zfd_array,positions_contact )
-                pos_string = ' '.join(str(item) for item in positions_contact)
-                fclustsummary.write("Longest array div. index for " + pos_string)
-                fclustsummary.write(' : %6.3f' % (ZFDA))
-                fclustsummary.write("\n")    
+                #print(dico_dna_clust)
+                print(dico_sequence_bck)
                 fclustsummary.write("Nb of clusters : "+str(len(clusters))+"\n")
-                fclustsummary.write("Nb of arrays : "+str(len(list_array_total))+"\n")
                 fclustsummary.write("Identifier cluster max : C_"+cluster_max+"\n")
                 fclustsummary.write("Size cluster max : "+ str(nb_seq_max)+"\n")
                 fclustsummary.write("Nb of singletons : "+ str(len(orphans))+"\n")
@@ -319,24 +307,33 @@ for seqid in seqids:
                 fclustsummary.write("Cluster max contents:\n")
                 list_array = []
                 cluster_max_protein_sequence = []
+                cluster_max_dna_sequence = []
                 for seq in seqs:
                     cluster_max_protein_sequence.append(dico_protein[seq].seq)
+                    cluster_max_dna_sequence.append(dico_sequence_bck[seq].seq)
                     fclustsummary.write(seq+"_C"+cluster_max+"\n")
                     arr = seq[0]
                     if not (arr in list_array) :
                         list_array.append(arr)
                 zfd_cluster = zfd(cluster_max_protein_sequence) 
-                fclustsummary.write("Largest cluster div. index  : ")
-                for div in zfd_cluster:
-                    fclustsummary.write('%5.2f' % (div))
-                    #fclustsummary.write("  %-40s",div)
-                    #fclustsummary.write(" "+str(div))
-                fclustsummary.write("\n") 
-                ZFDC = zfsum(zfd_cluster,positions_contact )
-                pos_string = ' '.join(str(item) for item in positions_contact)
-                fclustsummary.write("Global div. index for " + pos_string)
-                fclustsummary.write(' : %6.3f' % (ZFDC))   
-                fclustsummary.write("\n")        
+                zfd_codon_cluster = zfd_codon(cluster_max_dna_sequence)  
+                
+                write_divindex(zfd_cluster, zfd_codon_cluster, "Largest cluster")
+                
+                write_divindex_pos(zfd_cluster, "Largest cluster")
+                
+                write_divindex_pos(zfd_codon_cluster, "Largest cluster codons")               
+                
+                #fclustsummary.write("Largest cluster div. index  : ")
+                #for div in zfd_cluster:
+                #    fclustsummary.write('%5.2f' % (div))
+                #fclustsummary.write("\n") 
+                #ZFDC = zfsum(zfd_cluster,positions_contact )
+                #pos_string = ' '.join(str(item) for item in positions_contact)
+                #fclustsummary.write("Global div. index for " + pos_string)
+                #fclustsummary.write(' : %6.3f' % (ZFDC))   
+                #fclustsummary.write("\n")        
+                
                 fclustsummary.write("Nb of arrays in cluster max: "+str(len(list_array))+"\n") 
                 fclustsummary.close() 
                 count = SeqIO.write(new_records, args.output_dir+"/"+file_name+"_cluster.fasta", "fasta")    
