@@ -42,23 +42,17 @@ def zfd(seqs:[]):
     nbseq =  len(seqs)
     for i in range(0,l) :
         site = []
-        print(i)
         for seq in seqs:
-            site.append(seq[i])
-        print("Site = ",site)   
+            site.append(seq[i]) 
         df = pd.DataFrame({'aa':site})
         unic_site = list(np.unique(df.aa))
-        print("Unic = ",unic_site) 
         div = 0
         for aa in unic_site:
             nb_aa = site.count(aa)
-            print(aa+" => "+str(nb_aa))
             div  = div + (nb_aa / nbseq) ** 2
         div = 1 - div
         div = round(div, 5)
-        print("Site "+str(i) +" => "+str(div))
         zfd.append(div)
-    print(zfd)
     return zfd
 
 
@@ -69,25 +63,19 @@ def zfd_codon(seqs:[]):
     nbseq =  len(seqs)
     for i in range(0,l,3) :
         site = []
-        print(i)
         for seq in seqs:
             codon = seq[i]+seq[i+1]+seq[i+2]
             codon = codon.upper()
             site.append(codon)
-        print("Site = ",site)  
         df = pd.DataFrame({'codon':site})
         unic_site = list(np.unique(df.codon))
-        print("Unic = ",unic_site) 
         div = 0
         for codon in unic_site:
             nb_codon = site.count(codon)
-            print(codon+" => "+str(nb_codon))
             div  = div + (nb_codon / nbseq) ** 2
         div = 1 - div
         div = round(div, 5)
-        print("SIte "+str(i) +" => "+str(div))
         zfd.append(div)
-    print(zfd)
     return zfd
     
 # Calculate the distance in position 3
@@ -302,13 +290,10 @@ for seqid in seqids:
                 size_array_max = len(list_array_total[array])
                 
         # Calcul de la diversite sur le plus grand array
-        print("For array max "+array_max)  
         proteins_array_max =  []
         dna_array_max =  []
         for name in  list_array_total[array_max]:
-            print(name)
             protein_seq = dico_protein[name].seq
-            print(protein_seq) 
             proteins_array_max.append(protein_seq)
             dna_seq = dico_sequence[name].seq
             dna_array_max.append(dna_seq)
@@ -397,8 +382,6 @@ for seqid in seqids:
                 nb_seq_max = len(families[cluster_max])
                 new_records = []
                 dico_sequence_bck  = dico_sequence.copy() # je garde une copie, car je vide le dico
-                print("debug avant")
-                print(dico_sequence_bck)
                 for cluster in clusters:
                     seqs = families[cluster]
                     for seq in seqs:
@@ -408,7 +391,6 @@ for seqid in seqids:
                         new_record = SeqRecord(dna_seq, id=seq+"_C"+cluster,description="Zinc finger ;"+description,)
                         new_records.append(new_record)
                     nb_seq = len(families[cluster])
-                    print(cluster +": "+str(nb_seq))
                     if nb_seq > nb_seq_max :
                         cluster_max = cluster
                         nb_seq_max = nb_seq
@@ -418,12 +400,7 @@ for seqid in seqids:
                     dna_seq = record.seq
                     new_record = SeqRecord(dna_seq, id=orphan+"_singleton",description="Zinc finger ;"+description,)
                     new_records.append(new_record)             
-                print("Nb of clusters : "+str(len(clusters)))
-                print("Identifier cluster max : C"+cluster_max)
-                print("Size cluster max : "+ str(nb_seq_max)) 
-                print("Nb of singletons : "+ str(len(orphans))) 
-                #print(dico_dna_clust)
-                print(dico_sequence_bck)
+ 
                 fclustsummary.write("# Nb of clusters : "+str(len(clusters))+"\n")
                 fclustsummary.write("# Identifier cluster max : C_"+cluster_max+"\n")
                 fclustsummary.write("# Size cluster max : "+ str(nb_seq_max)+"\n")
