@@ -130,8 +130,21 @@ def write_divindex(zfd_data, zfd_codon_data, zfd_name):
            leg = "X"
         fclustsummary.write('{:>5}'.format(leg))
         ipos += 1       
+    fclustsummary.write("\n") 
+    fclustsummary.write("#==================== CSV =======================\n")  
+    fclustsummary.write(zfd_name + " div. index aa;")
+    for div in zfd_data:
+        fclustsummary.write('%5.2f' % (div))
+        fclustsummary.write(";")
+    fclustsummary.write("\n")
+    
+    fclustsummary.write(zfd_name + " div. index  codons;")
+    for div in zfd_codon_data:
+        fclustsummary.write('%5.2f' % (div))
+        fclustsummary.write(";")
     fclustsummary.write("\n")   
-
+    fclustsummary.write("#==================== CSV =======================\n")  
+    
 def write_divindex_pos(zfd_data,zfd_name):
             zfd_pos = zfsum(zfd_data,positions_contact )
             pos_string = ' '.join(str(item+1) for item in positions_contact)
@@ -196,7 +209,8 @@ def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):
         fclustsummary.write(" Mean ratio excluding contact positions :")    
         fclustsummary.write('%5.2f' % (mean_ratio_no_pos)) 
         fclustsummary.write("\n")
-    fclustsummary.write("\n")
+    #fclustsummary.write("\n")
+    
        
 positions_contact =  [11,13,14,17] #(dans R 12, 14, 15, 18, -1 pour l'index
 positions_to_exclude = [19]  #(dans R 20 -1 pour l'index
@@ -323,8 +337,17 @@ for seqid in seqids:
             clusters = list(families.keys())
 
             fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w") 
+            fclustsummary.write("#==================== CSV =======================\n") 
+            fclustsummary.write("Diversity index;")
+            ipos = 1 
+            for div in zfd_array:
+                fclustsummary.write('%5d' % (ipos))
+                fclustsummary.write(";")
+                ipos += 1       
+            fclustsummary.write("\n") 
+            fclustsummary.write("#==================== CSV =======================\n")    
             fclustsummary.write("# Nb of zf : "+str(len(sequences))+"\n")   
-            fclustsummary.write("\n")
+            fclustsummary.write("#\n")
             fclustsummary.write("#################################################\n")
             fclustsummary.write("# All ZF\n")
             fclustsummary.write("#################################################\n")
@@ -349,7 +372,7 @@ for seqid in seqids:
             fclustsummary.write("# Longest array : " + array_max + "\n")
             fclustsummary.write("# Size longest array : " + str(size_array_max)+ "\n") 
             
-            fclustsummary.write("\n")
+            fclustsummary.write("#\n")
             fclustsummary.write("#################################################\n")
             fclustsummary.write("# Longest ZF array\n")
             fclustsummary.write("#################################################\n")
@@ -421,7 +444,7 @@ for seqid in seqids:
                 zfd_cluster = zfd(cluster_max_protein_sequence) 
                 zfd_codon_cluster = zfd_codon(cluster_max_dna_sequence)  
                 
-                fclustsummary.write("\n")
+                fclustsummary.write("#\n")
                 fclustsummary.write("#################################################\n")
                 fclustsummary.write("# Longest ZF cluster (based on similarity at 3rd codon positions)\n")             
                 fclustsummary.write("#################################################\n")
