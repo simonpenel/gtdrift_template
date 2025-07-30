@@ -27,7 +27,11 @@ def zfsum(zf:[], positions:[]):
     for i in range(0,len(zf)):
         if i not in positions_to_exclude:
             total = total + zf[i]
-    sum = sum / total
+    if total == 0 :
+        if sum > 0 :
+              sys.exit("Error in zfsum")    
+    else :
+        sum = sum / total
     return sum
  
 
@@ -114,12 +118,25 @@ def write_divindex(zfd_data, zfd_codon_data, zfd_name):
     for div in zfd_codon_data:
         fclustsummary.write('%5.2f' % (div))
     fclustsummary.write("\n")    
+    
+    fclustsummary.write('{:45}'.format("# Legend : "))
+    ipos = 0 
+    legend_loc = legend.copy()
+    for div in zfd_data:
+        leg = "."
+        if ipos in positions_contact:
+           leg = legend_loc.pop()
+        if ipos in positions_to_exclude:
+           leg = "X"
+        fclustsummary.write('{:>5}'.format(leg))
+        ipos += 1       
+    fclustsummary.write("\n")   
 
 def write_divindex_pos(zfd_data,zfd_name):
             zfd_pos = zfsum(zfd_data,positions_contact )
             pos_string = ' '.join(str(item+1) for item in positions_contact)
             #fclustsummary.write(zfd_name + " d. i. for " + pos_string)
-            fclustsummary.write('{:45}'.format("# " + zfd_name + " sum/tot " + pos_string+ " : "))
+            fclustsummary.write('{:45}'.format("# " + zfd_name + " ZFD " + pos_string+ " : "))
             fclustsummary.write('%6.3f' % (zfd_pos))
             fclustsummary.write("\n")
 
@@ -171,7 +188,9 @@ def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):
        
 positions_contact =  [11,13,14,17] #(dans R 12, 14, 15, 18, -1 pour l'index
 positions_to_exclude = [19]  #(dans R 20 -1 pour l'index
- 
+legend = ["-1", "2", "3", "6"]
+legend.reverse()
+
 df = pd.read_csv(args.input, sep=';')
 seqids = np.unique(df.SeqID)
 # list of output file
