@@ -95,32 +95,81 @@ def distance_pos_3(s1:str,s2:str):
     return distance
     
 def write_divindex(zfd_data, zfd_codon_data, zfd_name):    
-    fclustsummary.write('{:45}'.format("Position : "))
+    fclustsummary.write('{:45}'.format("# Position : "))
     ipos = 1 
     for div in zfd_data:
         fclustsummary.write('%5d' % (ipos))
         ipos += 1       
     fclustsummary.write("\n")      
           
-    fclustsummary.write('{:45}'.format(zfd_name + " div. index : "))
+    fclustsummary.write('{:45}'.format("# " + zfd_name + " div. index aa : "))
     for div in zfd_data:
         fclustsummary.write('%5.2f' % (div))
     fclustsummary.write("\n")
     
-    fclustsummary.write('{:45}'.format(zfd_name + " div. index for codons : "))
+    fclustsummary.write('{:45}'.format("# " + zfd_name + " div. index  codons : "))
     for div in zfd_codon_data:
         fclustsummary.write('%5.2f' % (div))
     fclustsummary.write("\n")    
 
 def write_divindex_pos(zfd_data,zfd_name):
             zfd_pos = zfsum(zfd_data,positions_contact )
-            pos_string = ' '.join(str(item) for item in positions_contact)
+            pos_string = ' '.join(str(item+1) for item in positions_contact)
             #fclustsummary.write(zfd_name + " d. i. for " + pos_string)
-            fclustsummary.write('{:45}'.format(zfd_name + " sum/tot " + pos_string+ " : "))
+            fclustsummary.write('{:45}'.format("# " + zfd_name + " sum/tot " + pos_string+ " : "))
             fclustsummary.write('%6.3f' % (zfd_pos))
             fclustsummary.write("\n")
 
+def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):    
+    zdf_syno = []
+    zdf_ratio = []
+    total_syno = 0.0
+    total_ratio = 0.0
+    for i in range(0,len(zfd_data)):
+        syno = zfd_codon_data[i] - zfd_data[i]
+        if syno < 0:
+            if (-syno) < 0.000000001:
+                syno = -syno
+            else:
+                sys.exit("Error in calcul_synonym_divindex, nefatve value")
+        if syno < 0.000000001:
+            syno = 0
+        
+        ratio = 0
+        if syno > 0:
+            ratio = zfd_data[i] / syno
+            total_ratio += ratio
+        zdf_ratio.append(ratio)   
+        total_syno += syno        
+        zdf_syno.append(syno)
+    mean_syno = total_syno / len(zfd_data)   
+    mean_ratio = total_ratio / len(zfd_data)   
+    fclustsummary.write('{:45}'.format("# " + zfd_name + " syno (codon - aa) : "))
+    for div in zdf_syno:
+        fclustsummary.write('%5.2f' % (div))
+    fclustsummary.write("\n") 
+    fclustsummary.write('{:45}'.format("# "+ zfd_name + " ratio (aa / syno) : "))
+    for div in zdf_ratio:
+        fclustsummary.write('%5.2f' % (div))
+    fclustsummary.write("\n")       
+    fclustsummary.write('{:45}'.format("# Mean syno : "))     
+    fclustsummary.write('%5.2f' % (mean_syno))       
+    fclustsummary.write("\n") 
+    fclustsummary.write('{:45}'.format("# Mean ratio : "))     
+    fclustsummary.write('%5.2f' % (mean_ratio))       
+    fclustsummary.write("\n")
+    
+    for pos in positions_contact:
+        fclustsummary.write('{:45}'.format("# " + zfd_name + " position "+str(pos+1)))
+        fclustsummary.write(" Ratio : ")     
+        fclustsummary.write('%5.2f' % (zdf_ratio[pos])) 
+        fclustsummary.write(" Mean ratio : ")    
+        fclustsummary.write('%5.2f' % (mean_ratio)) 
+        fclustsummary.write("\n")
+    fclustsummary.write("\n")
+       
 positions_contact =  [11,13,14,17] #(dans R 12, 14, 15, 18, -1 pour l'index
+positions_to_exclide = [19]  #(dans R 20 -1 pour l'index
  
 df = pd.read_csv(args.input, sep=';')
 seqids = np.unique(df.SeqID)
@@ -242,30 +291,42 @@ for seqid in seqids:
             clusters = list(families.keys())
 
             fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w") 
-            fclustsummary.write("Nb of zf : "+str(len(sequences))+"\n")   
-            
+            fclustsummary.write("# Nb of zf : "+str(len(sequences))+"\n")   
+            fclustsummary.write("\n")
+            fclustsummary.write("#################################################\n")
+            fclustsummary.write("# All ZF\n")
+            fclustsummary.write("#################################################\n")
             write_divindex(zfd_all, zfd_codon_all, "Global")
 
+            calcul_synonym_divindex(zfd_all, zfd_codon_all, "Global")
+            
             write_divindex_pos(zfd_all, "Global")    
              
             write_divindex_pos(zfd_codon_all, "Global codons")       
       
                                 
-            fclustsummary.write("Nb of zf 28 : "+str(nb_28)+"\n")
-            fclustsummary.write("Nb of zf 29 : "+str(nb_29)+"\n")                
-            fclustsummary.write("Nb of arrays : "+str(len(list(list_array_total.keys())))+"\n")
-            fclustsummary.write("Longest array : " + array_max + "\n")
-            fclustsummary.write("Size longest array : " + str(size_array_max)+ "\n") 
-
+            fclustsummary.write("# Nb of zf 28 : "+str(nb_28)+"\n")
+            fclustsummary.write("# Nb of zf 29 : "+str(nb_29)+"\n")                
+            fclustsummary.write("# Nb of arrays : "+str(len(list(list_array_total.keys())))+"\n")
+            fclustsummary.write("# Longest array : " + array_max + "\n")
+            fclustsummary.write("# Size longest array : " + str(size_array_max)+ "\n") 
+            
+            fclustsummary.write("\n")
+            fclustsummary.write("#################################################\n")
+            fclustsummary.write("# Longest ZF array\n")
+            fclustsummary.write("#################################################\n")
+            
             write_divindex(zfd_array, zfd_codon_array, "Longest array")               
-                                
+            
+            calcul_synonym_divindex(zfd_array, zfd_codon_array, "Longest array")            
+            
             write_divindex_pos(zfd_array, "Longest array")        
 
             write_divindex_pos(zfd_codon_array, "Longest array codons")  
             
                           
             if len(clusters) == 0: 
-                fclustsummary.write("Nb of clusters : 0\n")             
+                fclustsummary.write("# Nb of clusters : 0\n")             
                 fclustsummary.close()
             else:    
                 cluster_max = clusters[0]
@@ -299,42 +360,40 @@ for seqid in seqids:
                 print("Nb of singletons : "+ str(len(orphans))) 
                 #print(dico_dna_clust)
                 print(dico_sequence_bck)
-                fclustsummary.write("Nb of clusters : "+str(len(clusters))+"\n")
-                fclustsummary.write("Identifier cluster max : C_"+cluster_max+"\n")
-                fclustsummary.write("Size cluster max : "+ str(nb_seq_max)+"\n")
-                fclustsummary.write("Nb of singletons : "+ str(len(orphans))+"\n")
+                fclustsummary.write("# Nb of clusters : "+str(len(clusters))+"\n")
+                fclustsummary.write("# Identifier cluster max : C_"+cluster_max+"\n")
+                fclustsummary.write("# Size cluster max : "+ str(nb_seq_max)+"\n")
+                fclustsummary.write("# Nb of singletons : "+ str(len(orphans))+"\n")
                 seqs = families[cluster_max]
-                fclustsummary.write("Cluster max contents:\n")
+                fclustsummary.write("# Cluster max contents: ")
                 list_array = []
                 cluster_max_protein_sequence = []
                 cluster_max_dna_sequence = []
                 for seq in seqs:
                     cluster_max_protein_sequence.append(dico_protein[seq].seq)
                     cluster_max_dna_sequence.append(dico_sequence_bck[seq].seq)
-                    fclustsummary.write(seq+"_C"+cluster_max+"\n")
+                    fclustsummary.write(seq+"_C"+cluster_max+" ")
                     arr = seq[0]
                     if not (arr in list_array) :
                         list_array.append(arr)
+                fclustsummary.write("\n")
                 zfd_cluster = zfd(cluster_max_protein_sequence) 
                 zfd_codon_cluster = zfd_codon(cluster_max_dna_sequence)  
                 
-                write_divindex(zfd_cluster, zfd_codon_cluster, "Largest cluster")
+                fclustsummary.write("\n")
+                fclustsummary.write("#################################################\n")
+                fclustsummary.write("# Longest ZF cluster (based on similarity at 3rd codon positions)\n")             
+                fclustsummary.write("#################################################\n")
+                                   
+                write_divindex(zfd_cluster, zfd_codon_cluster, "Longest cluster")
+
+                calcul_synonym_divindex(zfd_cluster, zfd_codon_cluster, "Longest cluster") 
+                            
+                write_divindex_pos(zfd_cluster, "Longest cluster")
                 
-                write_divindex_pos(zfd_cluster, "Largest cluster")
+                write_divindex_pos(zfd_codon_cluster, "Longest cluster codons")                    
                 
-                write_divindex_pos(zfd_codon_cluster, "Largest cluster codons")               
-                
-                #fclustsummary.write("Largest cluster div. index  : ")
-                #for div in zfd_cluster:
-                #    fclustsummary.write('%5.2f' % (div))
-                #fclustsummary.write("\n") 
-                #ZFDC = zfsum(zfd_cluster,positions_contact )
-                #pos_string = ' '.join(str(item) for item in positions_contact)
-                #fclustsummary.write("Global div. index for " + pos_string)
-                #fclustsummary.write(' : %6.3f' % (ZFDC))   
-                #fclustsummary.write("\n")        
-                
-                fclustsummary.write("Nb of arrays in cluster max: "+str(len(list_array))+"\n") 
+                fclustsummary.write("# Nb of arrays in cluster max: "+str(len(list_array))+"\n") 
                 fclustsummary.close() 
                 count = SeqIO.write(new_records, args.output_dir+"/"+file_name+"_cluster.fasta", "fasta")    
 fl.close()
