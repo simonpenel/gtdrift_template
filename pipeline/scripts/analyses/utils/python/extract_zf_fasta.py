@@ -24,8 +24,9 @@ def zfsum(zf:[], positions:[]):
     for pos in positions:
         sum = sum + zf[pos]
     total = 0
-    for val in zf:
-        total = total + val
+    for i in range(0,len(zf)):
+        if i not in positions_to_exclude:
+            total = total + zf[i]
     sum = sum / total
     return sum
  
@@ -137,12 +138,13 @@ def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):
         ratio = 0
         if syno > 0:
             ratio = zfd_data[i] / syno
+        zdf_ratio.append(ratio)
+        zdf_syno.append(syno)   
+        if i not in positions_to_exclude : 
+            total_syno += syno        
             total_ratio += ratio
-        zdf_ratio.append(ratio)   
-        total_syno += syno        
-        zdf_syno.append(syno)
-    mean_syno = total_syno / len(zfd_data)   
-    mean_ratio = total_ratio / len(zfd_data)   
+    mean_syno = total_syno / (len(zfd_data)   - len(positions_to_exclude)) 
+    mean_ratio = total_ratio / (len(zfd_data)   - len(positions_to_exclude))    
     fclustsummary.write('{:45}'.format("# " + zfd_name + " syno (codon - aa) : "))
     for div in zdf_syno:
         fclustsummary.write('%5.2f' % (div))
@@ -168,7 +170,7 @@ def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):
     fclustsummary.write("\n")
        
 positions_contact =  [11,13,14,17] #(dans R 12, 14, 15, 18, -1 pour l'index
-positions_to_exclide = [19]  #(dans R 20 -1 pour l'index
+positions_to_exclude = [19]  #(dans R 20 -1 pour l'index
  
 df = pd.read_csv(args.input, sep=';')
 seqids = np.unique(df.SeqID)
