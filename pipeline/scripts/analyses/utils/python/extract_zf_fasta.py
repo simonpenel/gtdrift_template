@@ -50,6 +50,7 @@ def zfd(seqs:[]):
             print(aa+" => "+str(nb_aa))
             div  = div + (nb_aa / nbseq) ** 2
         div = 1 - div
+        div = round(div, 5)
         print("Site "+str(i) +" => "+str(div))
         zfd.append(div)
     print(zfd)
@@ -78,6 +79,7 @@ def zfd_codon(seqs:[]):
             print(codon+" => "+str(nb_codon))
             div  = div + (nb_codon / nbseq) ** 2
         div = 1 - div
+        div = round(div, 5)
         print("SIte "+str(i) +" => "+str(div))
         zfd.append(div)
     print(zfd)
@@ -128,12 +130,9 @@ def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):
     for i in range(0,len(zfd_data)):
         syno = zfd_codon_data[i] - zfd_data[i]
         if syno < 0:
-            if (-syno) < 0.000000001:
-                syno = -syno
-            else:
-                sys.exit("Error in calcul_synonym_divindex, nefatve value")
-        if syno < 0.000000001:
-            syno = 0
+            print(zfd_codon_data[i])
+            print(zfd_data[i])
+            sys.exit("Error in calcul_synonym_divindex, negative value")
         
         ratio = 0
         if syno > 0:
