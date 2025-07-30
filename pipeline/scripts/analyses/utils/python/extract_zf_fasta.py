@@ -316,15 +316,21 @@ for seqid in seqids:
             fclustsummary.write("#################################################\n")
             fclustsummary.write("# All ZF\n")
             fclustsummary.write("#################################################\n")
-            write_divindex(zfd_all, zfd_codon_all, "Global")
-
-            calcul_synonym_divindex(zfd_all, zfd_codon_all, "Global")
             
-            write_divindex_pos(zfd_all, "Global")    
+            if zf_number > 4:
+            
+                write_divindex(zfd_all, zfd_codon_all, "Global")
+
+                calcul_synonym_divindex(zfd_all, zfd_codon_all, "Global")
+            
+                write_divindex_pos(zfd_all, "Global")    
              
-            write_divindex_pos(zfd_codon_all, "Global codons")       
+                write_divindex_pos(zfd_codon_all, "Global codons")       
       
-                                
+            else :
+            
+                fclustsummary.write("# Less than 5 zf:  no stats.\n")  
+                                         
             fclustsummary.write("# Nb of zf 28 : "+str(nb_28)+"\n")
             fclustsummary.write("# Nb of zf 29 : "+str(nb_29)+"\n")                
             fclustsummary.write("# Nb of arrays : "+str(len(list(list_array_total.keys())))+"\n")
@@ -336,15 +342,18 @@ for seqid in seqids:
             fclustsummary.write("# Longest ZF array\n")
             fclustsummary.write("#################################################\n")
             
-            write_divindex(zfd_array, zfd_codon_array, "Longest array")               
+            if size_array_max > 4 :
+                write_divindex(zfd_array, zfd_codon_array, "Longest array")               
             
-            calcul_synonym_divindex(zfd_array, zfd_codon_array, "Longest array")            
+                calcul_synonym_divindex(zfd_array, zfd_codon_array, "Longest array")            
             
-            write_divindex_pos(zfd_array, "Longest array")        
+                write_divindex_pos(zfd_array, "Longest array")        
 
-            write_divindex_pos(zfd_codon_array, "Longest array codons")  
+                write_divindex_pos(zfd_codon_array, "Longest array codons")  
             
-                          
+            else :
+                fclustsummary.write("# Less than 5 zf:  no stats.\n")              
+            
             if len(clusters) == 0: 
                 fclustsummary.write("# Nb of clusters : 0\n")             
                 fclustsummary.close()
@@ -404,14 +413,18 @@ for seqid in seqids:
                 fclustsummary.write("#################################################\n")
                 fclustsummary.write("# Longest ZF cluster (based on similarity at 3rd codon positions)\n")             
                 fclustsummary.write("#################################################\n")
-                                   
-                write_divindex(zfd_cluster, zfd_codon_cluster, "Longest cluster")
-
-                calcul_synonym_divindex(zfd_cluster, zfd_codon_cluster, "Longest cluster") 
-                            
-                write_divindex_pos(zfd_cluster, "Longest cluster")
                 
-                write_divindex_pos(zfd_codon_cluster, "Longest cluster codons")                    
+                if nb_seq_max > 4 :              
+                    write_divindex(zfd_cluster, zfd_codon_cluster, "Longest cluster")
+
+                    calcul_synonym_divindex(zfd_cluster, zfd_codon_cluster, "Longest cluster") 
+                            
+                    write_divindex_pos(zfd_cluster, "Longest cluster")
+                
+                    write_divindex_pos(zfd_codon_cluster, "Longest cluster codons")                    
+                
+                else :
+                    fclustsummary.write("# Less than 5 zf:  no stats.\n")    
                 
                 fclustsummary.write("# Nb of arrays in cluster max: "+str(len(list_array))+"\n") 
                 fclustsummary.close() 
