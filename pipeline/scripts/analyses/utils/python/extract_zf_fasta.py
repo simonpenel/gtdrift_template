@@ -145,6 +145,7 @@ def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):
     zdf_ratio = []
     total_syno = 0.0
     total_ratio = 0.0
+    total_ratio_no_pos = 0.0 # on exclut les position d'interet
     for i in range(0,len(zfd_data)):
         syno = zfd_codon_data[i] - zfd_data[i]
         if syno < 0:
@@ -152,21 +153,32 @@ def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):
             print(zfd_data[i])
             sys.exit("Error in calcul_synonym_divindex, negative value")
         
-        ratio = 0
-        if syno > 0:
-            ratio = zfd_data[i] / syno
-        zdf_ratio.append(ratio)
         zdf_syno.append(syno)   
         if i not in positions_to_exclude : 
             total_syno += syno        
-            total_ratio += ratio
+            
     mean_syno = total_syno / (len(zfd_data)   - len(positions_to_exclude)) 
+
+    if mean_syno == 0 :
+        mean_syno = 0.0000001
+
+    for i in range(0,len(zfd_data)):        
+        ratio = zfd_data[i] / mean_syno
+        if ratio > 99 :
+            ratio = 99
+        zdf_ratio.append(ratio) 
+        if i not in positions_to_exclude :       
+            total_ratio += ratio
+            if i not in positions_contact :
+                total_ratio_no_pos += ratio
+
     mean_ratio = total_ratio / (len(zfd_data)   - len(positions_to_exclude))    
+    mean_ratio_no_pos = total_ratio_no_pos / (len(zfd_data)   - len(positions_to_exclude) -len(positions_contact) )    
     fclustsummary.write('{:45}'.format("# " + zfd_name + " syno (codon - aa) : "))
     for div in zdf_syno:
         fclustsummary.write('%5.2f' % (div))
     fclustsummary.write("\n") 
-    fclustsummary.write('{:45}'.format("# "+ zfd_name + " ratio (aa / syno) : "))
+    fclustsummary.write('{:45}'.format("# "+ zfd_name + " ratio (aa / mean syno) : "))
     for div in zdf_ratio:
         fclustsummary.write('%5.2f' % (div))
     fclustsummary.write("\n")       
@@ -181,8 +193,8 @@ def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):
         fclustsummary.write('{:45}'.format("# " + zfd_name + " position "+str(pos+1)))
         fclustsummary.write(" Ratio : ")     
         fclustsummary.write('%5.2f' % (zdf_ratio[pos])) 
-        fclustsummary.write(" Mean ratio : ")    
-        fclustsummary.write('%5.2f' % (mean_ratio)) 
+        fclustsummary.write(" Mean ratio excluding contact positions :")    
+        fclustsummary.write('%5.2f' % (mean_ratio_no_pos)) 
         fclustsummary.write("\n")
     fclustsummary.write("\n")
        
