@@ -116,10 +116,13 @@ def write_divindex(zfd_data, zfd_codon_data, zfd_name):
     fclustsummary.write('{:50}'.format("# Legend : "))
     ipos = 0 
     legend_loc = legend.copy()
+    legend_cons_loc = legend_cons.copy()    
     for div in zfd_data:
         leg = "."
         if ipos in positions_contact:
            leg = legend_loc.pop()
+        if ipos in conserved_positions:
+           leg = legend_cons_loc.pop()
         if ipos in positions_to_exclude:
            leg = "X"
         fclustsummary.write('{:>6}'.format(leg))
@@ -210,9 +213,12 @@ def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):
     
        
 positions_contact =  [11,13,14,17] #(dans R 12, 14, 15, 18, -1 pour l'index
-positions_to_exclude = [19]  #(dans R 20 -1 pour l'index
 legend = ["-1", "2", "3", "6"]
 legend.reverse()
+positions_to_exclude = [19]  #(dans R 20 -1 pour l'index
+conserved_positions = [2,5,18]
+legend_cons = ["C", "C", "H"]
+legend_cons.reverse()
 
 df = pd.read_csv(args.input, sep=';')
 seqids = np.unique(df.SeqID)
