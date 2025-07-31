@@ -130,6 +130,7 @@ def write_divindex(zfd_data, zfd_codon_data, zfd_name):
 def write_divindex_pos(zfd_data,zfd_name):
             zfd_pos = zfsum(zfd_data,positions_contact )
             pos_string = ' '.join(str(item+1) for item in positions_contact)
+            pos_string = ' '.join(str(item) for item in reversed(legend))
             #fclustsummary.write(zfd_name + " d. i. for " + pos_string)
             fclustsummary.write('{:50}'.format("# " + zfd_name + " ZFD " + pos_string+ " : "))
             fclustsummary.write('%6.3f' % (zfd_pos))
