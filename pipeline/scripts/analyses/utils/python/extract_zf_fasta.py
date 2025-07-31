@@ -207,8 +207,8 @@ def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):
         as_name = "Ratio_AS"+legend[jpos]
         df_csv.loc[df_csv['ZF_Dataset'] == zfd_name, as_name] = round(zdf_ratio[pos], 2)
         jpos = jpos -1
-    df_csv.loc[df_csv['ZF_Dataset'] == zfd_name, "Mean_ratio_AS_non1236"] = round(mean_ratio_no_pos, 2)
-    df_csv.loc[df_csv['ZF_Dataset'] == zfd_name, "Mean_ratio_AS1236"] = round(mean_ratio_pos, 2)    
+    df_csv.loc[df_csv['ZF_Dataset'] == zfd_name, "Mean_ratio_AS_non-1236"] = round(mean_ratio_no_pos, 2)
+    df_csv.loc[df_csv['ZF_Dataset'] == zfd_name, "Mean_ratio_AS-1236"] = round(mean_ratio_pos, 2)    
     #fclustsummary.write("\n")
     
        
@@ -232,7 +232,7 @@ for seqid in seqids:
     
         # Creation du df pour le csv
 
-        df_csv = pd.DataFrame(columns=["SeqID","ZF_Dataset","ID_set", "Nb_ZF","Nb_ZF_28","Nb_ZF_29","Nb_Arrays","Nb_Clusters","Nb_singletons","Mean_divS", "Mean_ratio_AS","Ratio_AS-1","Ratio_AS2","Ratio_AS3","Ratio_AS6","Mean_ratio_AS1236" ,"Mean_ratio_AS_non1236" ,"ZFD"])
+        df_csv = pd.DataFrame(columns=["SeqID","ZF_Dataset","ID_set", "Nb_ZF","Nb_ZF_28","Nb_ZF_29","Nb_Arrays","Nb_Clusters","Nb_singletons","Mean_divS", "Mean_ratio_AS","Ratio_AS-1","Ratio_AS2","Ratio_AS3","Ratio_AS6","Mean_ratio_AS-1236" ,"Mean_ratio_AS_non-1236" ,"ZFD"])
         new_row = pd.DataFrame({"ZF_Dataset" : "All_ZFs" }, index=[0])
         df_csv = pd.concat([df_csv.loc[:],new_row]).reset_index(drop=True)
 
@@ -496,6 +496,5 @@ for seqid in seqids:
                 fclustsummary.write("# Nb of arrays in cluster max: "+str(len(list_array))+"\n") 
                 df_csv.to_csv(fclustsummary,sep=';' , index=False , na_rep="NA")
                 fclustsummary.close() 
-                print(df_csv)
                 count = SeqIO.write(new_records, args.output_dir+"/"+file_name+"_cluster.fasta", "fasta")    
 fl.close()
