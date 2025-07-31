@@ -96,24 +96,24 @@ def distance_pos_3(s1:str,s2:str):
     return distance
     
 def write_divindex(zfd_data, zfd_codon_data, zfd_name):    
-    fclustsummary.write('{:45}'.format("# Position : "))
+    fclustsummary.write('{:50}'.format("# Position : "))
     ipos = 1 
     for div in zfd_data:
-        fclustsummary.write('%5d' % (ipos))
+        fclustsummary.write('%6d' % (ipos))
         ipos += 1       
     fclustsummary.write("\n")      
           
-    fclustsummary.write('{:45}'.format("# " + zfd_name + " div. index aa : "))
+    fclustsummary.write('{:50}'.format("# " + zfd_name + " div. index aa : "))
     for div in zfd_data:
-        fclustsummary.write('%5.2f' % (div))
+        fclustsummary.write('%6.2f' % (div))
     fclustsummary.write("\n")
     
-    fclustsummary.write('{:45}'.format("# " + zfd_name + " div. index  codons : "))
+    fclustsummary.write('{:50}'.format("# " + zfd_name + " div. index  codons : "))
     for div in zfd_codon_data:
-        fclustsummary.write('%5.2f' % (div))
+        fclustsummary.write('%6.2f' % (div))
     fclustsummary.write("\n")    
     
-    fclustsummary.write('{:45}'.format("# Legend : "))
+    fclustsummary.write('{:50}'.format("# Legend : "))
     ipos = 0 
     legend_loc = legend.copy()
     for div in zfd_data:
@@ -122,7 +122,7 @@ def write_divindex(zfd_data, zfd_codon_data, zfd_name):
            leg = legend_loc.pop()
         if ipos in positions_to_exclude:
            leg = "X"
-        fclustsummary.write('{:>5}'.format(leg))
+        fclustsummary.write('{:>6}'.format(leg))
         ipos += 1       
     fclustsummary.write("\n") 
 
@@ -131,7 +131,7 @@ def write_divindex_pos(zfd_data,zfd_name):
             zfd_pos = zfsum(zfd_data,positions_contact )
             pos_string = ' '.join(str(item+1) for item in positions_contact)
             #fclustsummary.write(zfd_name + " d. i. for " + pos_string)
-            fclustsummary.write('{:45}'.format("# " + zfd_name + " ZFD " + pos_string+ " : "))
+            fclustsummary.write('{:50}'.format("# " + zfd_name + " ZFD " + pos_string+ " : "))
             fclustsummary.write('%6.3f' % (zfd_pos))
             fclustsummary.write("\n")
             df_csv.loc[df_csv['ZF_Dataset'] == zfd_name, "ZFD"] = round(zfd_pos, 2)
@@ -174,18 +174,18 @@ def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):
     mean_ratio = total_ratio / (len(zfd_data)   - len(positions_to_exclude))    
     mean_ratio_no_pos = total_ratio_no_pos / (len(zfd_data)   - len(positions_to_exclude) -len(positions_contact) )    
     mean_ratio_pos = total_ratio_pos / len(positions_contact)
-    fclustsummary.write('{:45}'.format("# " + zfd_name + " syno (codon - aa) : "))
+    fclustsummary.write('{:50}'.format("# " + zfd_name + " syno (codon - aa) : "))
     for div in zdf_syno:
-        fclustsummary.write('%5.2f' % (div))
+        fclustsummary.write('%6.2f' % (div))
     fclustsummary.write("\n") 
-    fclustsummary.write('{:45}'.format("# "+ zfd_name + " ratio (aa / mean syno) : "))
+    fclustsummary.write('{:50}'.format("# "+ zfd_name + " ratio (aa / mean syno) : "))
     for div in zdf_ratio:
-        fclustsummary.write('%5.2f' % (div))
+        fclustsummary.write('%6.2f' % (div))
     fclustsummary.write("\n")       
-    fclustsummary.write('{:45}'.format("# Mean syno : "))     
+    fclustsummary.write('{:50}'.format("# Mean syno : "))     
     fclustsummary.write('%5.2f' % (mean_syno))       
     fclustsummary.write("\n") 
-    fclustsummary.write('{:45}'.format("# Mean ratio : "))     
+    fclustsummary.write('{:50}'.format("# Mean ratio : "))     
     fclustsummary.write('%5.2f' % (mean_ratio))       
     fclustsummary.write("\n")
     
@@ -194,7 +194,7 @@ def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):
     df_csv.loc[df_csv['ZF_Dataset'] == zfd_name, "Mean_ratio_AS"] = round(mean_ratio, 2)
     jpos = 3
     for pos in positions_contact:
-        fclustsummary.write('{:45}'.format("# " + zfd_name + " position "+str(pos+1)))
+        fclustsummary.write('{:50}'.format("# " + zfd_name + " position "+str(pos+1)))
         fclustsummary.write(" Ratio : ")     
         fclustsummary.write('%5.2f' % (zdf_ratio[pos])) 
         fclustsummary.write(" Mean ratio excluding contact positions :")    
