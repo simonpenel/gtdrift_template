@@ -166,7 +166,7 @@ def calcul_synonym_divindex(zfd_data, zfd_codon_data, zfd_name):
     for i in range(0,len(zfd_data)):        
         ratio = zfd_data[i] / mean_syno
         if ratio > 99 :
-            ratio = 99
+            ratio = 99.0
         zdf_ratio.append(ratio) 
         if i not in positions_to_exclude :       
             total_ratio += ratio
