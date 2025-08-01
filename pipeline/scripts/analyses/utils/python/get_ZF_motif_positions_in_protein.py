@@ -486,7 +486,12 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
         tandem = 0 # will increment for each group of tandem zincfingers
         match_nb = 1 # num of the match in set
         match_tandem_nb = 1 # num of the match in set of tandem zincfingers
+        flag_match_ok = True
         for element in sorted_list_of_matches:
+            if flag_match_ok == False:
+                flog.write("Flag was flaged as erroneous,  sequence flaged as erroneous\n")
+                flag_sequence_ok = False
+                continue
             match  = element[1]
             pattern = element[0]
         #for match in matches:
@@ -611,8 +616,14 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         flog.write("Error: the translated protein sequence was correct, something is wrong with the patterns.\n")
                         flog.write("\n********\n\n")
                     if ratio < 0.9 :
-                        flog.write("Error: translated sequence and protein sequence are too different")
-                        sys.exit("Error: translated sequence and protein sequence are too different")
+                        flog.write("Error: translated match sequence and protein match sequence are too different\n")
+                        flog.write("Match is flaged as erroneous\n")
+                        #sys.exit("Error: translated sequence and protein sequence are too different")
+                        print("Error: translated match and protein match are too different")
+                        print("Match is flaged as erroneous")
+                        flag_match_ok = False
+                        continue
+                        
                 else:
                     flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
                 zfname = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrsruvwxyz"[tandem]+str(match_tandem_nb)
