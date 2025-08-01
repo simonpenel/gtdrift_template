@@ -193,6 +193,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     # if true, the matching sequences should be true too.
     # (used to check the modified pattern results)
     flag_identical = False
+    flag_sequence_ok = True
     # info on frame of first and last cds. Useful if sequence is partial
     frame_first_cds = 0
     frame_last_cds = 0
@@ -445,8 +446,13 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 flog.write("Match ratio  :"+str(ratio))
                 flog.write("\n********\n\n")
                 if ratio < 0.9 :
-                        flog.write("Error: translated sequence and protein sequence are too different")
-                        sys.exit("Error: translated sequence and protein sequence are too different")
+                        flog.write("Error: translated sequence and protein sequence are too different\n")
+                        #sys.exit("Error: translated sequence and protein sequence are too different")
+                        print("Error: translated sequence and protein sequence are too different; jump to next sequence")
+                        flog.write("Sequence flaged as erreoneous.\n")
+                        flag_sequence_ok = False
+                        continue
+                        
             else :
                 flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
                 flag_identical = True
@@ -456,6 +462,9 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
         print("Sequence inconnue.")
         sys.exit("Sequence inconnue.")
 
+    if flag_sequence_ok == False :
+        flog.write("Jump to next sequence\n.")
+        continue
     # search patterns
     flog.write("\nPattern search:\n")
     pattern_nb = 1
@@ -606,7 +615,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         sys.exit("Error: translated sequence and protein sequence are too different")
                 else:
                     flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
-                zfname = "ABCDEFGHIJKL"[tandem]+str(match_tandem_nb)
+                zfname = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrsruvwxyz"[tandem]+str(match_tandem_nb)
                 if modified :
                     zfname += "_28"
                 else :
