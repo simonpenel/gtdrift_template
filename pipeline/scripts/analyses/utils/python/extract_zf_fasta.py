@@ -219,6 +219,7 @@ positions_to_exclude = [19]  #(dans R 20 -1 pour l'index
 conserved_positions = [2,5,18]
 legend_cons = ["C", "C", "H"]
 legend_cons.reverse()
+min_ZF_nb = 4
 
 df = pd.read_csv(args.input, sep=';')
 seqids = np.unique(df.SeqID)
@@ -369,7 +370,7 @@ for seqid in seqids:
             fclustsummary.write("# All ZF\n")
             fclustsummary.write("#################################################\n")
             
-            if zf_number > 4:
+            if zf_number >= min_ZF_nb:
             
                 write_divindex(zfd_all, zfd_codon_all, "All_ZFs")
 
@@ -399,7 +400,7 @@ for seqid in seqids:
             fclustsummary.write("#################################################\n")
             
             df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF"] = size_array_max
-            if size_array_max > 4 :
+            if size_array_max >= min_ZF_nb :
                 write_divindex(zfd_array, zfd_codon_array, "Longest_ZF_array")               
             
                 calcul_synonym_divindex(zfd_array, zfd_codon_array, "Longest_ZF_array")            
@@ -481,7 +482,7 @@ for seqid in seqids:
                 fclustsummary.write("# Longest ZF cluster (based on similarity at 3rd codon positions)\n")             
                 fclustsummary.write("#################################################\n")
                 
-                if nb_seq_max > 4 :              
+                if nb_seq_max >= min_ZF_nb :              
                     write_divindex(zfd_cluster, zfd_codon_cluster, "Largest_ZF_cluster")
 
                     calcul_synonym_divindex(zfd_cluster, zfd_codon_cluster, "Largest_ZF_cluster") 
