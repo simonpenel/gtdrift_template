@@ -186,6 +186,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     flog.write(sequence)
     flog.write("\n")
     protein_length = len(sequence)
+    flog.write("Protein length from fasta file is "+str(protein_length)+"\n")
     dico_sequence[seq_record.id] = []
     partial_start = False
     partial_end = False
@@ -336,7 +337,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                        if cds_strand  == "+" :
                            # decrease the end protein by 3
                            flog.write("       Decrease end_prot "+str(3)+"\n")
-                           end_prot -= 3
+                           #end_prot -= 3
                            #sys.exit("debuging 4")
                        # reverse strand
                        else :
@@ -396,7 +397,11 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 #ferr.write("No exons for "+seq_record.id+".\n")
                 #continue
                 #ferr.close()
-                sys.exit("ERROR: No exons!")
+                flog.write("Error: No exon in the sequence\n")
+                print("No exon in the sequence, jump to  the next sequence")
+                flog.write("Sequence flaged as erreoneous.\n")
+                flag_sequence_ok = False
+                continue
 
             # Check if dna sequence is ok
             flog.write("DNA sequence length :"+str(len(sequence_pos))+"\n")
@@ -552,6 +557,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
 
                     shift_s = en - 19 - st
                     #shift_s -= 1
+                    flog.write("Protein start end for reverse strand = "+str(st) + ","+str(en)+"\n")
+                    
+                flog.write("Last protein position in dna is " + str(en*3+1 + 2)+"\n")
+                flog.write("Length of dna is " + str(len(seq_dna))+"\n") 
 
                 # build the dna sequence of the matching part of the protein
                 if modified == False :
