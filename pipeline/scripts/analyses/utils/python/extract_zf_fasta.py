@@ -387,7 +387,7 @@ for seqid in seqids:
         
                 else :
                 
-                    fclustsummary.write("# Less than 5 zf:  no stats.\n")  
+                    fclustsummary.write("# Less than 4 zf:  no stats.\n")  
                                             
                 fclustsummary.write("# Nb of zf 28 : "+str(nb_28)+"\n")
                 fclustsummary.write("# Nb of zf 29 : "+str(nb_29)+"\n")                
@@ -419,8 +419,9 @@ for seqid in seqids:
                 
                 df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_Clusters"] = len(clusters)
                 if len(clusters) == 0: 
-                    fclustsummary.write("# Nb of clusters : 0\n")             
-                    fclustsummary.close()
+                    fclustsummary.write("# Nb of clusters : 0\n") 
+                    cluster_max = "None"            
+                    #fclustsummary.close()
                 else:    
                     cluster_max = clusters[0]
                     nb_seq_max = len(families[cluster_max])
@@ -497,12 +498,12 @@ for seqid in seqids:
                         write_divindex_pos(zfd_codon_cluster, "Largest_ZF_cluster codons")                    
                     
                     else :
-                        fclustsummary.write("# Less than 5 zf:  no stats.\n")    
+                        fclustsummary.write("# Less than 4 zf:  no stats.\n")    
                     
-                    fclustsummary.write("# Nb of arrays in largest cluster : "+str(len(list_array))+"\n") 
-                    df_csv.to_csv(fclustsummary,sep=';' , index=False , na_rep="NA")
-                    fclustsummary.close() 
-                    count = SeqIO.write(new_records, args.output_dir+"/"+file_name+"_cluster.fasta", "fasta")    
+                    fclustsummary.write("# Nb of arrays in largest cluster : "+str(len(list_array))+"\n")
+                    count = SeqIO.write(new_records, args.output_dir+"/"+file_name+"_cluster.fasta", "fasta")     
+                df_csv.to_csv(fclustsummary,sep=';' , index=False , na_rep="NA")
+                fclustsummary.close()
 
 
 
