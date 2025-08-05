@@ -248,7 +248,9 @@ for seqid in seqids:
         # prefixe des noms de fichiers
         file_name = seqid+"_"+contig
         
-        extract_contig = extract_seqid[extract_seqid["Contig"] == contig]
+        extract_contig_all = extract_seqid[extract_seqid["Contig"] == contig]
+        
+        extract_contig = extract_contig_all[extract_contig_all["Status"] == "Ok"]
         
         # liste des noms
         zf_names = []
@@ -259,243 +261,261 @@ for seqid in seqids:
         proteins = extract_contig["uniformised ZF string"]
         
         # calcul du zfd sur toutes les sequences de proteines
-        zfd_all = zfd(list(proteins))
-        
-        # creation d'un dico des proteines
-        dico_protein = {}
-        zf_number = 0
-        for protein in proteins:
-            protein_seq = Seq(protein)
-            record = SeqRecord(protein_seq, id=zf_names[zf_number])
-            dico_protein[zf_names[zf_number]] = record
-            zf_number +=1
-            
-        # sequences dna
-        sequences = extract_contig["dna sequence reading strand"]   
-        # calcul du zfd sur toutes les sequences nucleiques
-        zfd_codon_all = zfd_codon(list(sequences))           
-        sequences2 = sequences # pour la boucle
-        
-        # creation d'un dico des noms de sequence dna, d'un dico des array,  
-        # du fichier d'entrre pour silixx.
-        fsilix=open(args.output_dir+"/"+file_name+".silix", "w")
-        description = "Sequence :"+seqid+"; Contig:"+contig
-        my_records = []
-        zf_number = 0
-        dico_sequence = {}
-        list_array_total = {}
-        nb_29 = 0
-        nb_28 = 0
-        for sequence in sequences:
-            dna_seq = Seq(sequence)
-            record = SeqRecord(dna_seq, id=zf_names[zf_number],description="Zinc finger ;"+description,)
-            my_records.append(record)
-            dico_sequence[zf_names[zf_number]] = record
-            arr = zf_names[zf_number][0]
-            if arr in list_array_total :
-                list_array_total[arr].append(zf_names[zf_number])
-            else :
-                list_array_total[arr] = []
-                list_array_total[arr].append(zf_names[zf_number])
-            suff = zf_names[zf_number][-2:]
-            if suff == "28":
-                nb_28 +=1
-            elif suff == "29":
-                nb_29 +=1    
-            else :
-                sys.exit("Unknown suffix for "+zf_names[zf_number])
-            zf_number2 = 0
-            for sequence2 in sequences2:
-                distance = distance_pos_3(sequence.upper(),sequence2.upper())
-                if zf_number2 > zf_number:
-                    if distance <= 2:
-                        fsilix.write(zf_names[zf_number]+" "+zf_names[zf_number2]+"\n")
-                zf_number2 += 1            
-            zf_number +=1
-        array_max = list(list_array_total.keys())[0]
-        size_array_max = 0
-        for array in list(list_array_total.keys()):
-            if len(list_array_total[array]) > size_array_max:
-                array_max = array
-                size_array_max = len(list_array_total[array])
-                        
-        df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_ZF_28"] = nb_28
-        df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_ZF_29"] = nb_29
-        
-        # Calcul de la diversite sur le plus grand array
-        proteins_array_max =  []
-        dna_array_max =  []
-        nb_28 = 0
-        nb_29 = 0
-        for name in  list_array_total[array_max]:
-            protein_seq = dico_protein[name].seq
-            proteins_array_max.append(protein_seq)
-            dna_seq = dico_sequence[name].seq
-            dna_array_max.append(dna_seq)
-            suff = name[-2:]
-            if suff == "28":
-                nb_28 +=1
-            elif suff == "29":
-                nb_29 +=1  
-        df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_28"] = nb_28
-        df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_29"] = nb_29                
-        zfd_array = zfd(proteins_array_max)    
-        zfd_codon_array = zfd_codon(dna_array_max)  
-                  
-        count = SeqIO.write(my_records, args.output_dir+"/"+file_name+".fasta", "fasta")
-        fl.write(file_name+".fasta\n")
-        fsilix.close()
-        fclust=open(args.output_dir+"/"+file_name+".clust", "w")
-        subprocess.run(["silixx", str(len(zf_names)),args.output_dir+"/"+file_name+".silix"],stdout=fclust) 
-        fclust.close()
-        families = {}
-        with open(args.output_dir+"/"+file_name+".clust", 'r') as reader:
-            for line in reader:
-                buf = line.rstrip().split('\t')
-                if len(buf) < 2:
-                    continue
-                fam = buf[0]
-                seq = buf[1]
-                if fam in families:
-                    families[fam].append(seq)
-                else:
-                    families[fam] = []
-                    families[fam].append(seq)
-            clusters = list(families.keys())
+        if len(list(proteins)) > 0 :
 
-            fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w")    
-            fclustsummary.write("# Nb of zf : "+str(len(sequences))+"\n")   
-            fclustsummary.write("#\n")
-            fclustsummary.write("#################################################\n")
-            fclustsummary.write("# All ZF\n")
-            fclustsummary.write("#################################################\n")
+            zfd_all = zfd(list(proteins))
             
-            if zf_number >= min_ZF_nb:
-            
-                write_divindex(zfd_all, zfd_codon_all, "All_ZFs")
-
-                calcul_synonym_divindex(zfd_all, zfd_codon_all, "All_ZFs")
-            
-                write_divindex_pos(zfd_all, "All_ZFs")    
-             
-                write_divindex_pos(zfd_codon_all, "All_ZFs codons")       
-      
-            else :
-            
-                fclustsummary.write("# Less than 5 zf:  no stats.\n")  
-                                         
-            fclustsummary.write("# Nb of zf 28 : "+str(nb_28)+"\n")
-            fclustsummary.write("# Nb of zf 29 : "+str(nb_29)+"\n")                
-            fclustsummary.write("# Nb of arrays : "+str(len(list(list_array_total.keys())))+"\n")
-            fclustsummary.write("# Longest array : " + array_max + "\n")
-            fclustsummary.write("# Size longest array : " + str(size_array_max)+ "\n") 
-            
-            df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_ZF"] = zf_number
-            df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "ID_set"] = array_max
-            df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_Arrays"] = len(list(list_array_total.keys()))
-            
-            fclustsummary.write("#\n")
-            fclustsummary.write("#################################################\n")
-            fclustsummary.write("# Longest ZF array\n")
-            fclustsummary.write("#################################################\n")
-            
-            df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF"] = size_array_max
-            if size_array_max >= min_ZF_nb :
-                write_divindex(zfd_array, zfd_codon_array, "Longest_ZF_array")               
-            
-                calcul_synonym_divindex(zfd_array, zfd_codon_array, "Longest_ZF_array")            
-            
-                write_divindex_pos(zfd_array, "Longest_ZF_array")        
-
-                write_divindex_pos(zfd_codon_array, "Longest_ZF_array codons")  
-            
-            else :
-                fclustsummary.write("# Less than 5 zf:  no stats.\n")              
-            
-            df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_Clusters"] = len(clusters)
-            if len(clusters) == 0: 
-                fclustsummary.write("# Nb of clusters : 0\n")             
-                fclustsummary.close()
-            else:    
-                cluster_max = clusters[0]
-                nb_seq_max = len(families[cluster_max])
-                new_records = []
-                dico_sequence_bck  = dico_sequence.copy() # je garde une copie, car je vide le dico
-                for cluster in clusters:
-                    seqs = families[cluster]
-                    for seq in seqs:
-                        #record = dico_sequence[seq]
-                        record = dico_sequence.pop(seq)
-                        dna_seq = record.seq
-                        new_record = SeqRecord(dna_seq, id=seq+"_C"+cluster,description="Zinc finger ;"+description,)
-                        new_records.append(new_record)
-                    nb_seq = len(families[cluster])
-                    if nb_seq > nb_seq_max :
-                        cluster_max = cluster
-                        nb_seq_max = nb_seq
-                orphans = list(dico_sequence.keys())
-                for orphan in orphans:
-                    record = dico_sequence.pop(orphan)
-                    dna_seq = record.seq
-                    new_record = SeqRecord(dna_seq, id=orphan+"_singleton",description="Zinc finger ;"+description,)
-                    new_records.append(new_record)             
- 
-                fclustsummary.write("# Nb of clusters : "+str(len(clusters))+"\n")
-                fclustsummary.write("# Identifier cluster max : C_"+cluster_max+"\n")
-                fclustsummary.write("# Size cluster max : "+ str(nb_seq_max)+"\n")
-                fclustsummary.write("# Nb of singletons : "+ str(len(orphans))+"\n")
-                seqs = families[cluster_max]
-                fclustsummary.write("# Cluster max contents: ")
+            # creation d'un dico des proteines
+            dico_protein = {}
+            zf_number = 0
+            for protein in proteins:
+                protein_seq = Seq(protein)
+                record = SeqRecord(protein_seq, id=zf_names[zf_number])
+                dico_protein[zf_names[zf_number]] = record
+                zf_number +=1
                 
-                df_csv.loc[df_csv['ZF_Dataset'] == "Largest_ZF_cluster", "ID_set"] = "C_"+cluster_max
-                df_csv.loc[df_csv['ZF_Dataset'] == "Largest_ZF_cluster", "Nb_ZF"] = nb_seq_max
-                df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_singletons"] = len(orphans)
-                
-                
-                
-                list_array = []
-                cluster_max_protein_sequence = []
-                cluster_max_dna_sequence = []
-                nb_28 = 0
+            # sequences dna
+            sequences = extract_contig["dna sequence reading strand"]   
+            # calcul du zfd sur toutes les sequences nucleiques
+            if len(list(sequences)) > 0 :
+                zfd_codon_all = zfd_codon(list(sequences))           
+                sequences2 = sequences # pour la boucle
+            
+                # creation d'un dico des noms de sequence dna, d'un dico des array,  
+                # du fichier d'entrre pour silixx.
+                fsilix=open(args.output_dir+"/"+file_name+".silix", "w")
+                description = "Sequence :"+seqid+"; Contig:"+contig
+                my_records = []
+                zf_number = 0
+                dico_sequence = {}
+                list_array_total = {}
                 nb_29 = 0
-                for seq in seqs:
-                    suff = seq[-2:]
+                nb_28 = 0
+                for sequence in sequences:
+                    dna_seq = Seq(sequence)
+                    record = SeqRecord(dna_seq, id=zf_names[zf_number],description="Zinc finger ;"+description,)
+                    my_records.append(record)
+                    dico_sequence[zf_names[zf_number]] = record
+                    arr = zf_names[zf_number][0]
+                    if arr in list_array_total :
+                        list_array_total[arr].append(zf_names[zf_number])
+                    else :
+                        list_array_total[arr] = []
+                        list_array_total[arr].append(zf_names[zf_number])
+                    suff = zf_names[zf_number][-2:]
                     if suff == "28":
                         nb_28 +=1
                     elif suff == "29":
-                        nb_29 +=1  
-                    cluster_max_protein_sequence.append(dico_protein[seq].seq)
-                    cluster_max_dna_sequence.append(dico_sequence_bck[seq].seq)
-                    fclustsummary.write(seq+"_C"+cluster_max+" ")
-                    arr = seq[0]
-                    if not (arr in list_array) :
-                        list_array.append(arr)
-                        
-                df_csv.loc[df_csv['ZF_Dataset'] == "Largest_ZF_cluster", "Nb_ZF_28"] = nb_28
-                df_csv.loc[df_csv['ZF_Dataset'] == "Largest_ZF_cluster", "Nb_ZF_29"] = nb_29                          
-                fclustsummary.write("\n")
-                zfd_cluster = zfd(cluster_max_protein_sequence) 
-                zfd_codon_cluster = zfd_codon(cluster_max_dna_sequence)  
+                        nb_29 +=1    
+                    else :
+                        sys.exit("Unknown suffix for "+zf_names[zf_number])
+                    zf_number2 = 0
+                    for sequence2 in sequences2:
+                        distance = distance_pos_3(sequence.upper(),sequence2.upper())
+                        if zf_number2 > zf_number:
+                            if distance <= 2:
+                                fsilix.write(zf_names[zf_number]+" "+zf_names[zf_number2]+"\n")
+                        zf_number2 += 1            
+                    zf_number +=1
+                array_max = list(list_array_total.keys())[0]
+                size_array_max = 0
+                for array in list(list_array_total.keys()):
+                    if len(list_array_total[array]) > size_array_max:
+                        array_max = array
+                        size_array_max = len(list_array_total[array])
+                            
+                df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_ZF_28"] = nb_28
+                df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_ZF_29"] = nb_29
+            
+            # Calcul de la diversite sur le plus grand array
+            proteins_array_max =  []
+            dna_array_max =  []
+            nb_28 = 0
+            nb_29 = 0
+            for name in  list_array_total[array_max]:
+                protein_seq = dico_protein[name].seq
+                proteins_array_max.append(protein_seq)
+                dna_seq = dico_sequence[name].seq
+                dna_array_max.append(dna_seq)
+                suff = name[-2:]
+                if suff == "28":
+                    nb_28 +=1
+                elif suff == "29":
+                    nb_29 +=1  
+            df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_28"] = nb_28
+            df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_29"] = nb_29                
+            zfd_array = zfd(proteins_array_max)    
+            zfd_codon_array = zfd_codon(dna_array_max)  
+                    
+            count = SeqIO.write(my_records, args.output_dir+"/"+file_name+".fasta", "fasta")
+            fl.write(file_name+".fasta\n")
+            fsilix.close()
+            fclust=open(args.output_dir+"/"+file_name+".clust", "w")
+            subprocess.run(["silixx", str(len(zf_names)),args.output_dir+"/"+file_name+".silix"],stdout=fclust) 
+            fclust.close()
+            families = {}
+            with open(args.output_dir+"/"+file_name+".clust", 'r') as reader:
+                for line in reader:
+                    buf = line.rstrip().split('\t')
+                    if len(buf) < 2:
+                        continue
+                    fam = buf[0]
+                    seq = buf[1]
+                    if fam in families:
+                        families[fam].append(seq)
+                    else:
+                        families[fam] = []
+                        families[fam].append(seq)
+                clusters = list(families.keys())
+
+                fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w")    
+                fclustsummary.write("# Nb of zf : "+str(len(sequences))+"\n")   
+                fclustsummary.write("#\n")
+                fclustsummary.write("#################################################\n")
+                fclustsummary.write("# All ZF\n")
+                fclustsummary.write("#################################################\n")
+                
+                if zf_number >= min_ZF_nb:
+                
+                    write_divindex(zfd_all, zfd_codon_all, "All_ZFs")
+
+                    calcul_synonym_divindex(zfd_all, zfd_codon_all, "All_ZFs")
+                
+                    write_divindex_pos(zfd_all, "All_ZFs")    
+                
+                    write_divindex_pos(zfd_codon_all, "All_ZFs codons")       
+        
+                else :
+                
+                    fclustsummary.write("# Less than 5 zf:  no stats.\n")  
+                                            
+                fclustsummary.write("# Nb of zf 28 : "+str(nb_28)+"\n")
+                fclustsummary.write("# Nb of zf 29 : "+str(nb_29)+"\n")                
+                fclustsummary.write("# Nb of arrays : "+str(len(list(list_array_total.keys())))+"\n")
+                fclustsummary.write("# Longest array : " + array_max + "\n")
+                fclustsummary.write("# Size longest array : " + str(size_array_max)+ "\n") 
+                
+                df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_ZF"] = zf_number
+                df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "ID_set"] = array_max
+                df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_Arrays"] = len(list(list_array_total.keys()))
                 
                 fclustsummary.write("#\n")
                 fclustsummary.write("#################################################\n")
-                fclustsummary.write("# Longest ZF cluster (based on similarity at 3rd codon positions)\n")             
+                fclustsummary.write("# Longest ZF array\n")
                 fclustsummary.write("#################################################\n")
                 
-                if nb_seq_max >= min_ZF_nb :              
-                    write_divindex(zfd_cluster, zfd_codon_cluster, "Largest_ZF_cluster")
-
-                    calcul_synonym_divindex(zfd_cluster, zfd_codon_cluster, "Largest_ZF_cluster") 
-                            
-                    write_divindex_pos(zfd_cluster, "Largest_ZF_cluster")
+                df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF"] = size_array_max
+                if size_array_max >= min_ZF_nb :
+                    write_divindex(zfd_array, zfd_codon_array, "Longest_ZF_array")               
                 
-                    write_divindex_pos(zfd_codon_cluster, "Largest_ZF_cluster codons")                    
+                    calcul_synonym_divindex(zfd_array, zfd_codon_array, "Longest_ZF_array")            
+                
+                    write_divindex_pos(zfd_array, "Longest_ZF_array")        
+
+                    write_divindex_pos(zfd_codon_array, "Longest_ZF_array codons")  
                 
                 else :
-                    fclustsummary.write("# Less than 5 zf:  no stats.\n")    
+                    fclustsummary.write("# Less than 4 zf:  no stats.\n")              
                 
-                fclustsummary.write("# Nb of arrays in cluster max: "+str(len(list_array))+"\n") 
-                df_csv.to_csv(fclustsummary,sep=';' , index=False , na_rep="NA")
-                fclustsummary.close() 
-                count = SeqIO.write(new_records, args.output_dir+"/"+file_name+"_cluster.fasta", "fasta")    
+                df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_Clusters"] = len(clusters)
+                if len(clusters) == 0: 
+                    fclustsummary.write("# Nb of clusters : 0\n")             
+                    fclustsummary.close()
+                else:    
+                    cluster_max = clusters[0]
+                    nb_seq_max = len(families[cluster_max])
+                    new_records = []
+                    dico_sequence_bck  = dico_sequence.copy() # je garde une copie, car je vide le dico
+                    for cluster in clusters:
+                        seqs = families[cluster]
+                        for seq in seqs:
+                            #record = dico_sequence[seq]
+                            record = dico_sequence.pop(seq)
+                            dna_seq = record.seq
+                            new_record = SeqRecord(dna_seq, id=seq+"_C"+cluster,description="Zinc finger ;"+description,)
+                            new_records.append(new_record)
+                        nb_seq = len(families[cluster])
+                        if nb_seq > nb_seq_max :
+                            cluster_max = cluster
+                            nb_seq_max = nb_seq
+                    orphans = list(dico_sequence.keys())
+                    for orphan in orphans:
+                        record = dico_sequence.pop(orphan)
+                        dna_seq = record.seq
+                        new_record = SeqRecord(dna_seq, id=orphan+"_singleton",description="Zinc finger ;"+description,)
+                        new_records.append(new_record)             
+    
+                    fclustsummary.write("# Nb of clusters : "+str(len(clusters))+"\n")
+                    fclustsummary.write("# Identifier largest cluster : C_"+cluster_max+"\n")
+                    fclustsummary.write("# Size largest cluster : "+ str(nb_seq_max)+"\n")
+                    fclustsummary.write("# Nb of singletons : "+ str(len(orphans))+"\n")
+                    seqs = families[cluster_max]
+                    fclustsummary.write("# Cluster max contents: ")
+                    
+                    df_csv.loc[df_csv['ZF_Dataset'] == "Largest_ZF_cluster", "ID_set"] = "C_"+cluster_max
+                    df_csv.loc[df_csv['ZF_Dataset'] == "Largest_ZF_cluster", "Nb_ZF"] = nb_seq_max
+                    df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_singletons"] = len(orphans)
+                    
+                    
+                    
+                    list_array = []
+                    cluster_max_protein_sequence = []
+                    cluster_max_dna_sequence = []
+                    nb_28 = 0
+                    nb_29 = 0
+                    for seq in seqs:
+                        suff = seq[-2:]
+                        if suff == "28":
+                            nb_28 +=1
+                        elif suff == "29":
+                            nb_29 +=1  
+                        cluster_max_protein_sequence.append(dico_protein[seq].seq)
+                        cluster_max_dna_sequence.append(dico_sequence_bck[seq].seq)
+                        fclustsummary.write(seq+"_C"+cluster_max+" ")
+                        arr = seq[0]
+                        if not (arr in list_array) :
+                            list_array.append(arr)
+                            
+                    df_csv.loc[df_csv['ZF_Dataset'] == "Largest_ZF_cluster", "Nb_ZF_28"] = nb_28
+                    df_csv.loc[df_csv['ZF_Dataset'] == "Largest_ZF_cluster", "Nb_ZF_29"] = nb_29                          
+                    fclustsummary.write("\n")
+                    zfd_cluster = zfd(cluster_max_protein_sequence) 
+                    zfd_codon_cluster = zfd_codon(cluster_max_dna_sequence)  
+                    
+                    fclustsummary.write("#\n")
+                    fclustsummary.write("#################################################\n")
+                    fclustsummary.write("# Largest ZF cluster (based on similarity at 3rd codon positions)\n")             
+                    fclustsummary.write("#################################################\n")
+                    
+                    if nb_seq_max >= min_ZF_nb :              
+                        write_divindex(zfd_cluster, zfd_codon_cluster, "Largest_ZF_cluster")
+
+                        calcul_synonym_divindex(zfd_cluster, zfd_codon_cluster, "Largest_ZF_cluster") 
+                                
+                        write_divindex_pos(zfd_cluster, "Largest_ZF_cluster")
+                    
+                        write_divindex_pos(zfd_codon_cluster, "Largest_ZF_cluster codons")                    
+                    
+                    else :
+                        fclustsummary.write("# Less than 5 zf:  no stats.\n")    
+                    
+                    fclustsummary.write("# Nb of arrays in largest cluster : "+str(len(list_array))+"\n") 
+                    df_csv.to_csv(fclustsummary,sep=';' , index=False , na_rep="NA")
+                    fclustsummary.close() 
+                    count = SeqIO.write(new_records, args.output_dir+"/"+file_name+"_cluster.fasta", "fasta")    
+
+
+
+        extract_contig_errors = extract_contig_all[extract_contig_all["Status"] != "Ok"]
+        erroneous_protein_names = extract_contig_errors["SeqID"]
+        for erroneous_protein_name in erroneous_protein_names :
+            print("Problem occurs with " + erroneous_protein_name)
+            fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w")    
+            fclustsummary.write("#################################################\n")
+            fclustsummary.write("# Problems\n")
+            err_status = list(extract_contig_all[extract_contig_all["SeqID"] == erroneous_protein_names]["Status"])
+            fclustsummary.write(str(err_status) +"\n")
+            fclustsummary.write("#################################################\n")
+            df_csv.to_csv(fclustsummary,sep=';' , index=False , na_rep="NA")
+            fclustsummary.close() 
 fl.close()
