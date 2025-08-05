@@ -233,7 +233,7 @@ for seqid in seqids:
     
         # Creation du df pour le csv
 
-        df_csv = pd.DataFrame(columns=["SeqID","ZF_Dataset","ID_set", "Nb_ZF","Nb_ZF_28","Nb_ZF_29","Nb_Arrays","Nb_Clusters","Nb_singletons","Mean_divS", "Mean_ratio_AS","Ratio_AS-1","Ratio_AS2","Ratio_AS3","Ratio_AS6","Mean_ratio_AS-1236" ,"Mean_ratio_AS_non-1236" ,"ZFD"])
+        df_csv = pd.DataFrame(columns=["SeqID","Status","ZF_Dataset","ID_set", "Nb_ZF","Nb_ZF_28","Nb_ZF_29","Nb_Arrays","Nb_Clusters","Nb_singletons","Mean_divS", "Mean_ratio_AS","Ratio_AS-1","Ratio_AS2","Ratio_AS3","Ratio_AS6","Mean_ratio_AS-1236" ,"Mean_ratio_AS_non-1236" ,"ZFD"])
         new_row = pd.DataFrame({"ZF_Dataset" : "All_ZFs" }, index=[0])
         df_csv = pd.concat([df_csv.loc[:],new_row]).reset_index(drop=True)
 
@@ -262,7 +262,7 @@ for seqid in seqids:
         
         # calcul du zfd sur toutes les sequences de proteines
         if len(list(proteins)) > 0 :
-
+            df_csv.loc[df_csv['SeqID'] == seqid, "Status"] = 0
             zfd_all = zfd(list(proteins))
             
             # creation d'un dico des proteines
@@ -515,8 +515,18 @@ for seqid in seqids:
             fclustsummary.write("#################################################\n")
             fclustsummary.write("# Problems\n")
             err_status = list(extract_contig_all[extract_contig_all["SeqID"] == erroneous_protein_names]["Status"])
-            fclustsummary.write(str(err_status) +"\n")
+            fclustsummary.write("# "+str(err_status) +"\n")
+            fclustsummary.write("# Status 1 : No exon.\n")
+            fclustsummary.write("# Status 2 : Protein from fasta input file is different from translated DNA equence.\n")
+            fclustsummary.write("# Status 3 : Other.\n")             
             fclustsummary.write("#################################################\n")
+            status = 3
+            if str(err_status) == "['no exon']" :
+                status = 1
+            if str(err_status) == "['sequence transl. problem']" :
+                status = 2
+
+            df_csv.loc[df_csv['SeqID'] == seqid, "Status"] = status
             df_csv.to_csv(fclustsummary,sep=';' , index=False , na_rep="NA")
             fclustsummary.close() 
 fl.close()
