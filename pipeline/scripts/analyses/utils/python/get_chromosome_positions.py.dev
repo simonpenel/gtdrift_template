@@ -1,0 +1,97 @@
+import argparse
+import time
+import os
+import pandas as pd
+ 
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-i', '--input', type=str, required=True, help='whole_summary.csv from protein analysis')
+parser.add_argument('-g', '--gff', type=str,required=True, help='path to gff file, REQUIRED if type=prot')
+parser.add_argument('-o', '--output', type=str, required=True, help='output file path')
+
+args = parser.parse_args()
+
+## Function to read gff files and get chromosome,
+# start and end for locus.
+
+def preProcessGff(gff:str):
+    with open(gff, 'r') as reader:
+        print("Preprocessing gff... (This may take several minutes)")        
+        print("Reading gff...")
+        for line in reader:
+            if line.startswith('#'):
+                continue
+            if line.split('\t')[2] == 'gene':
+            
+                splitline = line.split('\t')
+                chrom     = splitline[0]
+                strand    = splitline[6]
+                genepos   = [splitline[3], splitline[4]]
+                gene_info   = splitline[8]
+                xrefs = gene_info.split(';')[1].split(",")
+                print("debug" + gene_info)
+                for xref in xrefs:
+                    ref=xref.split(':')
+                    if ref[0] == "Dbxref=GeneID" or ref[0] == "GeneID":
+                        gene_id = ref[1]
+                        print("debug "+gene_id)
+                        dico_gene[gene_id] = [chrom,strand,genepos]
+                        
+                        
+def processGff(gff:str):
+    with open(gff, 'r') as reader:
+        print("Processing gff... (This may take several minutes)")        
+        print("Reading gff...")
+        for line in reader:
+            if line.startswith('#'):
+                continue
+            if line.split('\t')[2] == 'CDS':
+                splitline = line.split('\t')
+                cds_info   = splitline[8]
+                xrefs = cds_info.split(';')[2].split(",")
+                cds_gene_id = "none"
+                prot_name = "none"
+                for xref in xrefs:
+                    ref=xref.split(':')
+                    if ref[0] == "Dbxref=GeneID" or ref[0] == "GeneID" :
+                        cds_gene_id = ref[1]
+                    if ref[0] == "GenBank"  or ref[0] == "Dbxref=GenBank":
+                        prot_name = ref[1]  
+                if cds_gene_id == "none":
+                    print("WARNING: Unable to get gene id : ")
+                    print(cds_info)
+                if prot_name == "none":
+                    print("WARNING: Unable to get protein name : ")
+                    print(cds_info)
+                if prot_name != "none" and cds_gene_id != "none":
+                    if not prot_name in dico_prot:
+                        dico_prot[prot_name] = dico_gene[cds_gene_id]     
+    
+dico_gene = {}                                                              
+preProcessGff(args.gff)
+dico_prot = {}     
+processGff(args.gff)
+df = pd.DataFrame() 
+with open(args.input, 'r') as reader:
+    lines = reader.readlines()[1:]
+    for line in lines:
+        splitline = line.split(';')
+        prot_name = splitline[1]
+        chromo_info = dico_prot[prot_name]
+        chromo = chromo_info[0]
+        strand = chromo_info[1]
+        positions = chromo_info[2]
+        new_row = {"SeqID": prot_name, "Chromosome": chromo, "Chr Start": positions[0],"Chr End":  positions[1], "Strand" : strand, "Protein Length" : "99999", "ProtRefID" : "None", "Pseudogene (Genewise)" : "No", "Stop/Shift Positions" : "0"}
+        df = df._append(new_row, ignore_index=True)
+        
+
+
+df_summary = pd.read_csv(args.input, sep=';', header=0)
+df_summary = df_summary.drop(["Unnamed: 0"],axis=1) 
+
+newdf = df_summary.join(df.set_index('SeqID'),on='SeqID', how="outer",lsuffix='_caller', rsuffix='_other')
+newdf.to_csv(args.output, sep=';')
+
+
+
+

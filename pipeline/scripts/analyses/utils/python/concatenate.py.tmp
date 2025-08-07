@@ -1,0 +1,52 @@
+import pandas as pd
+
+
+
+input_files = snakemake.input
+
+
+output_file = snakemake.output[0]
+
+noms_colonnes = ['SeqID']
+data_list = []
+seqids = []
+dicos = {}
+
+
+for file in input_files:
+    print("Reading "+file)
+    dico = {}
+    with open(file) as reader:  
+        lines =  reader.readlines()
+        #line =  reader.readlines()[0]
+        line = lines[0]
+        #print(line)            
+        line_data = line.split(';')
+        noms_colonnes.append(line_data[2])
+        noms_colonnes.append(line_data[3])
+        noms_colonnes.append(line_data[4])
+        noms_colonnes.append(line_data[5])
+        noms_colonnes.append(line_data[6])
+        noms_colonnes.append(line_data[7])  
+        for line in lines[1:]:      
+        #for line in reader.readlines()[1:]:
+        #    print(line)
+            line_data = line.split(';')
+            seqid= line_data[1]
+            valeurs = []
+            valeurs.append(line_data[2])
+            valeurs.append(line_data[3])
+            valeurs.append(line_data[4])
+            valeurs.append(line_data[5])
+            valeurs.append(line_data[6])
+            valeurs.append(line_data[7])  
+            dico[seqid] = valeurs
+            if  not seqid in seqids:
+                seqids.append(seqid) 
+    dicos[file] = dico
+    for seqid in seqids:
+        
+summarised_data = pd.DataFrame(data_list, columns=noms_colonnes)
+
+summarised_data = summarised_data.fillna(0)                     
+summarised_data.to_csv(output_file, sep=';')

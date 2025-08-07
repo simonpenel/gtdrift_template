@@ -289,8 +289,8 @@ for seqid in seqids:
                 zf_number = 0
                 dico_sequence = {}
                 list_array_total = {}
-                nb_29 = 0
-                nb_28 = 0
+                nb_29_all = 0
+                nb_28_all = 0
                 for sequence in sequences:
                     dna_seq = Seq(sequence)
                     record = SeqRecord(dna_seq, id=zf_names[zf_number],description="Zinc finger ;"+description,)
@@ -304,9 +304,9 @@ for seqid in seqids:
                         list_array_total[arr].append(zf_names[zf_number])
                     suff = zf_names[zf_number][-2:]
                     if suff == "28":
-                        nb_28 +=1
+                        nb_28_all +=1
                     elif suff == "29":
-                        nb_29 +=1    
+                        nb_29_all +=1    
                     else :
                         sys.exit("Unknown suffix for "+zf_names[zf_number])
                     zf_number2 = 0
@@ -324,14 +324,14 @@ for seqid in seqids:
                         array_max = array
                         size_array_max = len(list_array_total[array])
                             
-                df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_ZF_28"] = nb_28
-                df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_ZF_29"] = nb_29
+                df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_ZF_28"] = nb_28_all
+                df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_ZF_29"] = nb_29_all
             
             # Calcul de la diversite sur le plus grand array
             proteins_array_max =  []
             dna_array_max =  []
-            nb_28 = 0
-            nb_29 = 0
+            nb_28_array = 0
+            nb_29_array = 0
             for name in  list_array_total[array_max]:
                 protein_seq = dico_protein[name].seq
                 proteins_array_max.append(protein_seq)
@@ -339,11 +339,11 @@ for seqid in seqids:
                 dna_array_max.append(dna_seq)
                 suff = name[-2:]
                 if suff == "28":
-                    nb_28 +=1
+                    nb_28_array +=1
                 elif suff == "29":
-                    nb_29 +=1  
-            df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_28"] = nb_28
-            df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_29"] = nb_29                
+                    nb_29_array +=1  
+            df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_28"] = nb_28_array
+            df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_29"] = nb_29_array                
             zfd_array = zfd(proteins_array_max)    
             zfd_codon_array = zfd_codon(dna_array_max)  
                     
@@ -389,8 +389,8 @@ for seqid in seqids:
                 
                     fclustsummary.write("# Less than " + str(min_ZF_nb) + " zf:  no stats.\n")  
                                             
-                fclustsummary.write("# Nb of zf 28 : "+str(nb_28)+"\n")
-                fclustsummary.write("# Nb of zf 29 : "+str(nb_29)+"\n")                
+                fclustsummary.write("# Nb of zf 28 : "+str(nb_28_all)+"\n")
+                fclustsummary.write("# Nb of zf 29 : "+str(nb_29_all)+"\n")                
                 fclustsummary.write("# Nb of arrays : "+str(len(list(list_array_total.keys())))+"\n")
                 fclustsummary.write("# Longest array : " + array_max + "\n")
                 fclustsummary.write("# Size longest array : " + str(size_array_max)+ "\n") 
@@ -462,14 +462,14 @@ for seqid in seqids:
                     list_array = []
                     cluster_max_protein_sequence = []
                     cluster_max_dna_sequence = []
-                    nb_28 = 0
-                    nb_29 = 0
+                    nb_28_cluster = 0
+                    nb_29_cluster = 0
                     for seq in seqs:
                         suff = seq[-2:]
                         if suff == "28":
-                            nb_28 +=1
+                            nb_28_cluster +=1
                         elif suff == "29":
-                            nb_29 +=1  
+                            nb_29_cluster +=1  
                         cluster_max_protein_sequence.append(dico_protein[seq].seq)
                         cluster_max_dna_sequence.append(dico_sequence_bck[seq].seq)
                         fclustsummary.write(seq+"_C"+cluster_max+" ")
@@ -477,8 +477,8 @@ for seqid in seqids:
                         if not (arr in list_array) :
                             list_array.append(arr)
                             
-                    df_csv.loc[df_csv['ZF_Dataset'] == "Largest_ZF_cluster", "Nb_ZF_28"] = nb_28
-                    df_csv.loc[df_csv['ZF_Dataset'] == "Largest_ZF_cluster", "Nb_ZF_29"] = nb_29                          
+                    df_csv.loc[df_csv['ZF_Dataset'] == "Largest_ZF_cluster", "Nb_ZF_28"] = nb_28_cluster
+                    df_csv.loc[df_csv['ZF_Dataset'] == "Largest_ZF_cluster", "Nb_ZF_29"] = nb_29_cluster                          
                     fclustsummary.write("\n")
                     zfd_cluster = zfd(cluster_max_protein_sequence) 
                     zfd_codon_cluster = zfd_codon(cluster_max_dna_sequence)  

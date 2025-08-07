@@ -150,7 +150,7 @@ f = open(args.output, "w")
 ferr = open(args.output+".ERROR", "w")
 # log file
 flog = open(args.log, "w")
-f.write("SeqID;Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length\n")
+f.write("SeqID;Contig;mrna;Status;Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length\n")
 # file of warning
 fwarn = open(args.warnings, "w")
 
@@ -199,6 +199,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     frame_first_cds = 0
     frame_last_cds = 0
     if seq_record.id in dico_prot:
+        status = "Ok"
         contig_mrna_dico  = {}
         # get the uniques couples (contig, mrna) associated to the protein
         for contig_mrna in dico_prot[seq_record.id]:
@@ -401,6 +402,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 print("No exon in the sequence, jump to  the next sequence")
                 flog.write("Sequence flaged as erreoneous.\n")
                 flag_sequence_ok = False
+                status = "no exon"
                 continue
 
             # Check if dna sequence is ok
@@ -455,6 +457,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         #sys.exit("Error: translated sequence and protein sequence are too different")
                         print("Error: translated sequence and protein sequence are too different; jump to next sequence")
                         flog.write("Sequence flaged as erreoneous.\n")
+                        status = "sequence transl. problem"
                         flag_sequence_ok = False
                         continue
                         
@@ -469,6 +472,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
 
     if flag_sequence_ok == False :
         flog.write("Jump to next sequence\n.")
+        f.write(seq_record.id+";"+contig_mrna[0]+";"+contig_mrna[1]+";"+status+";;;;;;;;;;;;;;;;\n")
+        #f.write(seq_record.id+";OK;"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
         continue
     # search patterns
     flog.write("\nPattern search:\n")
@@ -494,7 +499,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
         flag_match_ok = True
         for element in sorted_list_of_matches:
             if flag_match_ok == False:
-                flog.write("Flag was flaged as erroneous,  sequence flaged as erroneous\n")
+                flog.write("Match was flaged as erroneous,  sequence flaged as erroneous\n")
+                status = "match transl. problem"
                 flag_sequence_ok = False
                 continue
             match  = element[1]
@@ -641,7 +647,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 else :
                     zfname += "_29"
                 
-                f.write(seq_record.id+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
+                f.write(seq_record.id+";"+contig_mrna[0]+";"+contig_mrna[1]+";"+status+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
 
             match_nb += 1
             match_tandem_nb += 1
