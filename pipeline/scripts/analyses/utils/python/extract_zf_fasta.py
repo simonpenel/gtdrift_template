@@ -216,10 +216,10 @@ positions_contact =  [11,13,14,17] #(dans R 12, 14, 15, 18, -1 pour l'index
 legend = ["-1", "2", "3", "6"]
 legend.reverse()
 positions_to_exclude = [19]  #(dans R 20 -1 pour l'index
-conserved_positions = [2,5,18]
-legend_cons = ["C", "C", "H"]
+conserved_positions = [2,5,18,23]
+legend_cons = ["C", "C", "H", "H"]
 legend_cons.reverse()
-min_ZF_nb = 4
+min_ZF_nb = 2
 
 df = pd.read_csv(args.input, sep=';')
 seqids = np.unique(df.SeqID)
@@ -387,7 +387,7 @@ for seqid in seqids:
         
                 else :
                 
-                    fclustsummary.write("# Less than 4 zf:  no stats.\n")  
+                    fclustsummary.write("# Less than " + str(min_ZF_nb) + " zf:  no stats.\n")  
                                             
                 fclustsummary.write("# Nb of zf 28 : "+str(nb_28)+"\n")
                 fclustsummary.write("# Nb of zf 29 : "+str(nb_29)+"\n")                
@@ -415,7 +415,7 @@ for seqid in seqids:
                     write_divindex_pos(zfd_codon_array, "Longest_ZF_array codons")  
                 
                 else :
-                    fclustsummary.write("# Less than 4 zf:  no stats.\n")              
+                    fclustsummary.write("# Less than " + str(min_ZF_nb) + " zf:  no stats.\n")              
                 
                 df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_Clusters"] = len(clusters)
                 if len(clusters) == 0: 
@@ -498,7 +498,7 @@ for seqid in seqids:
                         write_divindex_pos(zfd_codon_cluster, "Largest_ZF_cluster codons")                    
                     
                     else :
-                        fclustsummary.write("# Less than 4 zf:  no stats.\n")    
+                        fclustsummary.write("# Less than " + str(min_ZF_nb) + " zf:  no stats.\n")    
                     
                     fclustsummary.write("# Nb of arrays in largest cluster : "+str(len(list_array))+"\n")
                     count = SeqIO.write(new_records, args.output_dir+"/"+file_name+"_cluster.fasta", "fasta")     
