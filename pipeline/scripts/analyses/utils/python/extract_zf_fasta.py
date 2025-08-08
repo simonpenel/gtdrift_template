@@ -313,7 +313,7 @@ for seqid in seqids:
                     for sequence2 in sequences2:
                         distance = distance_pos_3(sequence.upper(),sequence2.upper())
                         if zf_number2 > zf_number:
-                            if distance <= 2:
+                            if distance <= 4:
                                 fsilix.write(zf_names[zf_number]+" "+zf_names[zf_number2]+"\n")
                         zf_number2 += 1            
                     zf_number +=1
