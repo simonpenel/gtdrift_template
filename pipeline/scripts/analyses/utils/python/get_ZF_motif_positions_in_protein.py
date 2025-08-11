@@ -465,7 +465,9 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
                 flag_identical = True
             dico_sequence[seq_record.id].append((contig_mrna,sequence_pos))
+            test = dico_sequence[seq_record.id]
             num_cds +=1
+
     else:
         print("Sequence inconnue.")
         sys.exit("Sequence inconnue.")
@@ -486,169 +488,169 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             list_of_matches.append([pattern,match])
     sorted_list_of_matches = sorted(list_of_matches, key=lambda element: element[1].span()[0])   # sort
 
-
     # for pattern in [pattern1,pattern2]:
     #
     #     flog.write("\nPattern "+pattern+":\n")
     #     matches = re.finditer(pattern, sequence)
 
-    for element in [1]:
-        tandem = 0 # will increment for each group of tandem zincfingers
-        match_nb = 1 # num of the match in set
-        match_tandem_nb = 1 # num of the match in set of tandem zincfingers
-        flag_match_ok = True
-        for element in sorted_list_of_matches:
-            if flag_match_ok == False:
-                flog.write("Match was flaged as erroneous,  sequence flaged as erroneous\n")
-                status = "match transl. problem"
-                flag_sequence_ok = False
-                continue
-            match  = element[1]
-            pattern = element[0]
-        #for match in matches:
-            if match_nb == 1 :
-                current_tandem = match.span()[1]
-            if match.span()[0] > current_tandem:
-                tandem +=1
-                #sys.exit("lol")
-                match_tandem_nb = 1
-            flog.write("\nMatch "+str(match_nb)+" "+str(match_tandem_nb)+" "+str(tandem)+" "+str(match.span()[0]) + "-"+str(match.span()[1]))
+    tandem = 0 # will increment for each group of tandem zincfingers
+    match_nb = 1 # num of the match in set
+    match_tandem_nb = 1 # num of the match in set of tandem zincfingers
+    flag_match_ok = True
+    for element in sorted_list_of_matches:
+        if flag_match_ok == False:
+            flog.write("Match was flaged as erroneous,  sequence flaged as erroneous\n")
+            status = "match transl. problem"
+            flag_sequence_ok = False
+            continue
+        match  = element[1]
+        pattern = element[0]
+    #for match in matches:
+        if match_nb == 1 :
             current_tandem = match.span()[1]
-            # get the matching part of the sequence
-            zf_length = match.span()[1] - match.span()[0]
-            zf = sequence[match.span()[0] : match.span()[1]]
-            flog.write("("+str(zf_length)+")\n")
-            flog.write("Original sequence : "+str(match.group())+"\n")
-            modified = False
-            # modify the matching part if needed
-            if zf_length == 28 :
-                modified = True
-                zf = sequence[match.span()[0] : match.span()[0]+19] + "X" + sequence[match.span()[0] + 19 : match.span()[1]]
-                #zf = sequence[match.span()[0] : match.span()[0]+19] + sequence[match.span()[0] + 20 : match.span()[1]]
-            flog.write("Modified sequence : "+zf+"\n")
-            print("Processing match "+str(match_nb))
-            print(seq_record.id+";"+str(match_nb)+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+repr(match.group())+"\n")
-            for seq_genomic in dico_sequence[seq_record.id]:
-                flog.write(seq_genomic[0][0]+" "+ seq_genomic[0][1]+":\n")
-                # get the dna sequence of the contig
-                genome_seq  = dico_genome[seq_genomic[0][0]]
-                raw_seq =genome_seq.seq
-                # get the positions sequence of the protein
-                seq_dna = seq_genomic[1]
-                raw_seq_extract = ""
-                debug = ""
-                for i in seq_dna:
-                    debug += raw_seq[i]
-                bio_debug = Seq(debug)
-                if  cds_strand  == "+" :
-                    trans_debug = bio_debug.translate()
-                else :
-                    trans_debug = bio_debug.reverse_complement().translate()
-                shift_s = 19
-                st = match.span()[0]
-                en = match.span()[1]
-                flog.write("Protein start end = "+str(st) + ","+str(en)+"\n")
-                frame = 0
-                if cds_strand  == "-" :
-                    flog.write("Protein is on reverse strand.\n")
-                    st = len(sequence) - match.span()[1] + 1
-                    en = st + match.span()[1] - match.span()[0]
+        if match.span()[0] > current_tandem:
+            tandem +=1
+            #sys.exit("lol")
+            match_tandem_nb = 1
+        flog.write("\nMatch "+str(match_nb)+" "+str(match_tandem_nb)+" "+str(tandem)+" "+str(match.span()[0]) + "-"+str(match.span()[1]))
+        current_tandem = match.span()[1]
+        # get the matching part of the sequence
+        zf_length = match.span()[1] - match.span()[0]
+        zf = sequence[match.span()[0] : match.span()[1]]
+        flog.write("("+str(zf_length)+")\n")
+        flog.write("Original sequence : "+str(match.group())+"\n")
+        modified = False
+        # modify the matching part if needed
+        if zf_length == 28 :
+            modified = True
+            zf = sequence[match.span()[0] : match.span()[0]+19] + "X" + sequence[match.span()[0] + 19 : match.span()[1]]
+            #zf = sequence[match.span()[0] : match.span()[0]+19] + sequence[match.span()[0] + 20 : match.span()[1]]
+        flog.write("Modified sequence : "+zf+"\n")
+        print("Processing match "+str(match_nb))
+        print(seq_record.id+";"+str(match_nb)+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+repr(match.group())+"\n")
+        for seq_genomic in dico_sequence[seq_record.id]:
+            flog.write(seq_genomic[0][0]+" "+ seq_genomic[0][1]+":\n")
+            # get the dna sequence of the contig
+            genome_seq  = dico_genome[seq_genomic[0][0]]
+            raw_seq =genome_seq.seq
+            # get the positions sequence of the protein
+            seq_dna = seq_genomic[1]
+            raw_seq_extract = ""
+            debug = ""
+            for i in seq_dna:
+                debug += raw_seq[i]
+            bio_debug = Seq(debug)
+            if  cds_strand  == "+" :
+                trans_debug = bio_debug.translate()
+            else :
+                trans_debug = bio_debug.reverse_complement().translate()
+            shift_s = 19
+            st = match.span()[0]
+            en = match.span()[1]
+            flog.write("Protein start end = "+str(st) + ","+str(en)+"\n")
+            frame = 0
+            if cds_strand  == "-" :
+                flog.write("Protein is on reverse strand.\n")
+                st = len(sequence) - match.span()[1] + 1
+                en = st + match.span()[1] - match.span()[0]
 
-                    if partial_end == True :
-                        flog.write("Protein is partial at the end.\n")
-                        flog.write("First cds frame "+str(frame_first_cds)+"\n")
-                        flog.write("Last cds frame "+str(frame_last_cds)+"\n")
-                        en = en - 1
-                        st = st - 1
+                if partial_end == True :
+                    flog.write("Protein is partial at the end.\n")
+                    flog.write("First cds frame "+str(frame_first_cds)+"\n")
+                    flog.write("Last cds frame "+str(frame_last_cds)+"\n")
+                    en = en - 1
+                    st = st - 1
 
-                    shift_s = en - 19 - st
-                    #shift_s -= 1
-                    flog.write("Protein start end for reverse strand = "+str(st) + ","+str(en)+"\n")
-                    
-                flog.write("Last protein position in dna is " + str(en*3+1 + 2)+"\n")
-                flog.write("Length of dna is " + str(len(seq_dna))+"\n") 
-
-                # build the dna sequence of the matching part of the protein
-                if modified == False :
-                    for pos_prot in range(st, en):
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + frame]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + frame]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + frame]]
-                else :
-                    for pos_prot in range(st, st + shift_s):
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + frame]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + frame]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + frame]]
-                    #for pos_prot in range(st + shift_s + 1, en):
-                    raw_seq_extract += "NNN"
-
-                    for pos_prot in range(st + shift_s , en):
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + frame]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + frame]]
-                        raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + frame]]
-
-                flog.write("CDS STRAND :"+cds_strand+"\n")
-                flog.write("Prot:   ")
-                for aa in zf:
-                    flog.write(aa+"  ")
-                flog.write("\n")
-                flog.write("DNA:    ")
-                flog.write(raw_seq_extract+"\n")
-                bioseq_dna = Seq(raw_seq_extract)
-                if  cds_strand  == "+" :
-                    bioseq_prot = bioseq_dna.translate()
-                    compl = bioseq_dna
-                else :
-                    bioseq_prot = bioseq_dna.reverse_complement().translate()
-                    compl = bioseq_dna.reverse_complement()
-                flog.write("Trans.: ")
-                for aa in bioseq_prot:
-                    flog.write(aa+"  ")
-                flog.write("\n")
-                if str(bioseq_prot) != str(zf) :
-                    sys.stderr.write("\n\nWarning: translated sequence and protein sequence are different.\n")
-                    sys.stderr.write("Protein:\n")
-                    sys.stderr.write(str(zf))
-                    sys.stderr.write("\n")
-                    sys.stderr.write("Translation:\n")
-                    sys.stderr.write(str(bioseq_prot))
-                    sys.stderr.write("\n")
-                    ratio = diff_seq(str(zf),str(bioseq_prot))
-                    sys.stderr.write("Match ratio  :"+str(ratio))
-                    sys.stderr.write("\n")
-
-                    flog.write("\n\n********\nWarning: translated sequence and protein sequence are different.\n")
-                    flog.write("Protein:\n")
-                    flog.write(str(zf))
-                    flog.write("\n")
-                    flog.write("Translation:\n")
-                    flog.write(str(bioseq_prot))
-                    flog.write("\n")
-                    flog.write("Match ratio  :"+str(ratio))
-                    flog.write("\n********\n\n")
-                    if flag_identical :
-                        flog.write("\n********\n\n")
-                        flog.write("Error: the translated protein sequence was correct, something is wrong with the patterns.\n")
-                        flog.write("\n********\n\n")
-                    if ratio < 0.9 :
-                        flog.write("Error: translated match sequence and protein match sequence are too different\n")
-                        flog.write("Match is flaged as erroneous\n")
-                        #sys.exit("Error: translated sequence and protein sequence are too different")
-                        print("Error: translated match and protein match are too different")
-                        print("Match is flaged as erroneous")
-                        flag_match_ok = False
-                        continue
-                        
-                else:
-                    flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
-                zfname = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrsruvwxyz"[tandem]+str(match_tandem_nb)
-                if modified :
-                    zfname += "_28"
-                else :
-                    zfname += "_29"
+                shift_s = en - 19 - st
+                #shift_s -= 1
+                flog.write("Protein start end for reverse strand = "+str(st) + ","+str(en)+"\n")
                 
-                f.write(seq_record.id+";"+contig_mrna[0]+";"+contig_mrna[1]+";"+status+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
+            flog.write("Last protein position in dna is " + str(en*3+1 + 2)+"\n")
+            flog.write("Length of dna is " + str(len(seq_dna))+"\n") 
 
-            match_nb += 1
-            match_tandem_nb += 1
-        pattern_nb += 1
+            # build the dna sequence of the matching part of the protein
+            if modified == False :
+                for pos_prot in range(st, en):
+                    raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + frame]]
+                    raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + frame]]
+                    raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + frame]]
+            else :
+                for pos_prot in range(st, st + shift_s):
+                    raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + frame]]
+                    raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + frame]]
+                    raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + frame]]
+                #for pos_prot in range(st + shift_s + 1, en):
+                raw_seq_extract += "NNN"
+
+                for pos_prot in range(st + shift_s , en):
+                    raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+0 + frame]]
+                    raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + frame]]
+                    raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + frame]]
+
+            flog.write("CDS STRAND :"+cds_strand+"\n")
+            flog.write("Prot:   ")
+            for aa in zf:
+                flog.write(aa+"  ")
+            flog.write("\n")
+            flog.write("DNA:    ")
+            flog.write(raw_seq_extract+"\n")
+            bioseq_dna = Seq(raw_seq_extract)
+            if  cds_strand  == "+" :
+                bioseq_prot = bioseq_dna.translate()
+                compl = bioseq_dna
+            else :
+                bioseq_prot = bioseq_dna.reverse_complement().translate()
+                compl = bioseq_dna.reverse_complement()
+            flog.write("Trans.: ")
+            for aa in bioseq_prot:
+                flog.write(aa+"  ")
+            flog.write("\n")
+            if str(bioseq_prot) != str(zf) :
+                sys.stderr.write("\n\nWarning: translated sequence and protein sequence are different.\n")
+                sys.stderr.write("Protein:\n")
+                sys.stderr.write(str(zf))
+                sys.stderr.write("\n")
+                sys.stderr.write("Translation:\n")
+                sys.stderr.write(str(bioseq_prot))
+                sys.stderr.write("\n")
+                ratio = diff_seq(str(zf),str(bioseq_prot))
+                sys.stderr.write("Match ratio  :"+str(ratio))
+                sys.stderr.write("\n")
+
+                flog.write("\n\n********\nWarning: translated sequence and protein sequence are different.\n")
+                flog.write("Protein:\n")
+                flog.write(str(zf))
+                flog.write("\n")
+                flog.write("Translation:\n")
+                flog.write(str(bioseq_prot))
+                flog.write("\n")
+                flog.write("Match ratio  :"+str(ratio))
+                flog.write("\n********\n\n")
+                if flag_identical :
+                    flog.write("\n********\n\n")
+                    flog.write("Error: the translated protein sequence was correct, something is wrong with the patterns.\n")
+                    flog.write("\n********\n\n")
+                if ratio < 0.9 :
+                    flog.write("Error: translated match sequence and protein match sequence are too different\n")
+                    flog.write("Match is flaged as erroneous\n")
+                    #sys.exit("Error: translated sequence and protein sequence are too different")
+                    print("Error: translated match and protein match are too different")
+                    print("Match is flaged as erroneous")
+                    flag_match_ok = False
+                    continue
+                    
+            else:
+                flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
+            zfname = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrsruvwxyz"[tandem]+str(match_tandem_nb)
+            if modified :
+                zfname += "_28"
+            else :
+                zfname += "_29"
+            
+            flog.write(seq_genomic[0][0]+" "+ seq_genomic[0][1]+":\n")
+            f.write(seq_record.id+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+status+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
+            #f.write(seq_record.id+";"+contig_mrna[0]+";"+contig_mrna[1]+";"+status+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
+
+        match_nb += 1
+        match_tandem_nb += 1
+    pattern_nb += 1
