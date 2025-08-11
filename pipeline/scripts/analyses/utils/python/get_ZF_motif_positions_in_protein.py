@@ -478,15 +478,57 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
         #f.write(seq_record.id+";OK;"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
         continue
     # search patterns
-    flog.write("\nPattern search:\n")
+    flog.write("Pattern search:\n")
     pattern_nb = 1
     list_of_matches = []
     for pattern in [pattern1,pattern2]:
-        flog.write("\nPattern "+pattern+":\n")
+        flog.write("Pattern "+pattern+":\n")
         matches_test = re.finditer(pattern, sequence)
         for match in matches_test:
             list_of_matches.append([pattern,match])
     sorted_list_of_matches = sorted(list_of_matches, key=lambda element: element[1].span()[0])   # sort
+    flog.write(str(len(sorted_list_of_matches))+ " matches.\n")
+    # Check for supeprosition
+    if len(sorted_list_of_matches) > 0 :
+        element = sorted_list_of_matches[0]
+        match= element[1]
+        cur_start = match.span()[0]
+        cur_end = match.span()[1]
+        flog.write("Check Match 0 : "+str(match.span()[0])+" - "+str(match.span()[1])+"\n")
+        superposed_to_remove = []
+        for iel in range(1,len(sorted_list_of_matches)) : 
+            element = sorted_list_of_matches[iel]
+            match= element[1]
+            flog.write("Check Match "+str(iel)+" : "+str(match.span()[0])+" - "+str(match.span()[1])+"\n")
+            if match.span()[0] <  cur_end :
+                flog.write(" Warning : superposition\n")
+                if match.span()[0] > cur_start:
+                    flog.write("Keep previous because it start earlier\n")
+                if match.span()[0] == cur_start:
+                    flog.write("Check on end\n")
+                    if match.span()[1] < cur_end:
+                        flog.write("Remove current match "+str(iel-1) +"\n")
+                        superposed_to_remove.append(sorted_list_of_matches[iel-1])
+                    if match.span()[1] > cur_end:
+                        flog.write("Remove new match "+str(iel) +"\n")
+                        superposed_to_remove.append(sorted_list_of_matches[iel])
+                    if match.span()[1] == cur_end: 
+                        sys.exit("Unexpected situation (1)")   
+
+                if match.span()[0] < cur_start:  
+                    sys.exit("Unexpected situation (2)")
+            cur_start = match.span()[0]
+            cur_end = match.span()[1]
+
+        if len(superposed_to_remove) > 0 :
+            flog.write("Superposed zinc finger to be removed:\n")
+            for to_remove in superposed_to_remove:
+                flog.write(str(to_remove[1].span()) + "\n")
+                sorted_list_of_matches.remove(to_remove)
+
+            flog.write("New zinc finger list\n")
+            for element in sorted_list_of_matches :  
+                flog.write("\tMatch "+str(element[1].span()[0])+ " - "+ str(element[1].span()[1])+"\n")
 
     # for pattern in [pattern1,pattern2]:
     #
@@ -497,7 +539,9 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     match_nb = 1 # num of the match in set
     match_tandem_nb = 1 # num of the match in set of tandem zincfingers
     flag_match_ok = True
+    flog.write("\nProcessing matches\n")
     for element in sorted_list_of_matches:
+        flog.write("Match "+str(element)+"\n")
         if flag_match_ok == False:
             flog.write("Match was flaged as erroneous,  sequence flaged as erroneous\n")
             status = "match transl. problem"
@@ -508,11 +552,19 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     #for match in matches:
         if match_nb == 1 :
             current_tandem = match.span()[1]
+        else :
+            flog.write("Compare current end  "+str(match.span()[0])+" to previous start "+str(current_tandem)+"\n")    
         if match.span()[0] > current_tandem:
             tandem +=1
             #sys.exit("lol")
             match_tandem_nb = 1
-        flog.write("\nMatch "+str(match_nb)+" "+str(match_tandem_nb)+" "+str(tandem)+" "+str(match.span()[0]) + "-"+str(match.span()[1]))
+        # check for superposiition    
+        if match_nb > 2 :
+            if match.span()[0] < current_tandem:
+                flog.write("\nERROR zinc finger superposition")
+                sys.exit("ERROR: zinc finger superposition")
+                   
+        flog.write("Match "+str(match_nb)+" "+str(match_tandem_nb)+" "+str(tandem)+" "+str(match.span()[0]) + "-"+str(match.span()[1]))
         current_tandem = match.span()[1]
         # get the matching part of the sequence
         zf_length = match.span()[1] - match.span()[0]
@@ -529,7 +581,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
         print("Processing match "+str(match_nb))
         print(seq_record.id+";"+str(match_nb)+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+repr(match.group())+"\n")
         for seq_genomic in dico_sequence[seq_record.id]:
-            flog.write(seq_genomic[0][0]+" "+ seq_genomic[0][1]+":\n")
+            flog.write("For contig = "+seq_genomic[0][0]+"; mrna = "+ seq_genomic[0][1]+"\n")
             # get the dna sequence of the contig
             genome_seq  = dico_genome[seq_genomic[0][0]]
             raw_seq =genome_seq.seq
@@ -647,7 +699,6 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             else :
                 zfname += "_29"
             
-            flog.write(seq_genomic[0][0]+" "+ seq_genomic[0][1]+":\n")
             f.write(seq_record.id+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+status+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
             #f.write(seq_record.id+";"+contig_mrna[0]+";"+contig_mrna[1]+";"+status+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
 
