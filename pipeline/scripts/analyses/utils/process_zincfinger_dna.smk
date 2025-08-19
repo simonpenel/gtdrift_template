@@ -96,6 +96,7 @@ rule all:
     input:
         zincfinger_motif = expand(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/zf_results.csv",accession=ACCESSNB),
         fasta_list = expand(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/fasta/list_of_files.txt",accession=ACCESSNB),
+        zincfinger_out = expand(pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger_dna/zinc_finger_details/ZFD_{accession}_global.csv",accession=ACCESSNB),
 
 # --------------------------------------
 # get_genome_seq_fasta
@@ -163,7 +164,34 @@ rule get_fasta:
         results = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/zf_results.csv",
     output:
         fasta_list = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/fasta/list_of_files.txt",
+        #max_cluster_fasta = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/fasta/max_cluster.fasta",
     shell:
         """
         python3 ../utils/python/extract_zf_fasta.py -i {input.results} -o {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}zinc_finger_dna/fasta
         """
+        
+        
+        
+        
+rule zincfinger_analysis_global:
+    """
+    Run the zinc finger analysis on each protein sequence using R.
+    """
+    input:
+        # Candidates after paralog checks
+        # --------------------------------
+        protein_seq = pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+            + "candidates_for_zf_analysis.fasta",
+        #protein_seq = pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/candidates_prdm9.fasta"
+    output:
+        zincfinger_out = pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger_dna/zinc_finger_details/ZFD_{accession}_global.csv"
+
+    run:
+        # Verify if the input file exists
+        if not os.path.exists(input.protein_seq):
+            raise FileNotFoundError(f"Input file does not exist: {input.protein_seq}")
+
+        # Run the R script
+        command = f"Rscript --vanilla ../utils/zincfinger_analysis.R {input.protein_seq} {output.zincfinger_out}"
+        shell(command)
