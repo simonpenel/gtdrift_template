@@ -170,6 +170,9 @@ processExonsGff(args.gff)
 pattern1 = r'..C..C.{12}H...H.{5}'
 pattern2 = r'..C..C.{12}H....H.{5}'
 
+# max covering for  covering sf removing
+max_covering = 1
+
 # dictionnary dico_sequence:  protein name -> list of ((contig, mrna), sequence_positions)
 dico_sequence = {}
 
@@ -503,7 +506,15 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             if match.span()[0] <  cur_end :
                 flog.write(" Warning : superposition\n")
                 if match.span()[0] > cur_start:
-                    flog.write("Keep previous because it start earlier\n")
+                    flog.write("Current match "+str(iel-1)+" starts earlier\n")
+                    covering  = cur_end -  match.span()[0]
+                    flog.write("Covering = " + str(covering) + "\n")
+                    if covering > max_covering :
+                        flog.write("Remove new match "+str(iel) +"\n")
+                        superposed_to_remove.append(sorted_list_of_matches[iel])
+                    else :
+                        flog.write("Covering is not  > "+str(max_covering) +"\n")
+
                 if match.span()[0] == cur_start:
                     flog.write("Check on end\n")
                     if match.span()[1] < cur_end:
@@ -561,8 +572,9 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
         # check for superposiition    
         if match_nb > 2 :
             if match.span()[0] < current_tandem:
-                flog.write("\nERROR zinc finger superposition")
-                sys.exit("ERROR: zinc finger superposition")
+                flog.write("\nWARNING: zinc finger superposition. Covering = " + str( current_tandem - match.span()[0] ) + "\n")
+                if current_tandem - match.span()[0] > max_covering :
+                    sys.exit("ERROR: zinc finger superposition")
                    
         flog.write("Match "+str(match_nb)+" "+str(match_tandem_nb)+" "+str(tandem)+" "+str(match.span()[0]) + "-"+str(match.span()[1]))
         current_tandem = match.span()[1]

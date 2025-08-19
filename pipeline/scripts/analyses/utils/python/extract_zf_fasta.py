@@ -233,7 +233,7 @@ for seqid in seqids:
     
         # Creation du df pour le csv
 
-        df_csv = pd.DataFrame(columns=["SeqID","Status","Contig","ZF_Dataset","ID_set", "Nb_ZF","Nb_ZF_28","Nb_ZF_29","Nb_Arrays","Nb_Clusters","Nb_singletons","Mean_divS", "Mean_ratio_AS","Ratio_AS-1","Ratio_AS2","Ratio_AS3","Ratio_AS6","Mean_ratio_AS-1236" ,"Mean_ratio_AS_non-1236" ,"ZFD"])
+        df_csv = pd.DataFrame(columns=["SeqID","Status","Contig","ZF_Dataset","ID_set", "Nb_ZF","Nb_ZF_28","Nb_ZF_29","Nb_Arrays","Nb_Clusters","Nb_singletons","Mean_divS", "Mean_ratio_AS","Ratio_AS-1","Ratio_AS2","Ratio_AS3","Ratio_AS6","Mean_ratio_AS-1236" ,"Mean_ratio_AS_non-1236" ,"ZFD","Nb ZF full"])
         new_row = pd.DataFrame({"ZF_Dataset" : "All_ZFs" }, index=[0])
         df_csv = pd.concat([df_csv.loc[:],new_row]).reset_index(drop=True)
 
@@ -252,6 +252,8 @@ for seqid in seqids:
         extract_contig_all = extract_seqid[extract_seqid["Contig"] == contig]
         
         extract_contig = extract_contig_all[extract_contig_all["Status"] == "Ok"]
+        extract_contig_fs = extract_contig_all[extract_contig_all["Status"] == "frameshift"]
+        extract_contig = pd.concat([extract_contig,extract_contig_fs], ignore_index=True)
         
         # liste des noms
         zf_names = []
@@ -263,7 +265,16 @@ for seqid in seqids:
         
         # calcul du zfd sur toutes les sequences de proteines
         if len(list(proteins)) > 0 :
-            df_csv.loc[df_csv['SeqID'] == seqid, "Status"] = 0
+            status = list(extract_contig[extract_contig['SeqID'] == seqid]["Status"])[0]
+            nb_zf_full = list(extract_contig[extract_contig['SeqID'] == seqid]["Nb ZF full"])[0]
+            print(nb_zf_full)
+            if status == "Ok" :
+                df_csv.loc[df_csv['SeqID'] == seqid, "Status"] = 0
+            elif status == "frameshift" :
+                df_csv.loc[df_csv['SeqID'] == seqid, "Status"] = 3
+            else :    
+                sys.exit("status error")
+            df_csv.loc[df_csv['SeqID'] == seqid, "Nb ZF full"] = nb_zf_full
             zfd_all = zfd(list(proteins))
             
             # creation d'un dico des proteines
@@ -369,8 +380,21 @@ for seqid in seqids:
                         families[fam].append(seq)
                 clusters = list(families.keys())
 
-                fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w")    
+                fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w")
+
+                if status != "Ok" :
+                    fclustsummary.write("#################################################\n")
+                    fclustsummary.write("# Problems\n")
+                    fclustsummary.write("# "+str(status) +"\n")
+                    fclustsummary.write("# Status 1 : No exon.\n")
+                    fclustsummary.write("# Status 2 : Protein from fasta input file is different from translated DNA equence.\n")
+                    fclustsummary.write("# Status 3 : Frameshift.\n")   
+                    fclustsummary.write("# Status 4 : Other.\n")             
+                    fclustsummary.write("#################################################\n")
+
                 fclustsummary.write("# Nb of zf : "+str(len(sequences))+"\n")   
+                fclustsummary.write("#\n")
+                fclustsummary.write("# Nb of zf in full protein : "+str(nb_zf_full)+"\n")   
                 fclustsummary.write("#\n")
                 fclustsummary.write("#################################################\n")
                 fclustsummary.write("# All ZF\n")
@@ -508,7 +532,10 @@ for seqid in seqids:
 
 
 
-        extract_contig_errors = extract_contig_all[extract_contig_all["Status"] != "Ok"]
+        extract_contig_errors_1 = extract_contig_all[extract_contig_all["Status"] == "no exon"]
+        extract_contig_errors_2 = extract_contig_all[extract_contig_all["Status"] == "sequence transl. problem"]
+        extract_contig_errors = pd.concat([extract_contig_errors_1,extract_contig_errors_2],ignore_index=True)
+
         erroneous_protein_names = extract_contig_errors["SeqID"]
         for erroneous_protein_name in erroneous_protein_names :
             print("Problem occurs with " + erroneous_protein_name)
@@ -519,13 +546,16 @@ for seqid in seqids:
             fclustsummary.write("# "+str(err_status) +"\n")
             fclustsummary.write("# Status 1 : No exon.\n")
             fclustsummary.write("# Status 2 : Protein from fasta input file is different from translated DNA equence.\n")
-            fclustsummary.write("# Status 3 : Other.\n")             
+            fclustsummary.write("# Status 3 : Frameshift.\n")   
+            fclustsummary.write("# Status 4 : Other.\n")             
             fclustsummary.write("#################################################\n")
-            status = 3
+            status = 4
             if str(err_status) == "['no exon']" :
                 status = 1
             if str(err_status) == "['sequence transl. problem']" :
                 status = 2
+            if str(err_status) == "['frameshift']" :
+                status = 3    
 
             df_csv.loc[df_csv['SeqID'] == seqid, "Status"] = status
             df_csv.to_csv(fclustsummary,sep=';' , index=False , na_rep="NA")
