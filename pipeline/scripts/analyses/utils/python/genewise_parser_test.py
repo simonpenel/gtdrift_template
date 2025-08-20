@@ -139,6 +139,9 @@ with open(args.output, 'w') as writer, open(args.fasta, 'w') as faawriter:
 
     for elt in output:
 
+        flog.write("========================================\n")
+        flog.write("Processing "+elt+"\n")
+        flog.write("========================================\n")
 ## Accounting for empty lists by adding NA value
         if output[elt][4] == []:
             output[elt][4].append('NA')
@@ -169,6 +172,7 @@ with open(args.output, 'w') as writer, open(args.fasta, 'w') as faawriter:
         faawriter.write(f"{';'.join(intronlist)},{str(protlength)},{str(output[elt][1][0])}-{str(output[elt][1][1])},")
         faawriter.write(f"{output[elt][2]},{output[elt][3]},{output[elt][8]},{output[elt][9]}\n")
         faawriter.write(output[elt][6])
+        faawriter.write("\n")
         protein_seq = output[elt][6]
         print("Protein seq. =           " + output[elt][6])
         print("Dna seq. =               " + output[elt][10])
