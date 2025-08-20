@@ -365,7 +365,7 @@ with open(args.output, 'w') as writer, open(args.fasta, 'w') as faawriter:
             id = elt
             contig = id.split("-")[1]
             mrna = id.split("-")[2]
-            f.write(id+";"+contig+";"+mrna+";"+status+";"+str(nb_zf_full)+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+"seq_genomic[0][0]"+";"+"seq_genomic[0][1]"+";"+raw_seq_extract+";"+raw_seq_extract+";"+str(len(raw_seq_extract))+"\n")
+            f.write(id+";"+contig+";"+mrna+";"+status+";"+str(nb_zf_full)+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+contig+";"+mrna+";"+raw_seq_extract+";"+raw_seq_extract+";"+str(len(raw_seq_extract))+"\n")
 
             match_nb += 1
             match_tandem_nb += 1
