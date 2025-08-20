@@ -12,12 +12,13 @@ parser.add_argument('-i', '--input', type=str, required=True, help='genewise out
 parser.add_argument('-a', '--accession', type=str, required=True, help='accession number')
 parser.add_argument('-o', '--output', type=str, required=True, help='summary output file path')
 parser.add_argument('-f', '--fasta', type=str, required=True, help='output fasta file path')
+parser.add_argument('-l', '--log', type=str, required=True, help='log file')
 
 args = parser.parse_args()
 
-flog  = open("test.log","w")
+flog  = open(args.log,"w")
 # output file
-f = open("test.output", "w")
+f = open(args.output, "w")
 f.write("SeqID;Contig;mrna;Status;Nb ZF full;Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length\n")
 
 
