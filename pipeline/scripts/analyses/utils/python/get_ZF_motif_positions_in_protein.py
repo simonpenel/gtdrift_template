@@ -281,15 +281,42 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     first_exon = exon_features[len(exon_features)-1]
 
 
-                flog.write("Sequence  is partial at the start : "+str(partial_start)+"\n")
-                flog.write("Sequence  is partial at the end: "+str(partial_end)+"\n")
+                flog.write("Protein range  = "+str(start_prot)+"-"+str(end_prot)+"\n")
                 flog.write("First CDS frame: "+str(frame_first_cds)+"\n")
                 flog.write("Last CDS frame: "+str(frame_last_cds)+"\n")
-                flog.write("Protein range (after check for partials) = "+str(start_prot)+"-"+str(end_prot)+"\n")
+                start_prot = start_prot + frame_first_cds
+                end_prot = end_prot - frame_last_cds
+                flog.write("Protein range (after check for frame) = "+str(start_prot)+"-"+str(end_prot)+"\n")
+                # if cds_strand  == "+" :
+                #     end_prot = end_prot - 3 # Suppresion du codon stop
+                # flog.write("Protein range (after stop removing) = "+str(start_prot)+"-"+str(end_prot)+"\n")    
+                # else :
+                #     start_prot = start_prot + 3 # Suppresion du codon stop
+
+                # if  cds_strand  == "+" :
+                #     start_prot = start_prot + frame_first_cds
+                #     end_prot = 
+                # else :
+                #     end_prot = end_prot - frame_last_cds
+                    
+                flog.write("Protein range (after check for frame) = "+str(start_prot)+"-"+str(end_prot)+"\n")
                 flog.write("exons : ")
 
                 # Build the array sequence_pos containing the positions of
                 # the exons in the dna sequence
+
+                # for exon_feat in exon_features:
+                #     flog.write("debug pos\n")  
+                #     debug = 0
+                #     for pos in range(int(exon_feat[0]), int(exon_feat[1]) +1):
+                #         debug += 1
+                #     flog.write("debug pos + ["+str(debug)+"]\n")       
+                #     flog.write("debug pos\n")  
+                #     debug = 0
+                #     for pos in range(int(exon_feat[1]) , int(exon_feat[0]) -1 , -1):
+                #         debug += 1  
+                #     flog.write("debug pos - ["+str(debug)+"]\n")        
+                
                 if cds_strand == "+" :
                     # direct strand
                     num_exon = 1
@@ -299,7 +326,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         flog.write("["+str(start)+"-"+str(end)+"]")
                         # get the postion of exon from the cds start to the cds end
                         for pos in range(start, end + 1):
-                            if pos >= start_prot and pos <= end_prot :
+                            if pos >= start_prot and pos < end_prot :
                                 sequence_pos.append(pos-1) # pos -1 car l'indexation commence à 0 dans le fichier qui contient l'adn
                         num_exon += 1
                 else :
@@ -315,7 +342,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         #flog.write("\ndebug range "+str(start)+ " "+str(end)+"-1 \n")
                         for pos in range(start , end -1 , -1):
                             #flog.write("pos "+str(pos) +" ?  >= "+str(start_prot)+" <= "+str(end_prot)+"\n")
-                            if pos >= start_prot   and pos <= end_prot :
+                            if pos > start_prot + 2 - frame_first_cds  and pos <= end_prot :
                                 #flog.write("ADD "+ str(pos-1)+" : "+ debug_raw_seq[pos-1]+"\n")
                                 sequence_pos.append(pos - 1) # pos -1 a cause de l'indexation qui commence a 0
                         num_exon +=1
@@ -366,15 +393,17 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             flog.write(str(trans_dna_seq))
             flog.write("\n")
             trans_dna_seq_nostop = str(trans_dna_seq)
-            if partial_end == False :
-                trans_dna_seq_nostop = str(trans_dna_seq)[:-1]
+            #if partial_end == False :
+            #    trans_dna_seq_nostop = str(trans_dna_seq)[:-1]
             
             if trans_dna_seq_nostop != sequence :
                 flog.write("\n\n********\nWarning: translated sequence and protein sequence are different.\n")
+                flog.write("Translated sequence:\n")
                 flog.write(str(trans_dna_seq_nostop))
                 flog.write("\n")
                 flog.write(str(len(str(trans_dna_seq_nostop))))
                 flog.write("\n")
+                flog.write("Original protein sequence:\n")
                 flog.write(str(sequence))
                 flog.write("\n")
                 flog.write(str(len(str(sequence))))
@@ -398,12 +427,14 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                             break
                     correct_protein = "".join(correct_protein)
                     flog.write("Frameshift =             " + str(flag_fs)+"\n")       
-                    flog.write("Corr. Transl. dna seq. = " + correct_protein+"\n")   
+                    flog.write("Corr. Transl. dna seq. :\n")   
+                    flog.write(correct_protein)   
+                    flog.write("\n")   
                 else :
                     flog.write("\n\nCheck OK: Translated sequence and protein sequence are 90percent identical.\n\n")
                     correct_protein = sequence
                     full_sequence = sequence
-                if ratio < 0.5 :
+                if ratio < 0.2 :
                     sys.exit("debug")    
             else :
                 flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
