@@ -150,7 +150,7 @@ f = open(args.output, "w")
 ferr = open(args.output+".ERROR", "w")
 # log file
 flog = open(args.log, "w")
-f.write("SeqID;Contig;mrna;Status;Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length\n")
+f.write("SeqID;Contig;mrna;Status;Nb ZF full;Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length;Nb superposed ZF\n")
 # file of warning
 fwarn = open(args.warnings, "w")
 
@@ -239,11 +239,15 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     last_cds = cds_feat[len(cds_feat)-1]
                     start_prot = int(first_cds[0])
                     end_prot = int(last_cds[1])
+                    frame_first_cds = int(first_cds[3])
+                    frame_last_cds = int(last_cds[3])
                 elif cds_strand  == "-" :
                     last_cds = cds_feat[0]
                     first_cds = cds_feat[len(cds_feat)-1]
                     start_prot = int(first_cds[0])
                     end_prot = int(last_cds[1])
+                    frame_first_cds = int(first_cds[3])
+                    frame_last_cds = int(last_cds[3])
                 else :
                      sys.exit("Unknown strand")
                 flog.write("Protein range (according to CDS) = "+str(start_prot)+"-"+str(end_prot)+"\n")
@@ -276,85 +280,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     last_exon = exon_features[0]
                     first_exon = exon_features[len(exon_features)-1]
 
-                # in case of first exon is fully covered by first cds
-                if first_exon[0] == first_cds[0] and first_exon[1] == first_cds[1] :
-                   flog.write("Note : first exon is fully covered by first CDS, potentialy partial sequence\n")
-                   # debug
-                   # if cds_strand  == "+" :
-                   #         partial_start = True
-                   # else :
-                   #         partial_end = True
-                   # in case of the frame of the first cds is > 0
-                   if int(first_cds[3]) > 0 :
-                       # direct strand : get the frame of the first cds
-                       if cds_strand  == "+" :
-                           partial_start = True
-                           flog.write("       frame is > 0 ("+first_cds[3]+"), sequence is partial at start\n")
-                           frame_first_cds = int(first_cds[3])
-                       # reverse strand : get the frame of the last cds
-                       else :
-                           partial_end = True
-                           flog.write("       frame is > 0 ("+first_cds[3]+"), sequence is partial at end\n")
-                           frame_last_cds = int(first_cds[3])
-                       # direct strand : increase the start of protein by the frame
-                       if cds_strand  == "+" :
-                           flog.write("       Increase start_prot "+first_cds[3]+"\n")
-                           start_prot += int(first_cds[3])
-                           #sys.exit("debuging 1")
-                       else :
-                       # reverse strand : increase the start of protein by 3
-                           flog.write("       Increase start_prot of 3\n")
-                           # Pourquoi?
-                           #start_prot += int(first_cds[3])
-                           #start_prot += 1
-                           start_prot += 3
-                           #sys.exit("debuging 2")
-                else :
-                    # complete sequence, chek that cds frame is 0
-                    if int(first_cds[3]) > 0 and cds_strand == "+":
-                        flog.write("\n*************************\n POTENTIAL FRAME  PROBLEM WITH THE FIRST CDS\n*************************\n")
 
-                # in case of last exon is fully covered by last cds
-                if last_exon[0] == last_cds[0] and last_exon[1] == last_cds[1] :
-                   flog.write("Note : last exon is fully covered by last CDS, potentialy partial sequence\n")
-                   # debug
-                   # if cds_strand  == "+" :
-                   #         partial_end = True
-                   # else :
-                   #         partial_start = True
-                   # in case of the frame of the last cds is > 0
-                   if int(last_cds[3]) > 0 :
-                       # direct strand
-                       if cds_strand  == "+" :
-                           partial_end = True
-                           flog.write("       frame is > 0 ("+last_cds[3]+"), sequence is partial at end\n")
-                           # get the frame of the last cds
-                           frame_last_cds = int(last_cds[3])
-                       # reverse strand
-                       else :
-                           partial_start = True
-                           flog.write("       frame is > 0 ("+first_cds[3]+"), sequence is partial at start\n")
-                           # get the frame of the last cds
-                           frame_first_cds = int(last_cds[3])
-
-                       # direct strand
-                       if cds_strand  == "+" :
-                           # decrease the end protein by 3
-                           flog.write("       Decrease end_prot "+str(3)+"\n")
-                           #end_prot -= 3
-                           #sys.exit("debuging 4")
-                       # reverse strand
-                       else :
-                           flog.write("       Decrease end_prot "+last_cds[3]+"\n")
-                           #end_prot -= int(last_cds[3])
-                           #end_prot -= 3
-                           end_prot -= 2
-                           #end_prot += int(last_cds[3])
-                           #sys.exit("debuging 3")
-                else :
-                    # complete sequence, chek that cds frame is 0
-                    if int(last_cds[3]) > 0 and cds_strand == "-" :
-                        flog.write("\n*************************\nPOTENTIAL FRAME PROBLEM WITH THE LAST CDS\n*************************\n")
                 flog.write("Sequence  is partial at the start : "+str(partial_start)+"\n")
                 flog.write("Sequence  is partial at the end: "+str(partial_end)+"\n")
                 flog.write("First CDS frame: "+str(frame_first_cds)+"\n")
@@ -442,6 +368,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             trans_dna_seq_nostop = str(trans_dna_seq)
             if partial_end == False :
                 trans_dna_seq_nostop = str(trans_dna_seq)[:-1]
+            
             if trans_dna_seq_nostop != sequence :
                 flog.write("\n\n********\nWarning: translated sequence and protein sequence are different.\n")
                 flog.write(str(trans_dna_seq_nostop))
@@ -455,20 +382,43 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 ratio = diff_seq(trans_dna_seq_nostop,sequence)
                 flog.write("Match ratio  :"+str(ratio))
                 flog.write("\n********\n\n")
-                if ratio < 0.9 :
-                        flog.write("Error: translated sequence and protein sequence are too different\n")
-                        #sys.exit("Error: translated sequence and protein sequence are too different")
-                        print("Error: translated sequence and protein sequence are too different; jump to next sequence")
-                        flog.write("Sequence flaged as erreoneous.\n")
-                        status = "sequence transl. problem"
-                        flag_sequence_ok = False
-                        continue
-                        
+                if ratio < 0.95 :
+                    flog.write("Problem: translated sequence and protein sequence are too different\n")
+                    #sequence_pos_translatable  = []
+                    correct_protein  = []
+                    flag_fs = False
+                    for idx in range(0, len(trans_dna_seq_nostop)) :
+                        if trans_dna_seq_nostop[idx] ==  sequence[idx] :
+                            #sequence_pos_translatable.append(sequence_pos[idx])
+                            correct_protein.append(sequence[idx])
+                        else :
+                            #print("Frameshift!")
+                            flag_fs = True
+                            status = "frameshift"
+                            break
+                    correct_protein = "".join(correct_protein)
+                    flog.write("Frameshift =             " + str(flag_fs)+"\n")       
+                    flog.write("Corr. Transl. dna seq. = " + correct_protein+"\n")   
+                else :
+                    flog.write("\n\nCheck OK: Translated sequence and protein sequence are 90percent identical.\n\n")
+                    correct_protein = sequence
+                    full_sequence = sequence
+                if ratio < 0.5 :
+                    sys.exit("debug")    
             else :
                 flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
-                flag_identical = True
+                flag_identical = True   
+                correct_protein = sequence
+                full_sequence = sequence
+
+
+            # magouille
+            full_sequence = sequence
+            sequence =   correct_protein      
+
+                        
             dico_sequence[seq_record.id].append((contig_mrna,sequence_pos))
-            test = dico_sequence[seq_record.id]
+            test = dico_sequence[seq_record.id] 
             num_cds +=1
 
     else:
@@ -480,8 +430,22 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
         f.write(seq_record.id+";"+contig_mrna[0]+";"+contig_mrna[1]+";"+status+";;;;;;;;;;;;;;;;\n")
         #f.write(seq_record.id+";OK;"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
         continue
-    # search patterns
-    flog.write("Pattern search:\n")
+    
+     # search patterns in original protein
+    flog.write("Pattern search in original protein:\n")
+    pattern_nb = 1
+    list_of_matches = []
+    for pattern in [pattern1,pattern2]:
+        flog.write("Pattern "+pattern+":\n")
+        matches_test = re.finditer(pattern, full_sequence)
+        for match in matches_test:
+            list_of_matches.append([pattern,match])
+    sorted_list_of_matches = sorted(list_of_matches, key=lambda element: element[1].span()[0])   # sort
+    flog.write(str(len(sorted_list_of_matches))+ " matches.\n")
+    nb_zf_full = len(sorted_list_of_matches);
+
+    # search patterns in translated protein
+    flog.write("Pattern search in correct protein:\n")
     pattern_nb = 1
     list_of_matches = []
     for pattern in [pattern1,pattern2]:
@@ -491,6 +455,10 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             list_of_matches.append([pattern,match])
     sorted_list_of_matches = sorted(list_of_matches, key=lambda element: element[1].span()[0])   # sort
     flog.write(str(len(sorted_list_of_matches))+ " matches.\n")
+    # Check if nb of matches is the same than in full protein
+    if nb_zf_full != len(sorted_list_of_matches):
+        flog.write("Warning: number of matches is different:  frameshift\n")
+        status = "frameshift"
     # Check for supeprosition
     if len(sorted_list_of_matches) > 0 :
         element = sorted_list_of_matches[0]
@@ -550,13 +518,16 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     match_nb = 1 # num of the match in set
     match_tandem_nb = 1 # num of the match in set of tandem zincfingers
     flag_match_ok = True
-    flog.write("\nProcessing matches\n")
+    flog.write("\nProcessing " + str(len(sorted_list_of_matches))+" matches\n")
+    if len(sorted_list_of_matches) == 0 :
+        for seq_genomic in dico_sequence[seq_record.id]:
+            f.write(seq_record.id+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+status+";"+str(nb_zf_full)+";;;;;;;;;;;;;;;;\n")
     for element in sorted_list_of_matches:
         flog.write("Match "+str(element)+"\n")
         if flag_match_ok == False:
-            flog.write("Match was flaged as erroneous,  sequence flaged as erroneous\n")
+            flog.write("Match was flaged as erroneous.\n")
             status = "match transl. problem"
-            flag_sequence_ok = False
+            #flag_sequence_ok = False
             continue
         match  = element[1]
         pattern = element[0]
@@ -669,8 +640,9 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             for aa in bioseq_prot:
                 flog.write(aa+"  ")
             flog.write("\n")
+            ratio = 1
             if str(bioseq_prot) != str(zf) :
-                sys.stderr.write("\n\nWarning: translated sequence and protein sequence are different.\n")
+                sys.stderr.write("\n\nWarning: translated match and protein match are different.\n")
                 sys.stderr.write("Protein:\n")
                 sys.stderr.write(str(zf))
                 sys.stderr.write("\n")
@@ -681,7 +653,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 sys.stderr.write("Match ratio  :"+str(ratio))
                 sys.stderr.write("\n")
 
-                flog.write("\n\n********\nWarning: translated sequence and protein sequence are different.\n")
+                flog.write("\n\n********\nWarning: translated match and protein match are different.\n")
                 flog.write("Protein:\n")
                 flog.write(str(zf))
                 flog.write("\n")
@@ -694,26 +666,25 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     flog.write("\n********\n\n")
                     flog.write("Error: the translated protein sequence was correct, something is wrong with the patterns.\n")
                     flog.write("\n********\n\n")
-                if ratio < 0.9 :
-                    flog.write("Error: translated match sequence and protein match sequence are too different\n")
-                    flog.write("Match is flaged as erroneous\n")
+            if ratio < 0.9 :
+                    flog.write("Error: translated match  and protein match  are too different\n")
+                    #flog.write("Match is flaged as erroneous\n")
                     #sys.exit("Error: translated sequence and protein sequence are too different")
                     print("Error: translated match and protein match are too different")
-                    print("Match is flaged as erroneous")
-                    flag_match_ok = False
-                    continue
+                    #print("Match is flaged as erroneous")
+                    #flag_match_ok = False
+                    #continue
                     
             else:
-                flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
-            zfname = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrsruvwxyz"[tandem]+str(match_tandem_nb)
-            if modified :
-                zfname += "_28"
-            else :
-                zfname += "_29"
-            
-            f.write(seq_record.id+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+status+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
+                flog.write("\n\nCheck OK: Translated match and protein match are identical.\n\n")
+                zfname = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrsruvwxyz"[tandem]+str(match_tandem_nb)
+                if modified :
+                    zfname += "_28"
+                else :
+                    zfname += "_29"
+                f.write(seq_record.id+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+status+";"+str(nb_zf_full)+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+";"+str(len(superposed_to_remove))+"\n")
+            #f.write(seq_record.id+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+status+";"+str(nb_zf_full)+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
             #f.write(seq_record.id+";"+contig_mrna[0]+";"+contig_mrna[1]+";"+status+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
-
         match_nb += 1
         match_tandem_nb += 1
     pattern_nb += 1
