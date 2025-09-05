@@ -5,8 +5,9 @@
 # Ok pour GCF_028858775.2 (
 # Strand : - 
 # First CDS frame: 2
-# Last CDS frame: 0
---
+# Last CDS frame: 0)
+# Ok pour  assemblies.v1.1.json
+
 
 
 import argparse
