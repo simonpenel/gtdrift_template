@@ -1,14 +1,47 @@
 # version 1.1
+# ============
 # les sequences de assemblies.v1.1.json sont correctement traduites, mais il y a des pb avec les matches
 # par ex. avec GCF_028858775.2
 # version 1.2
+# ============
 # Ok pour GCF_028858775.2 (
 # Strand : - 
 # First CDS frame: 2
 # Last CDS frame: 0)
+#
 # Ok pour  assemblies.v1.1.json
-
-
+#
+# Ok pour assemblies.json.GCA_018342105.1
+# ---
+# Strand = +
+# First CDS frame: 0
+# Last CDS frame: 1
+# => warning sur la longeur / 3
+# --
+# Strand = -
+# First CDS frame: 0
+# Last CDS frame: 0
+# => warning sur la longeur / 3
+# --
+# Strand = -
+# First CDS frame: 0
+# Last CDS frame: 0
+# => warning sur la longeur / 3
+# --
+# Strand = -
+# First CDS frame: 1
+# Last CDS frame: 0
+# => ok
+#
+# assemblies.json.GCA_013235015.1
+# no exons
+#
+# assemblies.json.GCF_001890085.2
+# Problemes:
+# Stop car on demande d'arreter 
+#                if ratio < 0.2 :
+#                 sys.exit("debug")  
+# pour debuguer
 
 import argparse
 import time
