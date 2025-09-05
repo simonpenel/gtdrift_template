@@ -1,4 +1,5 @@
 # version 1.1
+# les sequences de assemblies.v1.1.json sont correctement traduites, mais il y a des pb avec les matches
 
 import argparse
 import time
@@ -702,8 +703,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             if ratio < 0.9 :
                     flog.write("Error: translated match  and protein match  are too different\n")
                     #flog.write("Match is flaged as erroneous\n")
-                    #sys.exit("Error: translated sequence and protein sequence are too different")
                     print("Error: translated match and protein match are too different")
+                    sys.exit("Error: translated match and protein  are too different")
                     #print("Match is flaged as erroneous")
                     #flag_match_ok = False
                     #continue
