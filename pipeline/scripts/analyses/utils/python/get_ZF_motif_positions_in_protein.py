@@ -1,5 +1,13 @@
 # version 1.1
 # les sequences de assemblies.v1.1.json sont correctement traduites, mais il y a des pb avec les matches
+# par ex. avec GCF_028858775.2
+# version 1.2
+# Ok pour GCF_028858775.2 (
+# Strand : - 
+# First CDS frame: 2
+# Last CDS frame: 0
+--
+
 
 import argparse
 import time
@@ -620,7 +628,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             frame = 0
             if cds_strand  == "-" :
                 flog.write("Protein is on reverse strand.\n")
-                st = len(sequence) - match.span()[1] + 1
+                st = len(sequence) - match.span()[1] 
                 en = st + match.span()[1] - match.span()[0]
 
                 if partial_end == True :
