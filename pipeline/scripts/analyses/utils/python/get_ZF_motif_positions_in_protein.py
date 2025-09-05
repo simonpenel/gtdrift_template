@@ -43,6 +43,15 @@
 #                 sys.exit("debug")  
 # pour debuguer
 
+
+# version 1.3
+# ============
+# assemblies.json.GCF_001890085.2  : pb de match
+
+# pb avec la sequence XP_019490596.1 qui contient un frameshift
+
+
+
 import argparse
 import time
 import os
@@ -478,9 +487,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 else :
                     flog.write("\n\nCheck OK: Translated sequence and protein sequence are 90percent identical.\n\n")
                     correct_protein = sequence
-                    full_sequence = sequence
-                if ratio < 0.2 :
-                    sys.exit("debug")    
+                    full_sequence = sequence  
             else :
                 flog.write("\n\nCheck OK: Translated sequence and protein sequence are identical.\n\n")
                 flag_identical = True   
