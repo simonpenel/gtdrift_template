@@ -44,11 +44,20 @@
 # pour debuguer
 
 
-# version 1.3
+# version 1.4
 # ============
 # assemblies.json.GCF_001890085.2  : pb de match
 
 # pb avec la sequence XP_019490596.1 qui contient un frameshift
+
+# ok  avec GCF_033118175.1 qui contient un frameshift
+
+# version 1.5
+# ============
+# ok avec assemblies.json.GCF_001890085.2  :qui contient un frameshift
+
+
+# ok  avec GCF_033118175.1 qui contient un frameshift
 
 
 
@@ -669,15 +678,26 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             frame = 0
             if cds_strand  == "-" :
                 flog.write("Protein is on reverse strand.\n")
-                st = len(sequence) - match.span()[1] 
-                en = st + match.span()[1] - match.span()[0]
+                flog.write("Modified = "+str(modified)+"\n")
+                flog.write("Frame first cds = "+str(frame_first_cds)+"\n")
+                flog.write("Frame last cds = "+str(frame_last_cds)+"\n")
+                st = len(full_sequence) - match.span()[1] 
+                if len(full_sequence) > len(sequence) :
+                    st = st - 1 
+                    st = st + frame_last_cds
+                    if modified:
+                        st = st - 3
 
-                if partial_end == True :
-                    flog.write("Protein is partial at the end.\n")
-                    flog.write("First cds frame "+str(frame_first_cds)+"\n")
-                    flog.write("Last cds frame "+str(frame_last_cds)+"\n")
-                    en = en - 1
-                    st = st - 1
+                en = st + match.span()[1] - match.span()[0]
+                #frame = - 3
+
+
+                # if partial_end == True :
+                #     flog.write("Protein is partial at the end.\n")
+                #     flog.write("First cds frame "+str(frame_first_cds)+"\n")
+                #     flog.write("Last cds frame "+str(frame_last_cds)+"\n")
+                #     en = en - 2
+                #     st = st - 2
 
                 shift_s = en - 19 - st
                 #shift_s -= 1
