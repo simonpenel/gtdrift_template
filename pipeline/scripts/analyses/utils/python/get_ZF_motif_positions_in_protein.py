@@ -59,7 +59,16 @@
 
 # ok  avec GCF_033118175.1 qui contient un frameshift
 
+# pb avec la sequence CAI9150971.1 dans GCA_949782905.1
+# Frame first cds = 1
+# Frame last cds = 0
+# Strand -
 
+# ok with 
+# +  0 2 
+# -  2 0 
+# -  0 0 
+# -  1 0
 
 import argparse
 import time
@@ -349,6 +358,13 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 flog.write("Last CDS frame: "+str(frame_last_cds)+"\n")
                 start_prot = start_prot + frame_first_cds
                 end_prot = end_prot - frame_last_cds
+
+                # if cds_strand  == "+" :
+                #     start_prot = start_prot + frame_first_cds
+                #     end_prot = end_prot - frame_last_cds
+                # else :
+                #     start_prot = start_prot - frame_first_cds
+                #     end_prot = end_prot + frame_last_cds
                 flog.write("Protein range (after check for frame) = "+str(start_prot)+"-"+str(end_prot)+"\n")
                 # if cds_strand  == "+" :
                 #     end_prot = end_prot - 3 # Suppresion du codon stop
@@ -405,6 +421,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         #flog.write("\ndebug range "+str(start)+ " "+str(end)+"-1 \n")
                         for pos in range(start , end -1 , -1):
                             #flog.write("pos "+str(pos) +" ?  >= "+str(start_prot)+" <= "+str(end_prot)+"\n")
+                            # attention a la fin:
+                            # on doit etre superieur >= 3start_prot + 3
                             if pos > start_prot + 2 - frame_first_cds  and pos <= end_prot :
                                 #flog.write("ADD "+ str(pos-1)+" : "+ debug_raw_seq[pos-1]+"\n")
                                 sequence_pos.append(pos - 1) # pos -1 a cause de l'indexation qui commence a 0
@@ -429,14 +447,23 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             intdiv = int(len(sequence_pos) / 3)
             if intdiv * 3 == len(sequence_pos):
                 flog.write("OK : DNA sequence length is multiple of 3\n")
+                flog.write("Strand "+cds_strand+"\n")
+                flog.write("First CDS frame: "+str(frame_first_cds)+"\n")
+                flog.write("Last CDS frame: "+str(frame_last_cds)+"\n")
             else :
                 flog.write("WARNING : DNA sequence length is not multiple of 3\n")
-                #sys.exit("DNA sequence length is not multiple of 3")
+                flog.write("Strand "+cds_strand+"\n")
+                flog.write("First CDS frame: "+str(frame_first_cds)+"\n")
+                flog.write("Last CDS frame: "+str(frame_last_cds)+"\n")
+                #sys.exit("DNA sequence length is not multiple of 3 "+cds_strand+" "+str(frame_first_cds)+" "+str(frame_last_cds))
 
+            length_diff_codon = 0
             if len(sequence_pos) == protein_length * 3 :
                 flog.write("OK : DNA sequence length is 3 x "+str(protein_length)+"\n")
             else :
                 flog.write("WARNING : DNA sequence length is not  3 x "+str(protein_length)+"\n")
+                length_diff_codon  = len(sequence_pos)  -  protein_length * 3
+            flog.write("Length diff codon : "+str(length_diff_codon)+"\n")    
             # get the dna sequence of the contig
             genome_seq  = dico_genome[contig_mrna[0]]
             raw_seq = genome_seq.seq
@@ -458,7 +485,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             trans_dna_seq_nostop = str(trans_dna_seq)
             #if partial_end == False :
             #    trans_dna_seq_nostop = str(trans_dna_seq)[:-1]
-            
+            length_diff = 0 
             if trans_dna_seq_nostop != sequence :
                 flog.write("\n\n********\nWarning: translated sequence and protein sequence are different.\n")
                 flog.write("Translated sequence:\n")
@@ -471,6 +498,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 flog.write("\n")
                 flog.write(str(len(str(sequence))))
                 flog.write("\n")
+                length_diff = len(str(sequence)) - len(str(trans_dna_seq_nostop))
+                
                 ratio = diff_seq(trans_dna_seq_nostop,sequence)
                 flog.write("Match ratio  :"+str(ratio))
                 flog.write("\n********\n\n")
@@ -503,7 +532,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 correct_protein = sequence
                 full_sequence = sequence
 
-
+            flog.write("Sequence length diff  = "+str(length_diff)+"\n")
             # magouille
             full_sequence = sequence
             sequence =   correct_protein      
@@ -673,6 +702,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 trans_debug = bio_debug.reverse_complement().translate()
             shift_s = 19
             st = match.span()[0]
+            #st = st + length_diff 
             en = match.span()[1]
             flog.write("Protein start end = "+str(st) + ","+str(en)+"\n")
             frame = 0
@@ -683,10 +713,13 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 flog.write("Frame last cds = "+str(frame_last_cds)+"\n")
                 st = len(full_sequence) - match.span()[1] 
                 if len(full_sequence) > len(sequence) :
+                    flog.write("Protein is not full\n")
                     st = st - 1 
                     st = st + frame_last_cds
                     if modified:
                         st = st - 3
+                else :
+                    st = st - length_diff 
 
                 en = st + match.span()[1] - match.span()[0]
                 #frame = - 3
@@ -705,7 +738,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 
             flog.write("Last protein position in dna is " + str(en*3+1 + 2)+"\n")
             flog.write("Length of dna is " + str(len(seq_dna))+"\n") 
-
+            if length_diff_codon == -2 :
+                frame = length_diff_codon + 3 
             # build the dna sequence of the matching part of the protein
             if modified == False :
                 for pos_prot in range(st, en):
