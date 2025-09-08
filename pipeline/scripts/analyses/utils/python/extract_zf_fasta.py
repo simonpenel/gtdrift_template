@@ -233,7 +233,7 @@ for seqid in seqids:
     
         # Creation du df pour le csv
 
-        df_csv = pd.DataFrame(columns=["SeqID","Status","Contig","ZF_Dataset","ID_set", "Nb_ZF","Nb_ZF_28","Nb_ZF_29","Nb_Arrays","Nb_Clusters","Nb_singletons","Mean_divS", "Mean_ratio_AS","Ratio_AS-1","Ratio_AS2","Ratio_AS3","Ratio_AS6","Mean_ratio_AS-1236" ,"Mean_ratio_AS_non-1236" ,"ZFD","Nb ZF full"])
+        df_csv = pd.DataFrame(columns=["SeqID","Status","Contig","ZF_Dataset","ID_set", "Nb_ZF","Nb_ZF_28","Nb_ZF_29","Nb_Arrays","Nb_Clusters","Nb_singletons","Mean_divS", "Mean_ratio_AS","Ratio_AS-1","Ratio_AS2","Ratio_AS3","Ratio_AS6","Mean_ratio_AS-1236" ,"Mean_ratio_AS_non-1236" ,"ZFD","Nb matches in protein"])
         new_row = pd.DataFrame({"ZF_Dataset" : "All_ZFs" }, index=[0])
         df_csv = pd.concat([df_csv.loc[:],new_row]).reset_index(drop=True)
 
@@ -262,20 +262,25 @@ for seqid in seqids:
         
         # liste des proteines    
         proteins = extract_contig["uniformised ZF string"]
-        
+
         # calcul du zfd sur toutes les sequences de proteines
         if len(list(proteins)) > 0 :
             status = list(extract_contig[extract_contig['SeqID'] == seqid]["Status"])[0]
-            nb_zf_full = list(extract_contig[extract_contig['SeqID'] == seqid]["Nb ZF full"])[0]
-            print(nb_zf_full)
+            nb_zf_full = list(extract_contig[extract_contig['SeqID'] == seqid]["Nb matches in protein"])[0]
+            #nb_zf_superposed = list(extract_contig[extract_contig['SeqID'] == seqid]["Nb superposed ZF"])[0]
             if status == "Ok" :
                 df_csv.loc[df_csv['SeqID'] == seqid, "Status"] = 0
             elif status == "frameshift" :
                 df_csv.loc[df_csv['SeqID'] == seqid, "Status"] = 3
             else :    
                 sys.exit("status error")
-            df_csv.loc[df_csv['SeqID'] == seqid, "Nb ZF full"] = nb_zf_full
-            zfd_all = zfd(list(proteins))
+            df_csv.loc[df_csv['SeqID'] == seqid, "Nb matches in protein"] = nb_zf_full
+            #df_csv.loc[df_csv['SeqID'] == seqid, "Nb superposed ZF"] = nb_zf_superposed        
+            # maintenant je vire les na : c'est le cas quand il n'y a aucun match        
+            proteins = proteins.dropna()
+            
+            if len(proteins) > 0 :
+                zfd_all = zfd(list(proteins))
             
             # creation d'un dico des proteines
             dico_protein = {}
@@ -287,7 +292,21 @@ for seqid in seqids:
                 zf_number +=1
                 
             # sequences dna
-            sequences = extract_contig["dna sequence reading strand"]   
+            sequences = extract_contig["dna sequence reading strand"] 
+            sequences = sequences.dropna()
+
+
+            # on fait ca ici plutot que l 324 car si on a pas sequences les données predenetes sont gardees
+            description = "Sequence :"+seqid+"; Contig:"+contig
+            my_records = []
+            zf_number = 0
+            dico_sequence = {}
+            list_array_total = {}
+            nb_29_all = 0
+            nb_28_all = 0
+            array_max = "NA"
+            size_array_max = 0
+            fsilix=open(args.output_dir+"/"+file_name+".silix", "w")
             # calcul du zfd sur toutes les sequences nucleiques
             if len(list(sequences)) > 0 :
                 zfd_codon_all = zfd_codon(list(sequences))           
@@ -295,7 +314,7 @@ for seqid in seqids:
             
                 # creation d'un dico des noms de sequence dna, d'un dico des array,  
                 # du fichier d'entrre pour silixx.
-                fsilix=open(args.output_dir+"/"+file_name+".silix", "w")
+                #fsilix=open(args.output_dir+"/"+file_name+".silix", "w")
                 description = "Sequence :"+seqid+"; Contig:"+contig
                 my_records = []
                 zf_number = 0
@@ -344,20 +363,23 @@ for seqid in seqids:
             dna_array_max =  []
             nb_28_array = 0
             nb_29_array = 0
-            for name in  list_array_total[array_max]:
-                protein_seq = dico_protein[name].seq
-                proteins_array_max.append(protein_seq)
-                dna_seq = dico_sequence[name].seq
-                dna_array_max.append(dna_seq)
-                suff = name[-2:]
-                if suff == "28":
-                    nb_28_array +=1
-                elif suff == "29":
-                    nb_29_array +=1  
+            if len(list_array_total) > 0 :
+                for name in  list_array_total[array_max]:
+                    protein_seq = dico_protein[name].seq
+                    proteins_array_max.append(protein_seq)
+                    dna_seq = dico_sequence[name].seq
+                    dna_array_max.append(dna_seq)
+                    suff = name[-2:]
+                    if suff == "28":
+                        nb_28_array +=1
+                    elif suff == "29":
+                        nb_29_array +=1  
             df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_28"] = nb_28_array
-            df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_29"] = nb_29_array                
-            zfd_array = zfd(proteins_array_max)    
-            zfd_codon_array = zfd_codon(dna_array_max)  
+            df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_29"] = nb_29_array   
+            if len(proteins_array_max) > 0 :        
+                zfd_array = zfd(proteins_array_max)    
+            if len(dna_array_max) > 0 :
+                zfd_codon_array = zfd_codon(dna_array_max)  
                     
             count = SeqIO.write(my_records, args.output_dir+"/"+file_name+".fasta", "fasta")
             fl.write(file_name+".fasta\n")
@@ -394,7 +416,7 @@ for seqid in seqids:
 
                 fclustsummary.write("# Nb of zf : "+str(len(sequences))+"\n")   
                 fclustsummary.write("#\n")
-                fclustsummary.write("# Nb of zf in full protein : "+str(nb_zf_full)+"\n")   
+                fclustsummary.write("# Nb of matches in protein : "+str(nb_zf_full)+"\n")   
                 fclustsummary.write("#\n")
                 fclustsummary.write("#################################################\n")
                 fclustsummary.write("# All ZF\n")
@@ -542,7 +564,7 @@ for seqid in seqids:
             fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w")    
             fclustsummary.write("#################################################\n")
             fclustsummary.write("# Problems\n")
-            err_status = list(extract_contig_all[extract_contig_all["SeqID"] == erroneous_protein_names]["Status"])
+            err_status = list(extract_contig_all[extract_contig_all["SeqID"] == erroneous_protein_name]["Status"])
             fclustsummary.write("# "+str(err_status) +"\n")
             fclustsummary.write("# Status 1 : No exon.\n")
             fclustsummary.write("# Status 2 : Protein from fasta input file is different from translated DNA equence.\n")
