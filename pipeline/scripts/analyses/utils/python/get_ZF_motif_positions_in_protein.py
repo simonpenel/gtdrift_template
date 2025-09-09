@@ -222,7 +222,7 @@ f = open(args.output, "w")
 ferr = open(args.output+".ERROR", "w")
 # log file
 flog = open(args.log, "w")
-f.write("SeqID;Contig;mrna;Status;Nb ZF full;Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length;Nb superposed ZF\n")
+f.write("SeqID;Contig;mrna;Status;Nb matches in protein;Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length\n")
 # file of warning
 fwarn = open(args.warnings, "w")
 
@@ -503,7 +503,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 ratio = diff_seq(trans_dna_seq_nostop,sequence)
                 flog.write("Match ratio  :"+str(ratio))
                 flog.write("\n********\n\n")
-                if ratio < 0.95 :
+                if ratio < 0.98 :
                     flog.write("Problem: translated sequence and protein sequence are too different\n")
                     #sequence_pos_translatable  = []
                     correct_protein  = []
@@ -548,7 +548,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
 
     if flag_sequence_ok == False :
         flog.write("Jump to next sequence\n.")
-        f.write(seq_record.id+";"+contig_mrna[0]+";"+contig_mrna[1]+";"+status+";;;;;;;;;;;;;;;;\n")
+        f.write(seq_record.id+";"+contig_mrna[0]+";"+contig_mrna[1]+";"+status+";;;;;;;;;;;;;;;;;\n")
         #f.write(seq_record.id+";OK;"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
         continue
     
@@ -807,7 +807,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     flog.write("Error: translated match  and protein match  are too different\n")
                     #flog.write("Match is flaged as erroneous\n")
                     print("Error: translated match and protein match are too different")
-                    sys.exit("Error: translated match and protein  are too different")
+                    #sys.exit("Error: translated match and protein  are too different")
+                    f.write(seq_record.id+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+status+";"+str(nb_zf_full)+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+"UNCORRECTLY TRANSLATED MATCH"+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
                     #print("Match is flaged as erroneous")
                     #flag_match_ok = False
                     #continue
@@ -819,7 +820,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     zfname += "_28"
                 else :
                     zfname += "_29"
-                f.write(seq_record.id+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+status+";"+str(nb_zf_full)+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+";"+str(len(superposed_to_remove))+"\n")
+                f.write(seq_record.id+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+status+";"+str(nb_zf_full)+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
             #f.write(seq_record.id+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+status+";"+str(nb_zf_full)+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
             #f.write(seq_record.id+";"+contig_mrna[0]+";"+contig_mrna[1]+";"+status+";"+pattern+";"+str(pattern_nb)+";"+str(match_nb)+";"+str(tandem)+";"+str(match_tandem_nb)+";"+zfname+";"+str(match.span()[0])+";"+str(match.span()[1])+";"+str(zf_length)+";"+zf+";"+str(match.group())+";"+seq_genomic[0][0]+";"+seq_genomic[0][1]+";"+raw_seq_extract+";"+str(compl)+";"+str(len(raw_seq_extract))+"\n")
         match_nb += 1
