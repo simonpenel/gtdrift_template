@@ -707,12 +707,19 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 trans_debug = bio_debug.translate()
             else :
                 trans_debug = bio_debug.reverse_complement().translate()
-            shift_s = 19
-            st = match.span()[0]
-            #st = st + length_diff 
-            en = match.span()[1]
-            flog.write("Protein start end = "+str(st) + ","+str(en)+"\n")
+            
             frame = 0
+            if cds_strand  == "+" :
+                flog.write("Protein is on Direct strand.\n")
+                flog.write("Modified = "+str(modified)+"\n")
+                flog.write("Frame first cds = "+str(frame_first_cds)+"\n")
+                flog.write("Frame last cds = "+str(frame_last_cds)+"\n")
+                shift_s = 19
+                st = match.span()[0]
+                #st = st + length_diff 
+                en = match.span()[1]
+                flog.write("Protein start end = "+str(st) + ","+str(en)+"\n")
+
             if cds_strand  == "-" :
                 flog.write("Protein is on reverse strand.\n")
                 flog.write("Modified = "+str(modified)+"\n")
@@ -743,14 +750,17 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 shift_s = en - 19 - st
                 #shift_s -= 1
                 flog.write("Protein start end for reverse strand = "+str(st) + ","+str(en)+"\n")
-                
+
+        
+            
             flog.write("Last protein position in dna is " + str(en*3+1 + 2)+"\n")
             flog.write("Length of dna is " + str(len(seq_dna))+"\n") 
             # Attention ceci n'a de sens que pour les proteines completes
             # Cela n'a plus de sens si la proteine n'est pas traduite entierement
-            if len(full_sequence) ==  len(sequence) :
+            if (len(full_sequence) ==  len(sequence))  and  (cds_strand  == "-") :
                 if length_diff_codon == -2 :
                     frame = length_diff_codon + 3 
+
             # build the dna sequence of the matching part of the protein
             if modified == False :
                 for pos_prot in range(st, en):
@@ -770,6 +780,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+1 + frame]]
                     raw_seq_extract += raw_seq[seq_dna[(pos_prot)*3+2 + frame]]
 
+            flog.write("Frame : " + str(frame)+"\n") 
             flog.write("CDS STRAND :"+cds_strand+"\n")
             flog.write("Prot:   ")
             for aa in zf:
