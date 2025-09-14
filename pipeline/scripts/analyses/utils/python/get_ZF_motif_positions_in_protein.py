@@ -361,7 +361,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             if cds_strand  == "+" :
                 start_prot = start_prot + frame_first_cds
                 #end_prot = end_prot - frame_last_cds
-                end_prot = end_prot - 3 + frame_last_cds
+                #end_prot = end_prot - 3 + frame_last_cds
             else :
                 start_prot = start_prot + frame_first_cds
                 end_prot = end_prot - frame_last_cds
