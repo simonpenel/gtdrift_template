@@ -222,7 +222,7 @@ f = open(args.output, "w")
 ferr = open(args.output+".ERROR", "w")
 # log file
 flog = open(args.log, "w")
-f.write("SeqID;Contig;mrna;Status;Nb matches in protein;Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length\n")
+f.write("SeqID;Contig;mrna;Status;Nb ZF hits in annotated protein;Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length\n")
 # file of warning
 fwarn = open(args.warnings, "w")
 
@@ -274,7 +274,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     frame_first_cds = 0
     frame_last_cds = 0
     if seq_record.id in dico_prot:
-        status = "Ok"
+        status = "OK, the translated DNA sequence has the same length as the annotated protein sequence."
         contig_mrna_dico  = {}
         # get the uniques couples (contig, mrna) associated to the protein
         for contig_mrna in dico_prot[seq_record.id]:
@@ -356,6 +356,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             flog.write("Protein range  = "+str(start_prot)+"-"+str(end_prot)+"\n")
             flog.write("First CDS frame: "+str(frame_first_cds)+"\n")
             flog.write("Last CDS frame: "+str(frame_last_cds)+"\n")
+
+            #ok witth 2025-09-12T132200.959275.snakemake.log
             if cds_strand  == "+" :
                 start_prot = start_prot + frame_first_cds
                 #end_prot = end_prot - frame_last_cds
@@ -520,17 +522,15 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                         else :
                             #print("Frameshift!")
                             flag_fs = True
-                            status = "frameshift"
+                            status = "Frameshift: the translated DNA sequence is shorter than the  annotated protein sequence."
                             break
                     correct_protein = "".join(correct_protein)
                     flog.write("Frameshift =             " + str(flag_fs)+"\n")       
                     flog.write("Corr. Transl. dna seq. :\n")   
                     flog.write(correct_protein)   
                     flog.write("\n")  
-                    if ratio < 0.2 :
-                        sys.exit("debug") 
                 else :
-                    flog.write("\n\nCheck OK: Translated sequence and protein sequence are 90percent identical.\n\n")
+                    flog.write("\n\nCheck OK: Translated sequence and protein sequence are 98% percent identical.\n\n")
                     correct_protein = sequence
                     full_sequence = sequence  
             else :
@@ -586,7 +586,7 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
     # Check if nb of matches is the same than in full protein
     if nb_zf_full != len(sorted_list_of_matches):
         flog.write("Warning: number of matches is different:  frameshift\n")
-        status = "frameshift"
+        #status = "Frameshift: the translated DNA sequence is shorter than the  annotated protein sequence."
     # Check for supeprosition
     if len(sorted_list_of_matches) > 0 :
         element = sorted_list_of_matches[0]
@@ -731,9 +731,14 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                     flog.write("Protein partially translated\n")
                     st = st - 1 
                     st = st + frame_last_cds
+                    if length_diff > 1 :
+                        st = st - length_diff 
+                    # needed for GCF_001890085.2G
+                    # pb with CF_016772045.2
                     # if modified:
                     #     st = st - 3
                 else :
+                    flog.write("Protein fully translated\n")
                     st = st - length_diff 
 
                 en = st + match.span()[1] - match.span()[0]
@@ -757,9 +762,12 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             flog.write("Length of dna is " + str(len(seq_dna))+"\n") 
             # Attention ceci n'a de sens que pour les proteines completes
             # Cela n'a plus de sens si la proteine n'est pas traduite entierement
+            flog.write("Length diff_codon = " + str(length_diff_codon) + "\n") 
             if (len(full_sequence) ==  len(sequence))  and  (cds_strand  == "-") :
+                flog.write("Protein is fully translated and on revesre strand, length_diff_codon = "+str(length_diff_codon)+"\n")
                 if length_diff_codon == -2 :
-                    frame = length_diff_codon + 3 
+                    frame = length_diff_codon + 3
+                    flog.write("Setting frame to"+str(frame)+"\n") 
 
             # build the dna sequence of the matching part of the protein
             if modified == False :
