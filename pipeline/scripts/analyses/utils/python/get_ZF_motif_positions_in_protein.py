@@ -770,6 +770,8 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
                 if length_diff_codon == -2 :
                     frame = length_diff_codon + 3
                     flog.write("Setting frame to"+str(frame)+"\n") 
+                frame = length_diff_codon + 3
+                flog.write("Setting frame to"+str(frame)+"\n")     
 
             # build the dna sequence of the matching part of the protein
             if modified == False :
