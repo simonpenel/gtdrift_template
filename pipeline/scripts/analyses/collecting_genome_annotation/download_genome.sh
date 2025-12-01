@@ -11,9 +11,15 @@ echo "------------ ${genome_assembly} ------------"
 echo "Storage : ${storage}"
 
 if [[ ${genome_assembly} =~ GCA ]]; then
-  PathLink=$(esearch -db assembly -query ${genome_assembly} | efetch -format docsum | xtract -pattern DocumentSummary -element FtpPath_GenBank)
+  PathLink=$(esearch -db assembly -query "${genome_assembly}[Assembly Accession]"   | efetch   -format docsum | xtract -pattern DocumentSummary -element FtpPath_GenBank)
 elif [[ ${genome_assembly} =~ GCF ]]; then
-  PathLink=$(esearch -db assembly -query ${genome_assembly} | efetch -format docsum | xtract -pattern DocumentSummary -element FtpPath_RefSeq)
+  PathLink=$(esearch -db assembly -query "${genome_assembly}[Assembly Accession]"   | efetch    -format docsum | xtract -pattern DocumentSummary -element FtpPath_RefSeq)
+fi
+
+echo "------------initial pathlink  ${PathLink} ------------"
+if [[ ${PathLink} == "" ]]; then
+echo "Connection problem"
+exit 0
 fi
 
 PathLink=$(echo ${PathLink} | cut -d " " -f 1)
@@ -25,6 +31,7 @@ BASENAME=`basename ${PathLink}`
 
 Path=https${PathLink:3}/${BASENAME}'_genomic.fna.gz'
 
+print
 wget ${Path} -O ${symlink_directory}${BASENAME}'_genomic.fna.gz'
 gzip -d ${symlink_directory}${BASENAME}'_genomic.fna.gz'
 

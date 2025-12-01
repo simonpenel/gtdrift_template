@@ -10,9 +10,9 @@ echo "------------ ${genome_assembly} ------------"
 
 
 if [[ ${genome_assembly} =~ GCA ]]; then
-  PathLink=$(esearch -db assembly -query ${genome_assembly} | efetch -format docsum | xtract -pattern DocumentSummary -element FtpPath_GenBank)
+  PathLink=$(esearch -db assembly -query "${genome_assembly}[Assembly Accession]"   | efetch  -format docsum | xtract -pattern DocumentSummary -element FtpPath_GenBank)
 elif [[ ${genome_assembly} =~ GCF ]]; then
-  PathLink=$(esearch -db assembly -query ${genome_assembly} | efetch -format docsum | xtract -pattern DocumentSummary -element FtpPath_RefSeq)
+  PathLink=$(esearch -db assembly -query "${genome_assembly}[Assembly Accession]"   | efetch  -format docsum | xtract -pattern DocumentSummary -element FtpPath_RefSeq)
 fi
 
 echo "------------ ${PathLink} ------------"
