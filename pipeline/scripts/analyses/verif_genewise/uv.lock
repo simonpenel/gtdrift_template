@@ -1,0 +1,27 @@
+version = 1
+requires-python = ">=3.13"
+
+[[package]]
+name = "hmmer"
+version = "3.4.0.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/89/f6/5b484de83d732602bbb940b0887526ae753e1e76e8557e8a96cc6fdf2436/hmmer-3.4.0.2.tar.gz", hash = "sha256:7aad5945b44fa575192ce5624bef80f1dece11f9520eabcf7d4d4d18f437d8bf", size = 3447 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ba/ec/d66b42a5c685d42bd63c58d4c9051d96ce04c2d5d99b7af2118574c9b16a/hmmer-3.4.0.2-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:333bf5ce1df071ca6b9cd72da38423230b50eff72e30eb2dc32129c8313c7561", size = 6872893 },
+    { url = "https://files.pythonhosted.org/packages/b9/98/5802c425087178f472510c273800019c467344135fb6961057d7d5977c23/hmmer-3.4.0.2-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:ea581f1415dfc49d5a627947d16671c2247bebbf1ba0b9871dfad77049c30207", size = 6255477 },
+    { url = "https://files.pythonhosted.org/packages/71/6a/719b68cf761de96a40a2c77942746cbcadc0f8b336f71249926a4feef988/hmmer-3.4.0.2-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:15fe5acd3d1cf3f28ab9691c23f1163119daa22bdac376361b7d4e0fa65f0b12", size = 7435677 },
+    { url = "https://files.pythonhosted.org/packages/1c/81/b552ad0986730905045457370c1a67d319360e7c408d8ae6cbec27489c40/hmmer-3.4.0.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:38d5fd751d15c1c5b93bda5f1689b3cda73b3eaa6073304c6596ceb76ce45d25", size = 7053677 },
+    { url = "https://files.pythonhosted.org/packages/af/97/22fef50979abd04b16d586761fc05a9d9b77a424ff828966870bc3005d99/hmmer-3.4.0.2-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:560acd58ac8c33a59a7cb39ef50f88292f67ee41989109e265368d5530e6d1a3", size = 7755316 },
+    { url = "https://files.pythonhosted.org/packages/fc/b1/7b86be785cd78c7b09ce36373377a8b16ae4b0aa61e5ec29df355bf66b8e/hmmer-3.4.0.2-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:65fa4ea073958f45131c6a9771ed9c97c2f25f992b9312e373fa863207796775", size = 7562399 },
+]
+
+[[package]]
+name = "verif-genewise"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "hmmer" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "hmmer", specifier = ">=3.4.0.2" }]

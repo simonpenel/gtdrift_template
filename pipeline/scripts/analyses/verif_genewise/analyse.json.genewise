@@ -1,0 +1,24 @@
+{ 
+  "mode": "",    
+  "storagetype": "irods",    
+  "Nb_aln_genewise": "10",
+  "analyse_dir_name": "verif_genewise/",
+  "resources_dir_name": "protein_domain_PRDM9/", 
+  "domain_references" : {
+"SET":"Domain_SET_ReferenceAlignment2024",
+"KRAB":"Domain_KRAB_ReferenceAlignment2024",
+"SSXRD":"Domain_SSXRD_ReferenceAlignment2024",
+"ZF":"Domain_ZF_unit_ReferenceAlignment2024"
+},
+  "domains" :  ["SET"],    
+  "domains_simple" : ["KRAB","SSXRD","ZF"],
+  "domain_aln_data_origin" : {
+"SET":"Domain_SET_ReferenceAlignment2024",
+"KRAB":"Domain_KRAB_ReferenceAlignment2024",
+"SSXRD":"Domain_SSXRD_ReferenceAlignment2024",
+"ZF":"Domain_ZF_unit_ReferenceAlignment2024"
+},
+  "exons":  ["CDS_exon2", "CDS_exon3", "CDS_exon4", "CDS_exon5", "CDS_exon6", "CDS_exon7",
+        "CDS_exon8", "CDS_exon9", "CDS_exon10", "CDS_exon11"]
+}
+
