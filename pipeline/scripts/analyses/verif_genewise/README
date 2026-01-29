@@ -1,1 +1,10 @@
+Lancer le pipeline:
+
 uv run snakemake -s ../utils/process_genewise.smk --jobs  1
+
+
+Il arrive que le pipeline plante apres un  comportement etrange (creation de fichiers non necessaire, boucle inifinie)
+Il semblerait que cela ne soit pas du aux scripts mais plutot à la présence/absence de fichiers. 
+Essayer de purger, de relancer avec les options keep_incomplete, etc.
+
+Je n'ai pas vraiment compris ce qui provoquait ces erreurs.
