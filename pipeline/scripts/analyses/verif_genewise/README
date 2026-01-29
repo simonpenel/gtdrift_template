@@ -1,0 +1,1 @@
+uv run snakemake -s ../utils/process_genewise.smk --jobs  1
