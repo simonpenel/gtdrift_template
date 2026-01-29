@@ -40,7 +40,7 @@ rule get_blast_db_no_lc:
         temp(directory("data/blastdb_nucleotide_seq/{accession}/db_no_lc/"))        
     shell:
         """
-        mkdir data/blastdb_nucleotide_seq/{wildcards.accession}/db_no_lc
+        #mkdir data/blastdb_nucleotide_seq/{wildcards.accession}/db_no_lc &&
         makeblastdb -max_file_sz 4G -in {input.fasta}  -out data/blastdb_nucleotide_seq/{wildcards.accession}/db_no_lc/nucldb -dbtype nucl -parse_seqids
         """
 
@@ -54,7 +54,7 @@ rule get_blast_db_lc:
         temp(directory("data/blastdb_nucleotide_seq/{accession}/db_lc/"))        
     shell:
         """
-        mkdir data/blastdb_nucleotide_seq/{wildcards.accession}/db_lc
+        #mkdir data/blastdb_nucleotide_seq/{wildcards.accession}/db_lc &&
         makeblastdb -max_file_sz 4G -in {input.fasta}  -out data/blastdb_nucleotide_seq/{wildcards.accession}/db_lc/nucldb -dbtype nucl -parse_seqids
         #formatdb -i {input} -n data/blastdb_nucleotide_seq/{wildcards.accession}/nucldb -p F -o T
         """
