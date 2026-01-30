@@ -15,7 +15,7 @@ R has to be installed with the package Biostrings
 
 ## Run the domain analysis on protein data
 
-`uv run snakemake -s ../utils/process_zincfinger.smk  --jobs 1`
+`uv run snakemake -s ../utils/process_stats_domain.smk  --jobs 1`
 
 ## Run the zf analysis on protein data
 
