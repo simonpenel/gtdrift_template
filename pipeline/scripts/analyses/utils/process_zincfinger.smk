@@ -2,7 +2,6 @@
 ## Before run process_zincfinger.smk
 ## First run process_stats_domain.smk
 ## Date : Decembre 2024
-## Authors :
 
 
 # Import python modules
@@ -32,8 +31,6 @@ configfile: "assemblies.json"
 ACCESSNB = config["assembly_list"]
 
 
-
-
 RESOURCES_DIR_NAME  = config["resources_dir_name"]
 
 # The reference alignment of each domain
@@ -57,10 +54,6 @@ GLOBAL_RESULTS = config["analyse_dir_name"]
 # The directory is located in genome_assembly/{accession}/analyses/
 # -----------------------------------------------------------------
 GENOME_RESULTS = config["analyse_dir_name"]
-
-
-
-
 
 # function to get the name of the reference alignment for a domain
 # ----------------------------------------------------------------
@@ -98,11 +91,11 @@ rule all:
         global_zf_count=pathGTDriftGlobalResults
         + GLOBAL_RESULTS + "zinc_finger/zf_count.csv",
         zincfinger_fasta = expand(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "candidates_for_zf_analysis.fasta",accession=ACCESSNB),
+
 # ----------------------------------
 # select_candidates_zf
 # select sequence with zinc finger and confirmed SET domain
 # ----------------------------------
-
 rule select_candidates_zf:
     input:
          candidates_confirmed=[pathGTDriftData
@@ -144,7 +137,6 @@ rule run_seqkit_extraction_zf:
         """
         seqkit grep -f {input.candidate_list} {input.multifasta} -o {output.fasta_output}
         """
-
 
 rule zincfinger_analysis:
     """
@@ -215,7 +207,3 @@ rule create_global_zf_table:
         path=pathGTDriftData + "genome_assembly"
     script:
          "../utils/python/zf_analysis.py"
-
-
-# Modules snakemake
-# -----------------
