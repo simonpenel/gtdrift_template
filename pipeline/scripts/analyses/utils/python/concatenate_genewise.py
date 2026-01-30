@@ -144,7 +144,7 @@ for key in  dico_chromo :
     "Strand" : values[3], "Protein Length" : values[4], "ProtRefID" : values[5],
     "Pseudogene (Genewise)" : values[6], "Stop/Shift Positions" : values[7], "Genewise index": values[8]}
     print(new_row)
-    df_chromo = df_chromo._append(new_row, ignore_index=True)
+    df_chromo = df_chromo.append(new_row, ignore_index=True)
 #print(df_chromo.SeqID)
 #print(df_chromo.Chromosome)
 print("debug "+ str(len(df_chromo)))
