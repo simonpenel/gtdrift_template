@@ -1,4 +1,5 @@
 ## Main snakemake for domain analysis on protein data
+# ----------------------------------------------------
 ## Date : Decembre 2024
 ## Authors :
 
