@@ -50,7 +50,7 @@ rule hmmscan:
     output:
         hmm = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "results_HMM_score_ratio_{domain}.csv",
         table = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "table_score_ratios_HMM_{domain}.csv",
-        candidate_table_curated = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "curated_summary_hmmsearch_{accession}_{domain}.csv"
+        candidate_table_curated = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "summary_hmmsearch_{accession}_{domain}_curated.csv"
     shell:
         """
         python3 ../utils/python/hmmscan_score_ratio_single.py --hmm_db {input.hmm_db} --output_name {output.hmm} --input_fasta {input.fasta} --output_table {output.table} --csv_file {input.candidate_table}
@@ -62,7 +62,7 @@ rule hmmscan:
 # ------------------------------------------------------------
 rule curate_prdm9_candidates:
     input:
-        candidate_table_curated = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "curated_summary_hmmsearch_{accession}_{domain}.csv",
+        candidate_table_curated = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "summary_hmmsearch_{accession}_{domain}_curated.csv",
         assembly_info_file = pathGTDriftData + "organisms_data"
     output:
         candidate_list = pathGTDriftData + "genome_assembly/{accession}/analyses/"  + GENOME_RESULTS +  "candidates_{domain}.csv"
