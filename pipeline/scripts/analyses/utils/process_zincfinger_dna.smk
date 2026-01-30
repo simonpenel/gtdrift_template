@@ -24,7 +24,7 @@ globals().update(load_json("../environment_path.json"))
 
 # Configuration
 # -------------
-configfile: "analyse_zf.json"
+configfile: "analyse.json"
 configfile: "assemblies.json"
 
 # List of assemblies
