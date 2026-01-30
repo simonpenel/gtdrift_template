@@ -17,6 +17,12 @@ parser.add_argument('-o', '--output_dir', type=str, required=True, help='dir of 
 
 args = parser.parse_args()
 
+status_list = [
+    "OK, the translated DNA sequence has the same length as the annotated protein sequence.",
+    "Frameshift: the translated DNA sequence is shorter than the  annotated protein sequence."
+    ]
+
+
 # summay of zf in some positions
 
 def zfsum(zf:[], positions:[]):
@@ -233,7 +239,7 @@ for seqid in seqids:
     
         # Creation du df pour le csv
 
-        df_csv = pd.DataFrame(columns=["SeqID","Status","Contig","ZF_Dataset","ID_set", "Nb_ZF","Nb_ZF_28","Nb_ZF_29","Nb_Arrays","Nb_Clusters","Nb_singletons","Mean_divS", "Mean_ratio_AS","Ratio_AS-1","Ratio_AS2","Ratio_AS3","Ratio_AS6","Mean_ratio_AS-1236" ,"Mean_ratio_AS_non-1236" ,"ZFD","Nb matches in protein"])
+        df_csv = pd.DataFrame(columns=["SeqID","Status","Contig","ZF_Dataset","ID_set", "Nb_ZF","Nb_ZF_28","Nb_ZF_29","Nb_Arrays","Nb_Clusters","Nb_singletons","Mean_divS", "Mean_ratio_AS","Ratio_AS-1","Ratio_AS2","Ratio_AS3","Ratio_AS6","Mean_ratio_AS-1236" ,"Mean_ratio_AS_non-1236" ,"ZFD","Nb ZF hits in annotated protein"])
         new_row = pd.DataFrame({"ZF_Dataset" : "All_ZFs" }, index=[0])
         df_csv = pd.concat([df_csv.loc[:],new_row]).reset_index(drop=True)
 
@@ -251,14 +257,15 @@ for seqid in seqids:
         
         extract_contig_all = extract_seqid[extract_seqid["Contig"] == contig]
         
-        extract_contig = extract_contig_all[extract_contig_all["Status"] == "Ok"]
-        extract_contig_fs = extract_contig_all[extract_contig_all["Status"] == "frameshift"]
+        extract_contig = extract_contig_all[extract_contig_all["Status"] == status_list[0]]
+        extract_contig_fs = extract_contig_all[extract_contig_all["Status"] == status_list[1]]
         extract_contig = pd.concat([extract_contig,extract_contig_fs], ignore_index=True)
         
         # liste des noms
         zf_names = []
         for name in extract_contig["ZF name"]:
             zf_names.append(name)
+        print("List of ZF : ",zf_names)
         
         # liste des proteines    
         proteins = extract_contig["uniformised ZF string"]
@@ -266,22 +273,25 @@ for seqid in seqids:
         # calcul du zfd sur toutes les sequences de proteines
         if len(list(proteins)) > 0 :
             status = list(extract_contig[extract_contig['SeqID'] == seqid]["Status"])[0]
-            nb_zf_full = list(extract_contig[extract_contig['SeqID'] == seqid]["Nb matches in protein"])[0]
+            nb_zf_full = list(extract_contig[extract_contig['SeqID'] == seqid]["Nb ZF hits in annotated protein"])[0]
             #nb_zf_superposed = list(extract_contig[extract_contig['SeqID'] == seqid]["Nb superposed ZF"])[0]
-            if status == "Ok" :
+            if status == status_list[0] :
                 df_csv.loc[df_csv['SeqID'] == seqid, "Status"] = 0
-            elif status == "frameshift" :
-                df_csv.loc[df_csv['SeqID'] == seqid, "Status"] = 3
+            elif status == status_list[1] :
+                df_csv.loc[df_csv['SeqID'] == seqid, "Status"] = 1
             else :    
                 sys.exit("status error")
-            df_csv.loc[df_csv['SeqID'] == seqid, "Nb matches in protein"] = nb_zf_full
+            df_csv.loc[df_csv['SeqID'] == seqid, "Nb ZF hits in annotated protein"] = nb_zf_full
             #df_csv.loc[df_csv['SeqID'] == seqid, "Nb superposed ZF"] = nb_zf_superposed        
             # maintenant je vire les na : c'est le cas quand il n'y a aucun match        
             proteins = proteins.dropna()
             
             if len(proteins) > 0 :
                 zfd_all = zfd(list(proteins))
-            
+            else :
+                print("WARNING: No data for "+seqid+"\n")
+                df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_ZF_28"] = 0
+                df_csv.loc[df_csv['ZF_Dataset'] == "All_ZFs", "Nb_ZF_29"] = 0
             # creation d'un dico des proteines
             dico_protein = {}
             zf_number = 0
@@ -374,8 +384,8 @@ for seqid in seqids:
                         nb_28_array +=1
                     elif suff == "29":
                         nb_29_array +=1  
-            df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_28"] = nb_28_array
-            df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_29"] = nb_29_array   
+                df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_28"] = nb_28_array
+                df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF_29"] = nb_29_array   
             if len(proteins_array_max) > 0 :        
                 zfd_array = zfd(proteins_array_max)    
             if len(dna_array_max) > 0 :
@@ -404,19 +414,15 @@ for seqid in seqids:
 
                 fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w")
 
-                if status != "Ok" :
-                    fclustsummary.write("#################################################\n")
-                    fclustsummary.write("# Problems\n")
-                    fclustsummary.write("# "+str(status) +"\n")
-                    fclustsummary.write("# Status 1 : No exon.\n")
-                    fclustsummary.write("# Status 2 : Protein from fasta input file is different from translated DNA equence.\n")
-                    fclustsummary.write("# Status 3 : Frameshift.\n")   
-                    fclustsummary.write("# Status 4 : Other.\n")             
-                    fclustsummary.write("#################################################\n")
+                fclustsummary.write("#################################################\n")
+                fclustsummary.write("# Status:\n")
+                fclustsummary.write("# "+str(status) +"\n")
+                fclustsummary.write("# Status 0 : "+status_list[0]+"\n")
+                fclustsummary.write("# Status 1 : "+status_list[1]+"\n")
 
                 fclustsummary.write("# Nb of zf : "+str(len(sequences))+"\n")   
                 fclustsummary.write("#\n")
-                fclustsummary.write("# Nb of matches in protein : "+str(nb_zf_full)+"\n")   
+                fclustsummary.write("# Nb ZF hits in annotated protein : "+str(nb_zf_full)+"\n")   
                 fclustsummary.write("#\n")
                 fclustsummary.write("#################################################\n")
                 fclustsummary.write("# All ZF\n")
@@ -450,8 +456,8 @@ for seqid in seqids:
                 fclustsummary.write("#################################################\n")
                 fclustsummary.write("# Longest ZF array\n")
                 fclustsummary.write("#################################################\n")
-                
-                df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF"] = size_array_max
+                if size_array_max > 0 :
+                    df_csv.loc[df_csv['ZF_Dataset'] == "Longest_ZF_array", "Nb_ZF"] = size_array_max
                 if size_array_max >= min_ZF_nb :
                     write_divindex(zfd_array, zfd_codon_array, "Longest_ZF_array")               
                 
@@ -551,35 +557,37 @@ for seqid in seqids:
                     count = SeqIO.write(new_records, args.output_dir+"/"+file_name+"_cluster.fasta", "fasta")     
                 df_csv.to_csv(fclustsummary,sep=';' , index=False , na_rep="NA")
                 fclustsummary.close()
+        else :
+            sys.exit("no proteins in csv input")
 
 
+        # extract_contig_errors_1 = extract_contig_all[extract_contig_all["Status"] == "no exon"]
+        # extract_contig_errors_2 = extract_contig_all[extract_contig_all["Status"] == "sequence transl. problem"]
+        # extract_contig_errors = pd.concat([extract_contig_errors_1,extract_contig_errors_2],ignore_index=True)
 
-        extract_contig_errors_1 = extract_contig_all[extract_contig_all["Status"] == "no exon"]
-        extract_contig_errors_2 = extract_contig_all[extract_contig_all["Status"] == "sequence transl. problem"]
-        extract_contig_errors = pd.concat([extract_contig_errors_1,extract_contig_errors_2],ignore_index=True)
+        # extract_contig_errors = extract_contig_all[extract_contig_all["Status"] == status_list[1]]
 
-        erroneous_protein_names = extract_contig_errors["SeqID"]
-        for erroneous_protein_name in erroneous_protein_names :
-            print("Problem occurs with " + erroneous_protein_name)
-            fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w")    
-            fclustsummary.write("#################################################\n")
-            fclustsummary.write("# Problems\n")
-            err_status = list(extract_contig_all[extract_contig_all["SeqID"] == erroneous_protein_name]["Status"])
-            fclustsummary.write("# "+str(err_status) +"\n")
-            fclustsummary.write("# Status 1 : No exon.\n")
-            fclustsummary.write("# Status 2 : Protein from fasta input file is different from translated DNA equence.\n")
-            fclustsummary.write("# Status 3 : Frameshift.\n")   
-            fclustsummary.write("# Status 4 : Other.\n")             
-            fclustsummary.write("#################################################\n")
-            status = 4
-            if str(err_status) == "['no exon']" :
-                status = 1
-            if str(err_status) == "['sequence transl. problem']" :
-                status = 2
-            if str(err_status) == "['frameshift']" :
-                status = 3    
+        # erroneous_protein_names = extract_contig_errors["SeqID"]
+        # for erroneous_protein_name in erroneous_protein_names :
+        #     fclustsummary=open(args.output_dir+"/"+file_name+".clust_summary", "w")    
+        #     fclustsummary.write("#################################################\n")
+        #     fclustsummary.write("# Problems\n")
+        #     err_status = list(extract_contig_all[extract_contig_all["SeqID"] == erroneous_protein_name]["Status"])
+        #     fclustsummary.write("# "+str(err_status) +"\n")
+        #     fclustsummary.write("# Status 1 : No exon.\n")
+        #     fclustsummary.write("# Status 2 : Protein from fasta input file is different from translated DNA equence.\n")
+        #     fclustsummary.write("# Status 3 : Frameshift.\n")   
+        #     fclustsummary.write("# Status 4 : Other.\n")             
+        #     fclustsummary.write("#################################################\n")
+        #     status = 4
+        #     if str(err_status) == "['no exon']" :
+        #         status = 1
+        #     if str(err_status) == "['sequence transl. problem']" :
+        #         status = 2
+        #     if str(err_status) == "['frameshift']" :
+        #         status = 3    
 
-            df_csv.loc[df_csv['SeqID'] == seqid, "Status"] = status
-            df_csv.to_csv(fclustsummary,sep=';' , index=False , na_rep="NA")
-            fclustsummary.close() 
+        #     df_csv.loc[df_csv['SeqID'] == seqid, "Status"] = status
+        #     df_csv.to_csv(fclustsummary,sep=';' , index=False , na_rep="NA")
+        #     fclustsummary.close() 
 fl.close()
