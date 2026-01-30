@@ -1,0 +1,6 @@
+.snakemake
+.venv
+uv.lock
+.python-version
+hello.py
+pyproject.toml
