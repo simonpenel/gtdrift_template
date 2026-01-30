@@ -767,10 +767,15 @@ for seq_record in SeqIO.parse(args.input, "fasta"):
             flog.write("Length diff_codon = " + str(length_diff_codon) + "\n") 
             if (len(full_sequence) ==  len(sequence))  and  (cds_strand  == "-") :
                 flog.write("Protein is fully translated and on revesre strand, length_diff_codon = "+str(length_diff_codon)+"\n")
+                frame = length_diff_codon + length_diff * 3
                 if length_diff_codon == -2 :
                     frame = length_diff_codon + 3
                     flog.write("Setting frame to"+str(frame)+"\n") 
-                frame = length_diff_codon + 3
+                if length_diff_codon == -1 :
+                    frame = length_diff_codon + 3
+                    flog.write("Setting frame to"+str(frame)+"\n")     
+                #frame = length_diff_codon + 3
+                #frame = length_diff_codon 
                 flog.write("Setting frame to"+str(frame)+"\n")     
 
             # build the dna sequence of the matching part of the protein
