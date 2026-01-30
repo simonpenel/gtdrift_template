@@ -136,6 +136,10 @@ rule all:
     Generate the candidates in fasta format and a summary of candidates in genomes.
     """
     input:
+        summaries=expand(pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "whole_summary_genewise.csv",accession=ACCESSNB),
+
         # Candidates sequences with all domains ("wad") in fasta format for each genome
         # -----------------------------------------------------------------------------
         # je vire pour l'instant candidates_wad_fasta=expand(
@@ -159,7 +163,7 @@ rule all:
                               
         # Concatenation of results on all genomes
         # ----------------------------------------
-        concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv",              
+        #concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv",              
           
         # Statistics on all domains for all genomes
         # -----------------------------------------                
