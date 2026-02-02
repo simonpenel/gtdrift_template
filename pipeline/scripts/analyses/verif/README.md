@@ -67,6 +67,7 @@ RESOURCES_DIR_NAME/
 ........................[database_DOMAIN1.hmm{.h3i,.h3f,.h3m.h3p}] (if DOMAIN1 is selected for paralogous analysis)
 ........................[database_DOMAIN2.hmm{.h3i,.h3f,.h3m.h3p}] (if DOMAIN2 is selected for paralogous analysis)
 ```
+> "domain_references" provides for each domain the reference alignment. This alignement is used to build the hmm profile needed for the hmm search for candidates, and to discriminate paralogs ('Best matches")     
 
 > "domains" provides  the list of domains for which a hmm search and a paralogy analysis will be performed
 
