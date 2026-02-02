@@ -42,7 +42,8 @@ R has to be installed with the package Biostrings
 }
 
 ```
-
+> [!CAUTION]
+> "analyse_dir_name" describes the directory where the  results are stored. It should be modified for eache analyse! 
 
 ## Run the domain analysis on protein data
 
