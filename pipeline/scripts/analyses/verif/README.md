@@ -37,12 +37,12 @@ R has to be installed with the package Biostrings
 
 ```
 > [!CAUTION]
-> "analyse_dir_name" describes the directory where the  results are stored. It should be modified for eache analyse! 
+> "analyse_dir_name" describes the directory win which the  results are stored. It should be modified for each analyse! 
 
 
 
+> "resources_dir_name"  describes the  directory in which the  data about domains is stored. The directoy is located in "pathGTDriftResource". It must be structured as follows:
 
-The directory "resources_dir_name" must be structured as follows:
 ```
 RESOURCES_DIR_NAME/
 ...........reference_alignments/ (should be present at start)
