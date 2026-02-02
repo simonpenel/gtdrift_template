@@ -172,10 +172,6 @@ La commande pour lancer ce pipeline :
 snakemake -s  collecting_annotations.smk --configfile config.json  --cores 1
 ```
 
-
-
-
-
 ## 5. Lancer les pipelines d'analyse  des données
 
 Plusieurs pipelines d'analyse sont disponibles dans le repertoire `pipeline/scripts/analyses` :
@@ -184,15 +180,20 @@ Plusieurs pipelines d'analyse sont disponibles dans le repertoire `pipeline/scri
 - pour une analyse en domaines sur les protéomes :
 
   - process_stats_domain.smk
+    Il s'agit d'une analyse générique  en domaines, ces domaines étant définis dans le fichier de configuration `analyse.json`
   - process_zincfinger.smk
+    Il s'agit d'une analyse spécifique à PRDM9
   - process_zincfinger_dna.smk
-
+    Il s'agit d'une analyse spécifique à PRDM9
+  - process_SET_tyrosines.smk
 
 - pour une analyse en domaines sur les génomes:
   - process_genewise.smk  
+    Il s'agit d'une analyse générique en domaines, ces domaines étant définis dans le fichier de configuration `analyse.json`
   - process_zincfinger_genewise.smk
+    Il s'agit d'une analyse spécifique à PRDM9
   - process_zincfinger_dna_genewise.smk
-  - process_SET_tyrosines.smk
+    Il s'agit d'une analyse spécifique à PRDM9
 
 
 Créer un répertoire pour chaque analyse,   le répertoire doit contenir un fichier de configuration `analyse.json` associé à l'analyse et  le fichier d'assemblages `assembly.json`  généré en *3*.
