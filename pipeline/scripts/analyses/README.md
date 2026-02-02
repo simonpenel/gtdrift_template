@@ -180,10 +180,13 @@ Plusieurs pipelines d'analyse sont disponibles dans le repertoire `pipeline/scri
 - pour une analyse en domaines sur les protéomes :
 
   - process_stats_domain.smk
+
     Il s'agit d'une analyse générique  en domaines, ces domaines étant définis dans le fichier de configuration `analyse.json`
   - process_zincfinger.smk
+
     Il s'agit d'une analyse spécifique à PRDM9
   - process_zincfinger_dna.smk
+  
     Il s'agit d'une analyse spécifique à PRDM9
   - process_SET_tyrosines.smk
 
