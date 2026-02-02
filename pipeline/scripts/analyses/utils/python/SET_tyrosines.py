@@ -17,7 +17,7 @@ def run_blastp(query_seq, subject_file, output_csv):
     with open(query_file, "w") as f:
         f.write(f">Query\n{query_seq}\n")
 
-    subprocess.run(["makeblastdb","-in", subject_file,"-out","subject_db","-dbtype","prot"])    
+    subprocess.run(["makeblastdb","-in", subject_file,"-out","subject_db","-dbtype","prot","-parse_seqids"])    
     subprocess.run(["blastp","-query", "query.fasta","-db","subject_db","-out","blast_result.xml","-outfmt","5"])
 
     # Parse the output XML file
@@ -32,7 +32,7 @@ def run_blastp(query_seq, subject_file, output_csv):
             for alignment in blast_record.alignments:
                 for hsp in alignment.hsps:
                     subject_id = alignment.hit_id
-                    print("debug sunject_id = "+subject_id)
+                    print("debug subject_id = "+subject_id)
                     # Check if this subject_id has been seen before
                     if subject_id not in best_hits:
                         best_hits[subject_id] = hsp  # Store HSP as the best hit for this subject
