@@ -1,6 +1,8 @@
 PROTEIN DOMAIN ANALYSIS ON GENOMES
 ===================================
 
+The analyis is done on the proteins detected by a genewise search on the genome. 
+
 ## Settings 
 
 We will use "uv" to run snakemake because it is the easisest way of managing python pacakges and versions especially when we hav no root permission.
@@ -78,15 +80,25 @@ RESOURCES_DIR_NAME/
 
 
 
-## Run the domains analysis on protein data
+## Run the domains analysis on genewise results
 
 `uv run snakemake -s ../utils/process_genewise.smk  --jobs 1`
 
-## Run the  analysis of the ZF domain on protein data
+
+> [!CAUTION]
+> "analyse_dir_name" describes the directory win which the  results are stored. It should be modified for each analyse! 
+
+
+The  genewise analysis takes a lot of time. The results of this analysis are stored on the cirrent directory and not in the "analyse_dir_name" directory. Its prevent the genewise results to be accidentaly removed, and allows to run several analysis  on the same  genewise results.
+
+## Run the  analysis of the ZF domain on protein data from genewise results
 
 `uv run snakemake -s ../utils/process_zincfinger_genewise.smk  --jobs 1`
 
-## Run the analysis of the ZF domain on the dna sequence  coding for the protein data
+## Run the analysis of the ZF domain on the dna sequence  coding for the protein data from genewise results
 
 `uv run snakemake -s ../utils/process_zincfinger_dna_genewise.smk  --jobs 1`
+
+
+
 
