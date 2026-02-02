@@ -33,12 +33,6 @@ R has to be installed with the package Biostrings
 },
   "domains" :  ["SET"],    
   "domains_simple" : ["SSXRD","ZF","KRAB"],
-  "domain_aln_data_origin" : {
-"SET":"Domain_SET_ReferenceAlignment2024",
-"KRAB":"Domain_KRAB_ReferenceAlignment2024",
-"SSXRD":"Domain_SSXRD_ReferenceAlignment2024",
-"ZF":"Domain_ZF_unit_ReferenceAlignment2024"
-},
 }
 
 ```
