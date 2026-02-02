@@ -1,7 +1,10 @@
 import sys
 import csv
 import os
-from Bio.Blast.Applications import NcbiblastpCommandline
+import subprocess
+from Bio import Blast
+# from Bio.Blast import Applications
+# from Bio.Blast.Applications import NcbiblastpCommandline
 from Bio.Blast import NCBIXML
 
 # This python script identifies in the proteic sequence/s of a FASTA the three positions in which it should be the three 
@@ -13,10 +16,9 @@ def run_blastp(query_seq, subject_file, output_csv):
     query_file = "query.fasta"
     with open(query_file, "w") as f:
         f.write(f">Query\n{query_seq}\n")
-    
-    # Run blastp
-    blastp_cline = NcbiblastpCommandline(query=query_file, subject=subject_file, outfmt=5, out="blast_result.xml")
-    stdout, stderr = blastp_cline()
+
+    subprocess.run(["makeblastdb","-in", subject_file,"-out","subject_db","-dbtype","prot"])    
+    subprocess.run(["blastp","-query", "query.fasta","-db","subject_db","-out","blast_result.xml","-outfmt","5"])
 
     # Parse the output XML file
     with open("blast_result.xml") as result_handle:
