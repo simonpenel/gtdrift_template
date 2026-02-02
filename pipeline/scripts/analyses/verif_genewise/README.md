@@ -86,10 +86,7 @@ RESOURCES_DIR_NAME/
 
 
 > [!CAUTION]
-> "analyse_dir_name" describes the directory win which the  results are stored. It should be modified for each analyse! 
-
-
-The  genewise analysis takes a lot of time. The results of this analysis are stored on the cirrent directory and not in the "analyse_dir_name" directory. Its prevent the genewise results to be accidentaly removed, and allows to run several analysis  on the same  genewise results.
+> The  genewise analysis takes a lot of time. The results of this analysis are stored on the cirrent directory and not in the "analyse_dir_name" directory. Its prevent the genewise results to be accidentaly removed, and allows to run several analysis  on the same  genewise results.
 
 ## Run the  analysis of the ZF domain on protein data from genewise results
 
