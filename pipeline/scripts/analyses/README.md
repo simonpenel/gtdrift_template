@@ -206,8 +206,8 @@ Plusieurs pipelines d'analyse sont disponibles dans le repertoire `pipeline/scri
 
 Créer un répertoire pour chaque analyse,   le répertoire doit contenir un fichier de configuration `analyse.json` associé à l'analyse et  le fichier d'assemblages `assembly.json`  généré en *3*.
 
-### Deux exemples d'utilisation
+### Exemples d'utilisation
 
   - Le répertoire `verif` pour l'analyse `process_stats_domain.smk`
-  
+
   - Le répertoire `verif_genewise` pour l'analyse `process_genewise.smk`
