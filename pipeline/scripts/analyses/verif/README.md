@@ -1,6 +1,7 @@
 PROTEIN DOMAIN ANALYSIS ON PROTEOMES
 ====================================
 
+## Settings 
 
 We will use "uv" to run snakemake because it is the easisest way of managing python pacakges and versions especially when we hav no root permission.
 
@@ -12,6 +13,9 @@ uv add hmmer
 ```
 
 R has to be installed with the package Biostrings
+
+## Configuration files
+
 
 ## Run the domain analysis on protein data
 
