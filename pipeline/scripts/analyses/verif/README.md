@@ -10,6 +10,7 @@ Type :
 uv init
 uv add pandas
 uv add hmmer
+uv add Bio
 ```
 
 R has to be installed with the package Biostrings
