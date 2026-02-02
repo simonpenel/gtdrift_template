@@ -68,6 +68,10 @@ RESOURCES_DIR_NAME/
 ........................[database_DOMAIN2.hmm{.h3i,.h3f,.h3m.h3p}] (if DOMAIN2 is selected for paralogous analysis)
 ```
 
+> "domains" provides  the list of domains for which a hmm search and a paralogy analysis will be performed
+
+> "domains_simple" provides  the list of domains for which a hmm search  will be performed
+
 - `assemblies.json` file :
   The file contains the list of assemblies to be processed.
 
