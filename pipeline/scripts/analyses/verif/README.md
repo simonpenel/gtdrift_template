@@ -42,14 +42,14 @@ R has to be installed with the package Biostrings
 
 
 
-The directories are structured as follows
+The directory "resources_dir_name" must be structured as follows:
 ```
 RESOURCES_DIR_NAME/
 ...........reference_alignments/ (should be present at start)
 .............................. DOMAIN1/
 ..................................... Reference_alignement_DOMAIN1.fst
-.......................................[Paralogous_alignement_DOMAIN1.fst](if DOMAIN1 is selected for paralogous analysis) 
-.......................................[Paralogous_alignement_DOMAIN1.fst](if DOMAIN1 is selected for paralogous analysis) 
+......................................[Paralogous_alignement_DOMAIN1.fst](if DOMAIN1 is selected for paralogous analysis) 
+......................................[Paralogous_alignement_DOMAIN1.fst](if DOMAIN1 is selected for paralogous analysis) 
 ...............................DOMAIN2/
 .......................................Reference_alignement_DOMAIN2.fst
 .......................................[Paralogous_alignement_DOMAIN2.fst](if DOMAIN2 is selected for paralogous analysis) 
