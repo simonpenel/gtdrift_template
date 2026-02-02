@@ -1,6 +1,8 @@
 PROTEIN DOMAIN ANALYSIS ON PROTEOMES
 ====================================
 
+The analyis is done on the proteomes. 
+
 ## Settings 
 
 We will use "uv" to run snakemake because it is the easisest way of managing python pacakges and versions especially when we hav no root permission.
