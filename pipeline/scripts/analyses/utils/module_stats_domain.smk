@@ -1,6 +1,5 @@
 ## Module for domain analysis on protein data
 ## Date : Decembre 2024
-## Authors : L. Duret, A. Raimbault, S. Penel 
 ## Purpose: Search for domain sequences in the proteome.
 
 # Rules
@@ -28,7 +27,6 @@ rule hmm_search:
         + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "hmm_search/domtbl/{domain}_domains",
     shell:
         "{RUNCMD} hmmsearch -E 1E-3 --domE 1E-3 --tblout {output.table} --domtblout {output.domains} --noali {input.model} {input.protein}"
-
 
 # ------------------------------------------
 # formating_hmm_sequence_hit
@@ -75,8 +73,6 @@ rule formating_hmm_domain_hit:
 # ------------------------------------------------------------
 def accession_nb(wildcards):
     return wildcards.accession
-
-
 
 # ------------------------------------------------------------
 # summarize_hmm_results
