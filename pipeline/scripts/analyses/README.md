@@ -181,7 +181,8 @@ Plusieurs pipelines d'analyse sont disponibles dans le repertoire `pipeline/scri
 
   - process_stats_domain.smk
 
-    Il s'agit d'une analyse générique  en domaines, ces domaines étant définis dans le fichier de configuration `analyse.json`
+    Il s'agit d'une analyse générique  en domaines, ces domaines étant définis dans le fichier de configuration `analyse.json`.
+    Pour une analyse PRDM9 cest domaines sont SET, SSXRD, KRAB, ZF.
   - process_zincfinger.smk
 
     Il s'agit d'une analyse spécifique à PRDM9
@@ -196,6 +197,7 @@ Plusieurs pipelines d'analyse sont disponibles dans le repertoire `pipeline/scri
   - process_genewise.smk  
     
     Il s'agit d'une analyse générique en domaines, ces domaines étant définis dans le fichier de configuration `analyse.json`
+    Pour une analyse PRDM9 cest domaines sont SET, SSXRD, KRAB, ZF.
   - process_zincfinger_genewise.smk
     
     Il s'agit d'une analyse spécifique à PRDM9
