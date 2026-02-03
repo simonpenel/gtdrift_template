@@ -1,3 +1,7 @@
+## Module for paralogs analysis
+## Date : Decembre 2024
+## Purpose: Run a hmm search of a candidate against a hmm database and determine the best match among several hmm profiles.
+
 import json
 import os
 import pandas as pd
