@@ -1,9 +1,5 @@
 ## snakemake for analysis the dna sequences of the zinc fingers protein detected with process_zincfinger.smk
-## Before run process_zincfinger_dna.smk
-## First run process_stats_domain.smk
-## Then run process_zincfinger.smk
-##
-## Authors :
+## Before run process_zincfinger_dna.smk first run process_stats_domain.smk
 
 
 # Import python modules
@@ -31,9 +27,8 @@ configfile: "assemblies.json"
 # ------------------
 ACCESSNB = config["assembly_list"]
 
-
-
-
+# Name of the resources directory 
+# --------------------------------
 RESOURCES_DIR_NAME  = config["resources_dir_name"]
 
 # The reference alignment of each domain
@@ -59,9 +54,6 @@ GLOBAL_RESULTS = config["analyse_dir_name"]
 GENOME_RESULTS = config["analyse_dir_name"]
 
 storagetype  = config["storagetype"]
-
-
-
 
 # function to get the name of the reference alignment for a domain
 # ----------------------------------------------------------------
@@ -90,7 +82,7 @@ directories, files = glob_wildcards(pathGTDriftResource + RESOURCES_DIR_NAME + "
 # -----
 
 # -----------------------------------------------
-# all : inputs define the to be files generated .
+# all : inputs define the files to be  generated .
 # -----------------------------------------------
 rule all:
     input:
@@ -139,8 +131,10 @@ rule zincfinger_motif:
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
             + "candidates_for_zf_analysis.fasta",
         # gff file of the assembly
+        # ------------------------
         gff = pathGTDriftData + "genome_assembly/{accession}/annotation/genomic.gff",
         # fasta of the dna sequences of the assembly
+        # ------------------------------------------
         fasta_dna = pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.fna",
     output:
         results = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/zf_results.csv",
@@ -151,14 +145,13 @@ rule zincfinger_motif:
         python3 ../utils/python/get_ZF_motif_positions_in_protein.py -i {input.protein_seq} -g {input.gff}  -d {input.fasta_dna} -o {output.results} -l {output.log} -w {output.warnings}
         """
 
-
-# -------------------------------------------------------
-# zincfinger_motif
-# analyse of the dna sequences of the zincfinger proteins
-# -------------------------------------------------------
-rule get_fasta:
+# ----------------------------------
+# analyse_zinc_finger_dna
+# Analyse the diversity of  several sets of zinc fingers: all zinc fingers, longest arrey, biggest cluster
+# ----------------------------------
+rule analyse_zinc_finger_dna:
     """
-    get the fasta file of zinc fingers.
+    Analyse the diversity of  several sets of zinc fingers: all zinc fingers, longest arrey, biggest cluster
     """
     input:
         results = pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/zf_results.csv",
@@ -170,9 +163,9 @@ rule get_fasta:
         python3 ../utils/python/extract_zf_fasta.py -i {input.results} -o {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}zinc_finger_dna/fasta
         """
         
-        
-        
-        
+# --------------------------
+# zincfinger_analysis_global
+# --------------------------
 rule zincfinger_analysis_global:
     """
     Run the zinc finger analysis on each protein sequence using R.
