@@ -80,7 +80,7 @@ directories, files = glob_wildcards(pathGTDriftResource + RESOURCES_DIR_NAME + "
 # -----
 
 # -----------------------------------------------
-# all : inputs define the to be files generated .
+# all : inputs define the files to be  generated .
 # -----------------------------------------------
 rule all:
     input:
