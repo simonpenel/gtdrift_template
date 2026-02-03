@@ -1,7 +1,5 @@
-## Main snakemake for domain analysis on protein data
+## Module for hmm profile calculation
 ## Date : Decembre 2024
-## Authors :
-
 
 # Import python modules
 # ---------------------
