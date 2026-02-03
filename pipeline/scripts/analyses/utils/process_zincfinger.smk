@@ -1,6 +1,5 @@
 ## Main snakemake for zinc finger analysis on protein data
-## Before run process_zincfinger.smk
-## First run process_stats_domain.smk
+## Before run process_zincfinger.smk, first run process_stats_domain.smk
 ## Date : Decembre 2024
 
 
@@ -19,18 +18,17 @@ def load_json(file_path):
 # ----------------------------
 globals().update(load_json("../environment_path.json"))
 
-
 # Configuration
 # -------------
 configfile: "analyse.json"
 configfile: "assemblies.json"
 
-
 # List of assemblies
 # ------------------
 ACCESSNB = config["assembly_list"]
 
-
+# Name of the resources directory 
+# --------------------------------
 RESOURCES_DIR_NAME  = config["resources_dir_name"]
 
 # The reference alignment of each domain
@@ -138,6 +136,10 @@ rule run_seqkit_extraction_zf:
         seqkit grep -f {input.candidate_list} {input.multifasta} -o {output.fasta_output}
         """
 
+# --------------------------------------------------------------
+# zincfinger_analysis
+# Run the zinc finger analysis on each protein sequence using R
+# --------------------------------------------------------------
 rule zincfinger_analysis:
     """
     Run the zinc finger analysis on each protein sequence using R.
@@ -148,7 +150,6 @@ rule zincfinger_analysis:
         protein_seq = pathGTDriftData
             + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
             + "candidates_for_zf_analysis.fasta",
-        #protein_seq = pathGTDriftData + "genome_assembly/{accession}/analyses/prdm9_prot/candidates_prdm9.fasta"
     output:
         zincfinger_out = pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger/zinc_finger_details/ZFD_{accession}.csv"
 
@@ -161,6 +162,10 @@ rule zincfinger_analysis:
         command = f"Rscript --vanilla ../utils/zincfinger_analysis.R {input.protein_seq} {output.zincfinger_out}"
         shell(command)
 
+# ------------------------------------------------------------------------
+# combine_zinc_finger
+# Concatenate the zincfinger analisis of all assemblies into a single file 
+# -------------------------------------------------------------------------
 rule combine_zinc_finger:
     """
     Combine all ZFD_{accession}.csv files into one zinc_finger.csv.
@@ -180,7 +185,6 @@ rule combine_zinc_finger:
                 with open(fname) as infile:
                     outfile.write(infile.read())
                     outfile.write("\n")  # Add a newline between files
-
 
 # -----------------------------------------------------------------
 # create_global_zf_table
