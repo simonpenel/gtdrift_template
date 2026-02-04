@@ -33,7 +33,9 @@ ACCESSNB = config["assembly_list"]
 
 # Exons list
 # ----------
-# The list of exons used by to select in the genome dna segements to be processed with genewise
+# The list of exons used to select in the genome the dna segements to be processed with genewise.
+# The exons fasta files are stored in the directory
+# pathGTDriftResource/ref_align/Prdm9_Metazoa_Reference_alignment/exon_peptides/
 EXONS = config["exons"]
 
 # Number of alignements 
