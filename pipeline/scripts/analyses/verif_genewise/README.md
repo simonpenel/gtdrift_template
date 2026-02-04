@@ -86,8 +86,9 @@ RESOURCES_DIR_NAME/
 
 
 > [!CAUTION]
-> The  genewise analysis takes a lot of time. The results of this analysis are stored on the cirrent directory and not in the "analyse_dir_name" directory. Its prevent the genewise results to be accidentaly removed, and allows to run several analysis  on the same  genewise results.
-
+> The  genewise analysis takes a lot of time. The results of this analysis are stored in the  _results_  directory in the current directory and not in the "analyse_dir_name" directory. Its prevents the genewise results to be accidentaly removed, and allows to run several analysis  on the same  genewise results. Moreover the progress of the genewise analysis is stored in the _.progress_ directory in the current directory. Temporary blast databases of the genome data asre stored in the _data_
+ directory in the current directory.
+ 
 ## Run the  analysis of the ZF domain on protein data from genewise results
 
 `uv run snakemake -s ../utils/process_zincfinger_genewise.smk  --jobs 1`
