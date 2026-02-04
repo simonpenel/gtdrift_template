@@ -151,8 +151,7 @@ rule all:
             pathGTDriftData
            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
            + "candidates_{domain}.fasta", accession=ACCESSNB,domain=DOMAINS),
-                               
-
+        
         # Pour l'analyse zinc finger a faire apres (pour PRDM9  uniquement, commenter cette ligne sinon)
         # -----------------------------------------------------------------------------------------------     
         candidates_domain_ZF=expand(
@@ -166,28 +165,26 @@ rule all:
           
         # Statistics on all domains for all genomes
         # -----------------------------------------                
-        # je vire pour l'instant all_domains_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "statistics_summary.csv",
+        # (supprimé) all_domains_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "statistics_summary.csv",
   
         # Statistics on candidates with all domains for all genomes
         # ---------------------------------------------------------           
-        # je vire pour l'instant all_candidates_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "candidate_statistics_summary.csv"    
+        # (supprimé) all_candidates_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "candidate_statistics_summary.csv"    
        
         # Candidates sequences with all domains ("wad") in fasta format for each genome
         # -----------------------------------------------------------------------------
-        # je vire pour l'instant candidates_wad_fasta=expand(
+        # (supprimé) candidates_wad_fasta=expand(
         #  pathGTDriftData
         #   + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
         #   + "selected_candidates.fasta", accession=ACCESSNB),
         #   
         # Detailed results for sequences with all domains ("wad")  for each genome
         # -----------------------------------------------------------------------------
-        #je vire pour l'instant candidates_wad_stats=expand(
+        # (supprimé) candidates_wad_stats=expand(
         #    pathGTDriftData
         #   + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
         #   + "whole_summary_selected.csv", accession=ACCESSNB),        
-        #
-        # Candidates sequences with 1 confirmed domain in fasta format for each genome
-        # -----------------------------------------------------------------------------                
+        #             
 
 # Modules snakemake
 # -----------------
