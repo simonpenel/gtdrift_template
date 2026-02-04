@@ -1,3 +1,8 @@
+# Analyisis of the Tyrosine in the SET domain
+# --------------------------------------------
+# Identifies in the proteic sequence/s of a FASTA the three positions in which it should be the three 
+# catalytic tyrosines of the SET domain of the PRDM9 gene and checks if there are tyrosines there (1) or not (0)
+
 import json
 import os
 import pandas as pd
