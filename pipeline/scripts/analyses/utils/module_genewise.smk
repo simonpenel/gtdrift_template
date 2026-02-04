@@ -1,3 +1,8 @@
+# --------------------------------------------
+# get_genome_seq_fasta
+# get the full genome dna sequence (temp. file)
+# --------------------------------------------
+
 rule get_genome_seq_fasta:
     input:
         fasta = pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.fna.path"
@@ -17,6 +22,11 @@ rule get_genome_seq_fasta:
         fi    
         """
 
+# ------------------------------------------------
+# filter_genomic
+# Generate a full genome dna sequence in which the
+# low complexity is removed. (temp. file)
+# ------------------------------------------------
 rule filter_genomic:
    """
     Filter genomic sequences.
@@ -29,7 +39,11 @@ rule filter_genomic:
         """
         python3 ../utils/python/remove_low_compl.py {input} {output}
         """
-        
+# -----------------------------------------------------
+# get_blast_db_no_lc
+# Build a blast database from  full genome dna sequence
+# without low complexity (temp. file)
+# -----------------------------------------------------
 rule get_blast_db_no_lc:
     """
     Generate a parsable blast db with no low complexity.
@@ -44,6 +58,11 @@ rule get_blast_db_no_lc:
         makeblastdb -max_file_sz 4G -in {input.fasta}  -out data/blastdb_nucleotide_seq/{wildcards.accession}/db_no_lc/nucldb -dbtype nucl -parse_seqids
         """
 
+# -----------------------------------------------------
+# get_blast_db_lc
+# Build a blast database from  full genome dna sequence
+# with low complexity (temp. file)
+# -----------------------------------------------------
 rule get_blast_db_lc:
     """
     Generate a parsable blast db in wich low complexity is not removed.
@@ -59,7 +78,11 @@ rule get_blast_db_lc:
         #formatdb -i {input} -n data/blastdb_nucleotide_seq/{wildcards.accession}/nucldb -p F -o T
         """
         
-
+# ------------------------------------------------------------------------
+# get_tblastn
+# Run tblastn of exons  against the genome database  with no complexity.
+# For each PRDM9 exon, there is a set of sequences (48) from several taxa.
+# ------------------------------------------------------------------------
 rule get_tblastn:
     """
     Run tblastn on database on db with no complexity.
@@ -74,9 +97,18 @@ rule get_tblastn:
         /beegfs/home/penel/tmpdir/ncbi/ncbi-blast-2.16.0+-src/c++/ReleaseMT/bin/tblastn   -query {input.cds} -db data/blastdb_nucleotide_seq/{wildcards.accession}/db_no_lc/nucldb -out {output} -evalue 1e-3 -max_target_seqs 500 -max_hsps 180 -outfmt "7 delim=  qseqid qlen sseqid slen pident nident length mismatch gapopen qstart qend sstart send bitscore evalue" -num_threads 4
         """
 
+# function to get the path of a blast search results  for all exons
+# --------------------------------------------------------------------
 def exon_done_tblastn(wildcards):
     return expand("results/" + wildcards.accession + "/Step1_blast/tblastn/PRDM9_{exon}.tblastn.fmt7", exon=EXONS)
-    
+
+
+# ---------------------------------------------------------
+# get_loci 
+# Generate the list of candidate loci for a genewise analysis 
+# For each loci: the chromosome, the start, end, strand, and
+# the nb of hits for each exon
+# ----------------------------------------------------------
 rule get_loci:
     """
     Get all candidate loci.
@@ -89,7 +121,11 @@ rule get_loci:
         """
         python3 ../utils/python/get_loci.py -i results/{wildcards.accession}/Step1_blast/tblastn -o {output} -t nucl
         """
-        
+
+# --------------------------------
+# get_chromosomes
+# Create the list of selected loci
+# -------------------------------- 
 rule get_chromosomes:
     """
     Prepare a blastdbcmd batch entry file for extraction.
@@ -102,7 +138,11 @@ rule get_chromosomes:
         """
         python3 ../utils/python/get_chromosomes.py -i {input} -o results/{wildcards.accession}/Step2_extract_loci/separated_candidates.txt
         """
-        
+
+# ---------------------------------------------
+# extract_sequences     
+# extract the dna sequence of the selected loci 
+# ---------------------------------------------
 rule extract_sequences:
     """
     Extract candidate loci.
@@ -116,7 +156,11 @@ rule extract_sequences:
         """
         blastdbcmd -db data/blastdb_nucleotide_seq/{wildcards.accession}/db_lc/nucldb -entry_batch {input.entry} > {output}
         """
-       
+
+# -----------------------------------------
+# annotate_candidates
+# annonate the candidate for a later usage 
+# -----------------------------------------        
 rule annotate_candidates:
     """
     Giving each candidate a unique ID for later parsing
