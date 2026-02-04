@@ -72,10 +72,6 @@ def get_reference_file(wildcards):
     domain = wildcards.domain
     return pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_profiles/"+ domain+"/"+fname+".hmm"
 
-# get the files and directories describing the reference alignments
-# -----------------------------------------------------------------
-directories, files = glob_wildcards(pathGTDriftResource + RESOURCES_DIR_NAME + "reference_alignments/{dir}/{file}.fst")
-
 # Rules
 # -----
 
