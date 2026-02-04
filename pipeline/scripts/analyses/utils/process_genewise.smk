@@ -145,9 +145,6 @@ rule all:
     Generate the candidates in fasta format and a summary of candidates in genomes.
     """
     input:
-        summaries=expand(pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-            + "whole_summary_genewise.csv",accession=ACCESSNB),  
         # Candidates sequences with 1 confirmed domain in fasta format for each genome
         # -----------------------------------------------------------------------------                 
         candidates_domain_fasta=expand(
