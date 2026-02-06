@@ -173,6 +173,10 @@ rule annotate_candidates:
         """
         python3 ../utils/python/annotate_candidates.py -i {input} -o {output}
         """  
+# -----------------------------------
+# checkpoint separate_sequences
+# Generate a fasta file for each loci
+# -----------------------------------       
 checkpoint separate_sequences:
     """
     Separate candidate loci for genewise analysis.
@@ -186,11 +190,17 @@ checkpoint separate_sequences:
         mkdir {output}\
         && python3 ../utils/python/separate_candidates.py -i {input} -o {output}
         """
-
+# ----------------------------------------
+# Get the list of fasta file for each loci
+# ----------------------------------------
 def aggregate(wildcards):
     candidate_output = checkpoints.separate_sequences.get(accession=wildcards.accession).output[0]
     return expand("results/{accession}/Step2_extract_loci/separated_candidates/{candidate}.fna", accession=wildcards.accession, candidate=glob_wildcards(os.path.join(candidate_output, f"{{candidate}}.fna")).candidate)
 
+# ------------------------------------
+# genewisedb
+# run a genewise analysis on each loci 
+# ------------------------------------ 
 rule genewisedb:
     """
     Genewisedb on candidate loci.
@@ -224,7 +234,12 @@ rule genewisedb:
             ((i++))
         done
         touch {output.res}
-        """         
+        """
+
+# -------------------------------
+# concatenate_candidates
+# concetenate the genwise output 
+# -------------------------------
 rule concatenate_candidates:
     """
     Concatenating candidates for genewise parsing
@@ -251,6 +266,10 @@ rule concatenate_candidates:
         fi
         """          
 
+# ------------------------------------
+# genewise_parser
+# extract predicted protein sequences 
+# ------------------------------------
 rule genewise_parser:
     """
     Parse through generated genewise files
@@ -275,9 +294,14 @@ rule genewise_parser:
         echo "No results for genewise"
         fi
         """
+
+# ----------------------------------------------------------------
+# hmm_search
+# search the  HMM profile of the domain in the predicted proteins.
+# ----------------------------------------------------------------
 rule hmm_search:
     """
-    Proteome search using the HMMs.
+    Predicted protein search using the HMMs.
     """
     input:
         model=get_reference_file,
