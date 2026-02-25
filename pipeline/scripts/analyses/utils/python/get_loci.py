@@ -45,15 +45,11 @@ def preProcessGff(gff:str, out:str, names:list):
                     gene[gene_id].append([strand, genepos, chrom, gene_ref])
                 else:
                     gene[gene_id].append([strand, genepos, chrom, gene_ref])
-                #print("DEBUG3 ",gene_id,gene[gene_id])
                 genelist.append(gene_id)
             elif line.split('\t')[2] == 'CDS':
                 protparse.append(line)
         timeend = time.time()
-        print(f'Done reading gff. Parsing time: {round(timeend-timestart, 2)} seconds / {round((timeend-timestart)/60, 2)} minutes\n')
-        #for toto in genelist:
-        #    print("DEBUG " +toto+" ",gene[toto])
-        #print("DEBUG",protparse)    
+        print(f'Done reading gff. Parsing time: {round(timeend-timestart, 2)} seconds / {round((timeend-timestart)/60, 2)} minutes\n') 
         print("Getting all proteins...")
         timestart = time.time()
         protparse.sort(key=lambda x: (x.split('\t')[0], x.split('\t')[3]))
@@ -66,7 +62,6 @@ def preProcessGff(gff:str, out:str, names:list):
             parent_gene = splitline[8].split(';')[5].split('=')[1] 
             prot_id     = splitline[8].split(';')[0].split('=')[1].split('-')[1]
             if parent_gene in genelist and prot_id in names:
-                print("DEBUG4 "+parent_gene +" "+prot_id+ " "+p)
                 if not prot_id in intpos.keys():
                     intpos[prot_id] = []
             
@@ -75,7 +70,6 @@ def preProcessGff(gff:str, out:str, names:list):
                     
 
                     i = 0
-                    print("DEBUG5 "+prot_id+ " "+str(len(gene[parent_gene])))
                     #??
                     while i < len(gene[parent_gene]):
                         if (gene[parent_gene][i][1][0] <= splitline[3] <= gene[parent_gene][i][1][1]) and (splitline[0] == gene[parent_gene][i][2]):
@@ -85,9 +79,7 @@ def preProcessGff(gff:str, out:str, names:list):
                     if not [prot_id, splitline[3], splitline[4]] in donelist and i < len(gene[parent_gene]):
                         writer.write(f'{gene[parent_gene][i][2]}\t{gene[parent_gene][i][1][0]}\t{gene[parent_gene][i][1][1]}')
                         writer.write(f'\t{gene[parent_gene][i][0]}\t{gene[parent_gene][i][3]}\tNA\t{prot_id}\t{int_start}\n')
-                        donelist.append([prot_id, splitline[3], splitline[4]])
-                        print(f'DEBUG6 {gene[parent_gene][i][2]}\t{gene[parent_gene][i][1][0]}\t{gene[parent_gene][i][1][1]}\t{gene[parent_gene][i][0]}\t{gene[parent_gene][i][3]}\tNA\t{prot_id}\t{int_start}')
-                        
+                        donelist.append([prot_id, splitline[3], splitline[4]])                        
 
                 else:
                     intpos[prot_id].append(splitline[3])
@@ -166,7 +158,6 @@ def getPosGff(hits:list, gff:str):
 
                     if buffer != {}:
                         out_elt = prev_buffer
-                        #print("DEBUG8 ",out_elt)
                         output.append(out_elt)
 
                     buffer[prot] = [chr, start, end, strand, exon, prot, intron, ref, start_int]
@@ -178,7 +169,6 @@ def getPosGff(hits:list, gff:str):
                     if int(start_int) < int(prev_buffer[8]):
                         prev_buffer[8] = start_int
         out_elt = prev_buffer
-        #print("DEBUG8 ",out_elt)
         output.append(out_elt)
         timeend = time.time()
         print(f'Done. Total time: {round(timeend-timestart, 2)} seconds / {round((timeend-timestart)/60, 2)} minutes')
@@ -267,7 +257,6 @@ def exonCount(hits:list):
     counted[0][int(plus[0][4])+3] += 1
     if args.type == 'prot':
         counted[0].append(plus[0][5])
-        #print("debug  test exon ",plus[0][6])
         #if plus[0][6] != ['NA']:
         #    counted[0].append(plus[0][6])
         counted[0].append(plus[0][6])    
@@ -281,14 +270,12 @@ def exonCount(hits:list):
 # We consider that the maximum distance between first and
 # last exon should be 100k bases.
 # We also check for same chromosome.
-        print("DEBUG 9 ",hit)
         if int(hit[1]) < (int(start) + 100000) and int(hit[2]) > int(start) and hit[0] == chr:
             if args.type == 'nucl' or (args.type == 'prot' and hit[5] == counted[i][-4]):
 # Increment correct exon.
                 counted[i][int(hit[4])+3] += 1
                 counted[i][3] = hit[2]
                 if args.type == 'prot':
-                    #print("debug  test exon ",plus[0][6])
                     if int(counted[i][-1]) > int(hit[8]):
                         counted[i][-1] = hit[8]
                     #if hit[6] != ['NA'] and not hit[6] in counted[i][-3]:
@@ -318,7 +305,6 @@ def exonCount(hits:list):
     chr = minus[0][0]
     start = minus[0][1]
     end = minus[0][2]
-    print("DEBUG BORDEL ",minus[0])
     counted.append(["locus"+str(i)+'_'+args.type, chr, start, end, "-",
                0,0,0,0,0,0,0,0,0,0])
     counted[i][int(minus[0][4])+3] += 1
@@ -329,19 +315,15 @@ def exonCount(hits:list):
         counted[i].append(minus[0][6])           
         counted[i].append(minus[0][7])
         counted[i].append(minus[0][8])
-        print("DEBUG BORDEL "+str(i)+" ",counted[i])
 
 	#EXPLORE gene:hits blast:brin:matching exon:protif:introns
     for hit in minus:
-        print("DEBUG 9 ",hit)
-        print("DEBUG 9 TEST "+str(hit[1]) +" > "+ str(int(start) - 100000) +" and "+str(hit[2]) + " < "+  str(start) + " and " + hit[0] +  " = "+chr)
         if int(hit[1]) > (int(start) - 100000) and int(hit[2]) < int(start) and hit[0] == chr:
             if args.type == 'prot' :
                 print("DEBUG 9 COMPARE "+str(i)+" : ",hit," WITH   ",counted[i] )
                 print("DEBUG 9 SELECTED TEST ",hit," ", hit[5]," = ",counted[i][-4] )
             if args.type == 'nucl' or (args.type == 'prot' and hit[5] == counted[i][-4]):
                 print("DEBUG 9 SELECTED ",hit)
-                print("DEBUG BORDEL COUNTED AVANT"+str(i)+" ",counted[i])
                 counted[i][int(hit[4])+3] += 1
                 counted[i][3] = hit[2]
                 if args.type == 'prot':
@@ -350,11 +332,9 @@ def exonCount(hits:list):
  #                   if hit[6] != ['NA'] and not hit[6] in counted[i][-3]:
                     if  not hit[6] in counted[i][-3]:                    
                         counted[i][-3] += hit[6]
-                        counted[i][-3] = list(set(counted[i][-3]))
-                    print("DEBUG BORDEL COUNTED APRES "+str(i)+" ",counted[i])    
+                        counted[i][-3] = list(set(counted[i][-3])) 
 
         else:
-            print("DEBUG 9 UNSELECTED ",hit)
             start = hit[1]
             end = hit[2]
             chr = hit[0]
@@ -363,16 +343,11 @@ def exonCount(hits:list):
                0,0,0,0,0,0,0,0,0,0])
             counted[i][int(hit[4])+3] += 1
             if args.type == 'prot':
-                print("DEBUG 12 SELECTED ",hit)
                 counted[i].append(hit[5])
-                #print("debug  test exon 4 ",hit[6])
-                #if hit[6] != ['NA']:
-                #    counted[i].append(hit[6])
                 counted[i].append(hit[6])   
                 counted[i].append(hit[7])
                 counted[i].append(hit[8])
-    for deb in counted:
-        print("DEBUG RETURN ",deb)            
+    for deb in counted:       
     return counted
 
 ####################################
@@ -438,11 +413,9 @@ with open(args.output, "w") as final:
         for hit in hits:
             if len(hit) > 0 :
                 print(hit)
-                #print("debug len" + str( len(hit)))
                 #if len(hit) == 19:
                 no_exon = [hit[0], hit[1], hit[2], hit[3], hit[4], hit[-4], hit[-3], hit[-2], hit[-1]]
                 #elif len(hit) == 18:
-                #print("debug "+ str(hit[-4]))
                 for elem in no_exon:
                     final.write(str(elem)+"\t")
             final.write("\n")
