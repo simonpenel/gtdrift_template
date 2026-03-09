@@ -347,7 +347,7 @@ def exonCount(hits:list):
                 counted[i].append(hit[6])   
                 counted[i].append(hit[7])
                 counted[i].append(hit[8])
-    for deb in counted:       
+    
     return counted
 
 ####################################
