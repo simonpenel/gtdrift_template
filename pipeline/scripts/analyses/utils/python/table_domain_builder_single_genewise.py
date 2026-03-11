@@ -32,21 +32,21 @@ def process_domain_summary(domain, domain_summary_file, accession_number=accessi
         for line in reader.readlines()[1:]:
             nb_lines += 1
             line_data = line.split('\t')
-            nb_domains = line_data[9]
+            nb_domains = int(line_data[9])
             seq_id = line_data[0]
             pseudo = line_data[22].split(',')        
             shift = 0
             intron = 0
             if seq_id in summarised_data['SeqID'].values:
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Nb {domain} domains"] = nb_domains
-                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain start"] = line_data[17]
-                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain end"]= line_data[18]
+                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain start"] = int(line_data[17])
+                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain end"]= int(line_data[18])
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Chromosome"]= pseudo[0]
-                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Chr Start"]= pseudo[4].split('-')[0]
-                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Chr End"]= pseudo[4].split('-')[1]
+                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Chr Start"]= int(pseudo[4].split('-')[0])
+                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Chr End"]= int(pseudo[4].split('-')[1])
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Strand"]= pseudo[5]
-                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Protein Length"]= pseudo[3]
-                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Genewise index"]= pseudo[8]
+                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Protein Length"]= int(pseudo[3])
+                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Genewise index"]= int(pseudo[8])
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"ProtRefID"]= pseudo[6]
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Pseudogene (Genewise)"] = pseudo[7]
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Stop/Shift Positions"] = pseudo[1]
@@ -60,11 +60,15 @@ def process_domain_summary(domain, domain_summary_file, accession_number=accessi
                     
                 #print(posint)
                 if posint != [''] :
+                    if len(summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain end"]) != 1 :
+                        sys.exit("Unexpected number of lines")
+                    if len(summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain start"]) != 1 :
+                        sys.exit("Unexpected number of lines")                        
                     for i in range(len(posint)):
-                        if int(summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain start"]) <= int(posint[i]) <= int(summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain end"]):
+                        if int(summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain start"].tolist()[0]) <= int(posint[i]) <= int(summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain end"].tolist()[0]):
                             intron += 1
                     for i in range(len(posshift)):
-                        if int(summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain start"]) <= int(posshift[i]) <= int(summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain end"]):
+                        if int(summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain start"].tolist()[0]) <= int(posshift[i]) <= int(summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain end"].tolist()[0]):
                             shift += 1
 
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} Intron"] = intron
@@ -213,6 +217,18 @@ with open(domain_per_sequence_tabulated_file) as reader:
         to_add = {'SeqID': line_data[0], 'Assembly':accession_number, domain+' Query': line_data[2], domain+' E-value': line_data[7], domain+' Score': line_data[8]}
         data_list.append(to_add)
     summarised_data = pd.DataFrame(data_list, columns=noms_colonnes)
+    summarised_data = summarised_data.astype({domain+' HMM cov. pos.': "string"})
+    summarised_data = summarised_data.astype({'Chromosome': "string"})
+    summarised_data = summarised_data.astype({'ProtRefID': "string"})
+    summarised_data = summarised_data.astype({'Strand': "string"})
+    summarised_data = summarised_data.astype({'Pseudogene (Genewise)': "string"})
+    summarised_data = summarised_data.astype({'Stop/Shift Positions': "string"})
+    summarised_data = summarised_data.astype({'Genewise index': "Int32"})
+    summarised_data = summarised_data.astype({'Chr Start': "Int32"})
+    summarised_data = summarised_data.astype({'Chr End': "Int32"})
+    summarised_data = summarised_data.astype({domain+' domain start': "Int32"})
+    summarised_data = summarised_data.astype({domain+' domain end': "Int32"})
+    summarised_data = summarised_data.astype({ 'Nb '+domain+' domains': "Int32"})
 
 
 process_domain_tabulated(domain,domain_per_domain_summary_file)
