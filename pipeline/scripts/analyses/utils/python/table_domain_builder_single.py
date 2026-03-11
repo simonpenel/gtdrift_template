@@ -30,12 +30,12 @@ def process_domain_summary(domain, domain_summary_file, accession_number=accessi
     with open(domain_summary_file) as reader:    
         for line in reader.readlines()[1:]:
             line_data = line.split('\t')
-            nb_domains = line_data[9]
+            nb_domains = int(line_data[9])
             seq_id = line_data[0]
             if seq_id in summarised_data['SeqID'].values:
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Nb {domain} domains"] = nb_domains
-                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain start"] = line_data[17]
-                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain end"]= line_data[18]
+                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain start"] = int(line_data[17])
+                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain end"]= int(line_data[18])
       
       
 def process_hmm_cov(domain, domain_summary_file, accession_number=accession_number):
@@ -152,6 +152,10 @@ with open(domain_per_sequence_tabulated_file) as reader:
         to_add = {'SeqID': line_data[0], 'Assembly':accession_number, domain+' Query': line_data[2], domain+' E-value': line_data[7], domain+' Score': line_data[8]}
         data_list.append(to_add)
     summarised_data = pd.DataFrame(data_list, columns=noms_colonnes)
+    summarised_data = summarised_data.astype({domain+' HMM cov. pos.': "string"})
+    summarised_data = summarised_data.astype({domain+' domain start': "Int32"})
+    summarised_data = summarised_data.astype({domain+' domain end': "Int32"})
+    summarised_data = summarised_data.astype({ 'Nb '+domain+' domains': "Int32"})
 
 
 process_domain_tabulated(domain,domain_per_domain_summary_file)
