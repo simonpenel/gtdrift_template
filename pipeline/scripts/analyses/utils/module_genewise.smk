@@ -258,7 +258,7 @@ rule concatenate_candidates:
         then
         echo "Some results for genewise"
         cd results/{wildcards.accession}/Step3_genewise;
-        cat *.gw | sed  -e s"/ERROR DETECTED DURING GENEWISED//" > gw.concat;
+        cat *.gw | sed  -e s"/ERROR DETECTED DURING GENEWISEDB//g" > gw.concat;
         cd ../../..;
         #rm genewisedb.{wildcards.accession}.done
         else 
