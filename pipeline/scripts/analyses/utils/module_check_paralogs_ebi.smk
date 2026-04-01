@@ -66,7 +66,7 @@ rule hmmscan:
 rule curate_prdm9_candidates:
     input:
         candidate_table_curated = pathGTDriftData + "genome_assembly_ebi/{accession}/analyses/" + GENOME_RESULTS + "summary_hmmsearch_{accession}_{domain}_curated.csv",
-        assembly_info_file = pathGTDriftData + "organisms_data"
+        assembly_info_file = pathGTDriftData + "organisms_data_ebi"
     output:
         candidate_list = pathGTDriftData + "genome_assembly_ebi/{accession}/analyses/"  + GENOME_RESULTS +  "candidates_{domain}.csv"
     params:
