@@ -42,6 +42,6 @@ for line in decoded:
 sum = pd.DataFrame(dico).T
 sum.columns = ['Scientific Name','TaxID','Assembly Name','Assembly Accession',"URL fasta cds","URL fasta proteins","URL fasta genome"]
 print(sum)
-sum.to_csv("lol.csv",index=False )
+sum.to_csv("organisms_data_ebi",sep="\t", index=False )
 
 
