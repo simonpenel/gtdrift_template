@@ -86,7 +86,7 @@ rule summarize_hmm_results:
     """
     input:
         # organisms_data file
-        organisms_file=pathGTDriftData + "organisms_data",
+        organisms_file=pathGTDriftData + "organisms_data_ebi",
         # path of all per-sequence hits in tabular format 
         domain_per_sequence_tabulated=pathGTDriftData + "genome_assembly_ebi/{accession}/analyses/" + GENOME_RESULTS + "hmm_search/tbl/{domain}_tabulated",
         # path of all per-domain hits in tabular format with overlapping zinc finger domains                     
