@@ -42,7 +42,7 @@ for line in decoded:
     index +=1
 
 sum = pd.DataFrame(dico).T
-sum.columns = ['Scientific Name','TaxID','Assembly Name','Assembly Accession',"URL fasta cds","URL fasta proteins","URL fasta genome"]
+sum.columns = ['Species Name','Taxid','Assembly Name','Assembly Accession',"URL fasta cds","URL fasta proteins","URL fasta genome"]
 print(sum)
 sum.to_csv("organisms_data_ebi",sep="\t", index=False )
 
