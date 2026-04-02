@@ -1,6 +1,6 @@
 import subprocess, os, time
 from html.parser import HTMLParser
-from bs4 import BeautifulSoup
+#from bs4 import BeautifulSoup
 import requests, sys
 import numpy as np
 import pandas as pd
