@@ -4,7 +4,7 @@ from html.parser import HTMLParser
 import requests, sys
 import numpy as np
 import pandas as pd
-
+import json
 
 # URL to download
 url_index = "https://ftp.ensembl.org/pub/" 
@@ -21,6 +21,7 @@ if not r.ok:
 decoded = r.json()
 dico = {}
 index = 0
+accessions = []
 for line in decoded:
     scientific_name = line["scientific_name"]
     assembly_name = line["assembly_name"]
@@ -37,6 +38,7 @@ for line in decoded:
     url_gff3 = url_index + "release-" + version + "/" + "gff3/" + line["name"] + "/" + line["url_name"] + "." +  line["assembly_default"] + "." + version + ".gff3.gz"
     print(url_gff3)
     dico[index] = [scientific_name,taxid,assembly_name,assembly_accession,url_fasta_cds,url_fasta_pep,url_fasta_genome,] 
+    accessions.append(assembly_accession)
     index +=1
 
 sum = pd.DataFrame(dico).T
@@ -44,4 +46,11 @@ sum.columns = ['Scientific Name','TaxID','Assembly Name','Assembly Accession',"U
 print(sum)
 sum.to_csv("organisms_data_ebi",sep="\t", index=False )
 
+data = {
+    "assembly_list" : accessions,
+    "storagetype": "local"
+}
 
+json_str = json.dumps(data, indent=4)
+with open("sample.json", "w") as f:
+    f.write(json_str)
