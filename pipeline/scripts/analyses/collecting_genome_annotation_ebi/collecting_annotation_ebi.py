@@ -37,12 +37,12 @@ for line in decoded:
     print(url_fasta_pep)    
     url_gff3 = url_index + "release-" + version + "/" + "gff3/" + line["name"] + "/" + line["url_name"] + "." +  line["assembly_default"] + "." + version + ".gff3.gz"
     print(url_gff3)
-    dico[index] = [scientific_name,taxid,assembly_name,assembly_accession,url_fasta_cds,url_fasta_pep,url_fasta_genome,] 
+    dico[index] = [scientific_name,taxid,assembly_name,assembly_accession,url_fasta_cds,url_fasta_pep,url_fasta_genome,url_gff3] 
     accessions.append(assembly_accession)
     index +=1
 
 sum = pd.DataFrame(dico).T
-sum.columns = ['Species Name','Taxid','Assembly Name','Assembly Accession',"URL fasta cds","URL fasta proteins","URL fasta genome"]
+sum.columns = ['Species Name','Taxid','Assembly Name','Assembly Accession',"URL fasta cds","URL fasta proteins","URL fasta genome","URL gff3 genome"]
 print(sum)
 sum.to_csv("organisms_data_ebi",sep="\t", index=False )
 
