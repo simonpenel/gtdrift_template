@@ -1,0 +1,11 @@
+[project]
+name = "verif-ebi"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bio>=1.8.1",
+    "hmmer>=3.4.0.2",
+    "pandas>=3.0.2",
+]

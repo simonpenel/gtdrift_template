@@ -164,7 +164,13 @@ process_hmm_cov(domain,domain_per_domain_summary_file)
  
 getTaxid()                
 getSpecies()                
-summarised_data = summarised_data.fillna(0)    
+
+# summarised_data = summarised_data.fillna(0)    
+summarised_data[domain+' HMM cov. pos.'] = summarised_data[domain+' HMM cov. pos.'].fillna(value="0")
+summarised_data[domain+' domain start'] = summarised_data[domain+' domain start'].fillna(value=0)
+summarised_data[domain+' domain end'] = summarised_data[domain+' domain end'].fillna(value=0)
+summarised_data['Nb '+domain+' domains'] = summarised_data['Nb '+domain+' domains'].fillna(value=0)
+
 print("Output file = "+output_file)                 
 summarised_data.to_csv(output_file, sep=';')
 
