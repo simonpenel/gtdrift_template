@@ -2,6 +2,7 @@
   "mode": "",  
   "storagetype": "irods",
   "analyse_dir_name": "verif/",
+  "global_analyse_dir_name": "verif/",
   "resources_dir_name": "protein_domain_PRDM9/", 
   "domain_references" : {
 "SET":"Domain_SET_ReferenceAlignment2024",
