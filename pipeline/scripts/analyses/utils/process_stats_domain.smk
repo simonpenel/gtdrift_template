@@ -73,7 +73,7 @@ DOMAINS_SIMPLE = config["domains_simple"]
 # Name of global results directory.
 # ---------------------------------
 # The directory is located in pathGTDriftGlobalResults
-GLOBAL_RESULTS = config["analyse_dir_name"]
+GLOBAL_RESULTS = config["global_analyse_dir_name"]
 
 # Name of genome specific results directory.
 # ------------------------------------------
