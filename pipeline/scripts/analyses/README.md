@@ -42,6 +42,12 @@ Les 4 répertoires suivants doivent impérativement être définis:
 
 ## 2. Recupérerer la description des assemblages pour un taxon donné
 
+
+> [!IMPORTANT]
+> Il est nécessaire d'installer les commandes EDirect:
+> https://www.ncbi.nlm.nih.gov/books/NBK179288/  
+
+
 Se déplacer dans le répertoire  _get_genomes_list_ et lancer le pipeline snakemake _get_list.smk_.
 
 La commande pour lancer ce pipeline :
