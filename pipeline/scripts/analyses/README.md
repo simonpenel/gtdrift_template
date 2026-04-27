@@ -50,6 +50,12 @@ La commande pour lancer ce pipeline :
 snakemake -s  get_list.smk  --cores 1
 ```
 
+La commande pour lancer ce pipeline avec _uv_ (recommandé) :
+
+``` bash
+uv run snakemake -s  get_list.smk  --cores 1
+```
+
 Le taxon est défini dans le fichier de configuration config.json:
 
 ```json
