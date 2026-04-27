@@ -12,12 +12,12 @@ rule get_list:
     
 rule ncbi_query:
     output:
-        "data/resources/ncbi_extraction"
+        temp("data/resources/ncbi_extraction")
     params:
         query = config['query']
     shell:
-        "esearch -db assembly -query {params.query} | efetch -format docsum  |grep -v xml > {output}"
-#       "esearch -db assembly -query {params.query} | efetch -format docsum   > {output}" ### ( grep is useless depending on esearch)        
+#        "esearch -db assembly -query {params.query} | efetch -format docsum  |grep -v xml > {output}"
+       "esearch -db assembly -query {params.query} | efetch -format docsum   > {output}" ### ( grep is useless depending on esearch)        
 
 rule frauder_le_xml:
     """
@@ -42,8 +42,7 @@ rule frauder_le_xml:
         "data/resources/rooted_extraction"
     shell:
         """
-        python3 python/xml_rewrite.py {input} {output}\
-        && rm {input}
+        python3 python/xml_rewrite.py {input} {output}
         """
 
 rule data_analysis:
