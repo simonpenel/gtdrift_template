@@ -21,7 +21,7 @@ ACCESSNB = config["assembly_list"]
 # Name of global results directory.
 # The directory is located in pathGTDriftGlobalResults
 # ----------------------------------------------------
-GLOBAL_RESULTS = config["analyse_dir_name"]
+GLOBAL_RESULTS = config["global_analyse_dir_name"]
 
 # Name of genome specific results directory.
 # The directory is located in genome_assembly/{accession}/analyses/
