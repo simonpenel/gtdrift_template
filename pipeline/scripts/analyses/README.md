@@ -56,6 +56,21 @@ La commande pour lancer ce pipeline avec _uv_ (recommandé) :
 uv run snakemake -s  get_list.smk  --cores 1
 ```
 
+Le fichier pyproject.toml en cas d'utilisation de _uv_:
+
+```yaml
+[project]
+name = "get-genomes-list"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "snakemake>=9.19.0",
+]
+```
+
+
 Le taxon est défini dans le fichier de configuration config.json:
 
 ```json
