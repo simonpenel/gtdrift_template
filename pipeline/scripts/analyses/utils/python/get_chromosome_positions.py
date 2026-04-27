@@ -137,7 +137,9 @@ with open(args.input, 'r') as reader:
         from_fasta = record_dict[prot_name]
         protein_length = len(from_fasta.seq)
         new_row = {"SeqID": prot_name, "Chromosome": chromo, "Chr Start": positions[0],"Chr End":  positions[1], "Strand" : strand, "Protein Length" : protein_length, "Pseudo" : pseudo}
-        df = df._append(new_row, ignore_index=True)
+        #df = df.append(new_row, ignore_index=True)
+        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+
         
 
 df_summary = pd.read_csv(args.input, sep=';', header=0)

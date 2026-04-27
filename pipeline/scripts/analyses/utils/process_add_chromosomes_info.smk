@@ -31,13 +31,13 @@ ACCESSNB = config["assembly_list"]
 
 # Name of the resources directory. 
 # --------------------------------
-PROTEIN_RESOURCES_DIR_NAME  = config["protein_resources_dir_name"]
+#GENOME_PROTEIN_RESOURCES_DIR_NAME  = config["protein_resources_dir_name"]
 
 
 # Name of global results directory.
 # The directory is located in pathGTDriftGlobalResults
 # ----------------------------------------------------
-GLOBAL_RESULTS = config["analyse_dir_name"]
+GLOBAL_RESULTS = config["global_analyse_dir_name"]
 
 # Name of genome specific results directory.
 # The directory is located in genome_assembly/{accession}/analyses/
@@ -65,7 +65,7 @@ rule all:
 rule get_proteins_chromosome_info:
     input:
         summary = pathGTDriftData
-        + "genome_assembly/{accession}/analyses/"+PROTEIN_RESOURCES_DIR_NAME + "whole_summary.csv",
+        + "genome_assembly/{accession}/analyses/"+ GENOME_RESULTS + "whole_summary.csv",
         protein = pathGTDriftData + "genome_assembly/{accession}/annotation/protein.faa", 
         gff = pathGTDriftData + "genome_assembly/{accession}/annotation/genomic.gff", 
     output:

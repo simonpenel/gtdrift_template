@@ -6,7 +6,7 @@ input_files = snakemake.input
 output_file = snakemake.output[0]
 
 i = 0;
-for file in input_files:
+for file in input_files:    
     df = pd.read_csv(file, sep=';', header=0)
     if i ==  0 :
         df_cont = df
@@ -17,5 +17,11 @@ for file in input_files:
 #df_cont = df_cont.fillna(0.0)  
 df_cont = df_cont.fillna(0)  
 # Write output
+# Moving Taxid and Species columns to the end    
+column_taxid = df_cont.pop("Taxid")   
+column_species = df_cont.pop("Species")   
+df_cont['Taxid']=column_taxid
+df_cont['Species']=column_species
+
 df_cont.drop(df_cont.columns[df_cont.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)
 df_cont.to_csv(output_file, sep=';')
