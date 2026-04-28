@@ -145,7 +145,7 @@ Pan paniscus	9597	GCA_029289425.3	False	False	https://ftp.ncbi.nlm.nih.gov/genom
 Pan paniscus	9597	GCF_029289425.2	True	True	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/029/289/425/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri
 ```
 
-Pour l'analyse _prdm9_protein_analysis_, on doit se limiter aux assemblages pour lesquels il existe une annotation. (On peut aussi vouloir restreindre l'analyse prdm9_genomic_protein_analysis aux assemblages avec annotation)
+Dans le cas d'une analyse des protéomes on doit se limiter aux assemblages pour lesquels il existe une annotation. 
 
 Pour cela on lance le script avec l'option "curated":
 
