@@ -105,7 +105,8 @@ Le fichier de configuration config.json pour les hominidés:
 
 ## 3. Générer la liste des assemblages au format  fichiers json 
 
-Lancer le  script _python generate_json_and_query.py_ qui se trouve dans le répertoire _get_genomes_list_.
+Toujours dans le répertoire _gtdrift_template/pipeline/scripts/analyses/get_genomes_list_,
+lancer le  script _python generate_json_and_query.py_.
 
 >Cela va générer des fichiers json utiles pour collecter les données et lancer les analyses.
 
