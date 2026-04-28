@@ -3,6 +3,10 @@
 > Il est nécessaire d'installer les commandes EDirect:
 > https://www.ncbi.nlm.nih.gov/books/NBK179288/  
 
+> [!NOTE]
+> Le résultat des exemples de commandes peuvent être différent de ceux donnés dans cette documentation
+> les assemblages proposés par le NCBI évoluent. 
+
 
 # Les étapes à suivre:
 
