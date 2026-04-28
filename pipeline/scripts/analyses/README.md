@@ -82,7 +82,8 @@ dependencies = [
     "snakemake>=9.19.0",
 ]
 ```
-
+> [!TIP]
+>Utilisation de _uv_ :https://uv-introduction-da5541.pages.in2p3.fr/1
 
 Le taxon est défini dans le fichier de configuration config.json:
 
