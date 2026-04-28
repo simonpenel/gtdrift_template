@@ -211,6 +211,14 @@ La commande pour lancer ce pipeline :
 snakemake -s  collecting_annotations.smk --configfile config.json  --cores 1
 ```
 
+
+La commande pour lancer ce pipeline avec _uv_ (recommandé) :
+
+``` bash
+uv run snakemake -s  collecting_annotations.smk --configfile config.json  --cores 1
+```
+
+
 ## 5. Lancer les pipelines d'analyse  des données
 
 Plusieurs pipelines d'analyse sont disponibles dans le repertoire `pipeline/scripts/analyses` :
