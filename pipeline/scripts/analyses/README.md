@@ -33,12 +33,12 @@ Les 4 répertoires suivants doivent impérativement être définis:
       * le répertoire _genome_assembly_ : contient pour chaque assemblage :
           * le répertoire _genome_seq_ : contient le fichier .fna du génome ou son chemin sur iRODS
           > Ce répertoire est rempli par le pipeline snakemake _collecting_genome_annotation/collecting_annotations.smk_
-          * le repertoire _annotation_ : contient les fichiers d'annotation *gff, les fichiers fasta des protéines et des cds. S'il le génome n'est pas annoté, les fichiers contiennent un message spécifiant qu'il n'existe pas d'annotation. 
+          * le repertoire _annotation_ : contient les fichiers d'annotation *gff, les fichiers fasta des protéines et des cds. Si le génome n'est pas annoté, les fichiers contiennent un message spécifiant qu'il n'existe pas d'annotation. 
           > Ce répertoire est rempli par le pipeline snakemake _collecting_genome_annotation/collecting_annotations.smk_ 
           * le repertoire _analyse_ : contient le résultat des différentes analyses.
            
   * pathGTDriftGlobalResults : contient les résultats globaux pour chaque analyse.
-  * pathGTDriftResource : contient des données utiles pour les analyses, entre autres:
+  * pathGTDriftResource : contient différentes données utiles pour les analyses, par exemple pour PRDM9:
       * le répertoire _ref_align/Prdm9_Metazoa_Reference_alignment/_ qui contient :
           * les alignements de réferences  utilisés pour le calcul des hmm.
           * le répertoire _exon_peptide_ qui contient les fichiers fasta des exons de PRDM9 chez les métazoaires. 
