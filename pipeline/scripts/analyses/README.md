@@ -71,7 +71,7 @@ Le fichier pyproject.toml en cas d'utilisation de _uv_:
 [project]
 name = "get-genomes-list"
 version = "0.1.0"
-description = "Get the assemblies associated to a taxon""
+description = "Get the assemblies associated to a taxon"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
