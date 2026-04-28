@@ -90,7 +90,7 @@ Le taxon est défini dans le fichier de configuration config.json:
 
 Cela va génerer le fichier  _data/resources/organisms_data_   qui devra être copié dans le répertoire _pathGTDriftData_ pour servir de référence dans la suite du pipeline, par exemple pour connaître l'espèce associée a un numero d'assemblage.
 
-> Pour l'analyse des métazaoires le fichier _data/resources/organisms_data_ sera copié dans _pathGTDriftData_ et utilisé comme référence. Mais il est possible de générer un fichier dédié à des jeux de données plus réduits ( pour ensuite génerer des liste d'assemblages) auquel cas on ne le copira pas dans _pathGTDriftData_:
+> Pour l'analyse des métazoaires le fichier _data/resources/organisms_data_ sera copié dans _pathGTDriftData_ et utilisé comme référence. Mais il est possible de générer un fichier dédié à des jeux de données plus réduits ( pour ensuite génerer des liste d'assemblages) auquel cas on ne le copira pas dans _pathGTDriftData_:
 
 
   
