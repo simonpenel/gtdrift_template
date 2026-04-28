@@ -9,6 +9,7 @@
 ## 1. Définir l'environnement dans lequel les calculs sont effectués:
 
 Le fichier _environment_path.json_ est utilisé pour définir l'organisation des répertoires.
+> [!NOTE]
 >Le fichier se trouve dans
 >`gtdrift_template/pipeline/scripts/analyses`
 
@@ -26,7 +27,7 @@ Modifier ce fichier en remplaçant _my_directory_ par le répertoire dans lequel
 ```
 
 Les 4 répertoires suivants doivent impérativement être définis:
-  * pathGTDriftData : contient 
+  * pathGTDriftData : ce répetoire  contient 
       * le fichier  _organisms_data_ : description de assemblages
       > Ce fichier est généré par le pipeline snakemake _get_genomes_list/get_list.smk_
       * le répertoire _genome_assembly_ : contient pour chaque assemblage :
