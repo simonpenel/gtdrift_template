@@ -8,7 +8,9 @@
 
 ## 1. Définir l'environnement dans lequel les calculs sont effectués:
 
-Le fichier _environment_path.json_ est utilisé pour définir l'organisation des répertoires:
+Le fichier _environment_path.json_ est utilisé pour définir l'organisation des répertoires.
+>Le fichier se trouve dans
+>`gtdrift_template/pipeline/scripts/analyses`
 
 Modifier ce fichier en remplaçant _my_directory_ par le répertoire dans lequel se trouve le répertoire _gtdrift_template_.
 
