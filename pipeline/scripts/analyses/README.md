@@ -51,7 +51,7 @@ Les 4 répertoires suivants doivent impérativement être définis:
 ## 2. Recupérerer la description des assemblages pour un taxon donné
 
 
-Se déplacer dans le répertoire  _get_genomes_list_ et lancer le pipeline snakemake _get_list.smk_.
+Se déplacer dans le répertoire  _gtdrift_template/pipeline/scripts/analyses/get_genomes_list_ et lancer le pipeline snakemake _get_list.smk_.
 
 La commande pour lancer ce pipeline :
 
