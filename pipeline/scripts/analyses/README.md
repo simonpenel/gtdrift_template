@@ -3,6 +3,10 @@
 > Il est nécessaire d'installer les commandes EDirect:
 > https://www.ncbi.nlm.nih.gov/books/NBK179288/  
 
+> [!NOTE]
+> Le résultat des exemples de commandes peuvent être différent de ceux donnés dans cette documentation
+> les assemblages proposés par le NCBI évoluent. 
+
 
 # Les étapes à suivre:
 
@@ -78,7 +82,8 @@ dependencies = [
     "snakemake>=9.19.0",
 ]
 ```
-
+> [!TIP]
+>Utilisation de _uv_ :https://uv-introduction-da5541.pages.in2p3.fr/1
 
 Le taxon est défini dans le fichier de configuration config.json:
 
@@ -90,7 +95,8 @@ Le taxon est défini dans le fichier de configuration config.json:
 
 Cela va génerer le fichier  _data/resources/organisms_data_   qui devra être copié dans le répertoire _pathGTDriftData_ pour servir de référence dans la suite du pipeline, par exemple pour connaître l'espèce associée a un numero d'assemblage.
 
-> Pour l'analyse des métazoaires le fichier _data/resources/organisms_data_ sera copié dans _pathGTDriftData_ et utilisé comme référence. Mais il est possible de générer un fichier dédié à des jeux de données plus réduits ( pour ensuite génerer des liste d'assemblages) auquel cas on ne le copira pas dans _pathGTDriftData_:
+> [!IMPORTANT]
+> Pour l'analyse des métazoaires le fichier _data/resources/organisms_data_ doit être copié dans _pathGTDriftData_ (i.e. _gtdrift_template/data_results_per_assembly/_) et il sera utilisé comme référence. Mais il est possible de générer un fichier dédié à des jeux de données plus réduits (pour ensuite génerer des liste d'assemblages destinées a des analyses spécifiques à un taxon par exemple) auquel cas on ne le copiera pas dans _pathGTDriftData_:
 
 
   
@@ -104,7 +110,8 @@ Le fichier de configuration config.json pour les hominidés:
 
 ## 3. Générer la liste des assemblages au format  fichiers json 
 
-Lancer le  script _python generate_json_and_query.py_ qui se trouve dans le répertoire _get_genomes_list_.
+Toujours dans le répertoire _gtdrift_template/pipeline/scripts/analyses/get_genomes_list_,
+lancer le  script _python generate_json_and_query.py_.
 
 >Cela va générer des fichiers json utiles pour collecter les données et lancer les analyses.
 
@@ -143,7 +150,7 @@ Pan paniscus	9597	GCA_029289425.3	False	False	https://ftp.ncbi.nlm.nih.gov/genom
 Pan paniscus	9597	GCF_029289425.2	True	True	https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/029/289/425/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri
 ```
 
-Pour l'analyse _prdm9_protein_analysis_, on doit se limiter aux assemblages pour lesquels il existe une annotation. (On peut aussi vouloir restreindre l'analyse prdm9_genomic_protein_analysis aux assemblages avec annotation)
+Dans le cas d'une analyse des protéomes on doit se limiter aux assemblages pour lesquels il existe une annotation. 
 
 Pour cela on lance le script avec l'option "curated":
 
@@ -174,7 +181,7 @@ n'est plus présent.
 ## 4. Récupérer les données de séquence et les annotations (si elles existent)
 Ce pipeline permet de télécharger les génomes et leurs annotations étant donné une liste d'assemblage. Des liens symboliques seront créés pour faciliter les analyses. Parfois le téléchargement en simultané de plusieurs fichiers bug.
 
-Se déplacer dans le répertoire _collecting_genome_annotation_. Créer le fichier de configuration à l'aide des fichiers générés en *3*, puis lancer le pipeline snakemake _collecting_annotations.smk_.
+Se déplacer dans le répertoire _gtdrift_template/pipeline/scripts/analyses/collecting_genome_annotation_. Créer le fichier de configuration _config.json_ à l'aide des fichiers générés en *3*, puis lancer le pipeline snakemake _collecting_annotations.smk_.
 >Cela va collecter les données de séquences et d'annotation des assemblages. Ces données seront stockées dans les répertoires _genome_seq_ et _annotation_ de chaque assemblage du répertoire _pathGTDriftData/genome_assembly_
 
 
@@ -203,6 +210,14 @@ La commande pour lancer ce pipeline :
 ``` bash
 snakemake -s  collecting_annotations.smk --configfile config.json  --cores 1
 ```
+
+
+La commande pour lancer ce pipeline avec _uv_ (recommandé) :
+
+``` bash
+uv run snakemake -s  collecting_annotations.smk --configfile config.json  --cores 1
+```
+
 
 ## 5. Lancer les pipelines d'analyse  des données
 
@@ -245,5 +260,6 @@ Créer un répertoire pour chaque analyse,   le répertoire doit contenir un fic
 ### Exemples d'utilisation
 
   - Le répertoire `verif` pour l'analyse `process_stats_domain.smk`
+    https://github.com/simonpenel/gtdrift_template/tree/master/pipeline/scripts/analyses/verif
 
   - Le répertoire `verif_genewise` pour l'analyse `process_genewise.smk`

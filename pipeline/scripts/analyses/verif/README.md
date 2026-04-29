@@ -19,6 +19,8 @@ R has to be installed with the package Biostrings
 
 ## Configuration files
 
+There are 2 configuration files: _analyse.json_ and _assemblies.json_
+
 - `analyse.json` file :
 
 ```
@@ -26,6 +28,7 @@ R has to be installed with the package Biostrings
   "mode": "",  
   "storagetype": "irods",
   "analyse_dir_name": "verif/",
+  "global_analyse_dir_name": "verif/",
   "resources_dir_name": "protein_domain_PRDM9/", 
   "domain_references" : {
 "SET":"Domain_SET_ReferenceAlignment2024",
@@ -37,9 +40,14 @@ R has to be installed with the package Biostrings
   "domains_simple" : ["SSXRD","ZF","KRAB"],
 }
 
+
 ```
 > [!CAUTION]
-> "analyse_dir_name" describes the directory win which the  results are stored. It should be modified for each analyse! 
+> "analyse_dir_name" describes the directory in which the  results are stored for each assembly.
+> 
+> "global_analyse_dir_name" describes the directory in which the concatenation of the results of all assemblies is stored.
+> 
+> For a same analyis it is recommended to keep the same _analyse_dir_name_, however it may be interesting to change the  _global_analyse_dir_name_ according to the studied taxa: for example you may be interested in concatenated results for primates, then for rodents. 
 
 
 
@@ -84,14 +92,18 @@ RESOURCES_DIR_NAME/
 
 `uv run snakemake -s ../utils/process_stats_domain.smk  --jobs 1`
 
-## Run the  analysis of the ZF domain on protein data
+## Run complementary analyses
+
+The following analysis are specific to the PRDM9 analysis
+
+### Run the  analysis of the ZF domain on protein data
 
 `uv run snakemake -s ../utils/process_zincfinger.smk  --jobs 1`
 
-## Run the analysis of the ZF domain on the dna sequence  coding for the protein data
+### Run the analysis of the ZF domain on the dna sequence  coding for the protein data
 
 `uv run snakemake -s ../utils/process_zincfinger_dna.smk  --jobs 1`
 
-## Run the Tyrosine analysis of the SET domain
+### Run the Tyrosine analysis of the SET domain
 
 `uv run snakemake -s ../utils/process_SET_tyrosines.smk  --jobs 1`
