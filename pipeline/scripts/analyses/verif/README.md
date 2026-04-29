@@ -57,7 +57,7 @@ There are 2 configuration files: _analyse.json_ and _assemblies.json_
 
 ```
 RESOURCES_DIR_NAME/
-...........reference_alignments/ (should be present at start)
+...........reference_alignments/
 .............................. DOMAIN1/
 ..................................... Reference_alignement_DOMAIN1.fst
 ......................................[Paralogous_alignement_DOMAIN1.fst](if DOMAIN1 is selected for paralogous analysis) 
