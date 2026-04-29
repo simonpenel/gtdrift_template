@@ -260,5 +260,6 @@ Créer un répertoire pour chaque analyse,   le répertoire doit contenir un fic
 ### Exemples d'utilisation
 
   - Le répertoire `verif` pour l'analyse `process_stats_domain.smk`
+    https://github.com/simonpenel/gtdrift_template/tree/master/pipeline/scripts/analyses/verif
 
   - Le répertoire `verif_genewise` pour l'analyse `process_genewise.smk`
