@@ -10,6 +10,7 @@ Use "uv" to run snakemake because it is the easisest way of managing python paca
 Type :
 ```
 uv init
+uv add snakemake
 uv add pandas
 uv add hmmer
 uv add Bio
