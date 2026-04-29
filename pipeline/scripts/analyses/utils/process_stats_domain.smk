@@ -73,7 +73,6 @@ DOMAINS_SIMPLE = config["domains_simple"]
 # Name of global results directory.
 # ---------------------------------
 # The directory is located in pathGTDriftGlobalResults
-# Removed: use the process_stats_generate_global_results.smk instead
 GLOBAL_RESULTS = config["global_analyse_dir_name"]
 
 # Name of genome specific results directory.
@@ -138,15 +137,21 @@ rule all:
                               
         # Concatenation of results on all genomes
         # ----------------------------------------
-        # Removed: use the process_stats_generate_global_results.smk instead
         concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv",     
 
-        # Pour l'analyase zinc finger a faire apres (pour PRDM9  uniquement, commenter cette ligne sinon)
+        # Pour l'analyse de type zinc finger a faire apres (pour PRDM9  uniquement, inutile sinon)
         # -----------------------------------------------------------------------------------------------         
+        candidates_domain_simple=expand(
+            pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+            + "candidates_simple_{domain}.txt", accession=ACCESSNB,domain=DOMAINS_SIMPLE),
+
+        # Pour l'analyase zinc finger a faire apres (pour PRDM9  uniquement, commenter cette ligne sinon)
+        # -----------------------------------------------------------------------------------------------                
         #candidates_domain_ZF=expand(
         #    pathGTDriftData
         #   + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
-        #   + "candidates_simple_ZF.txt", accession=ACCESSNB),      
+        #   + "candidates_simple_ZF.txt", accession=ACCESSNB),            
         
         # Candidates sequences with all domains ("wad") in fasta format for each genome
         # -----------------------------------------------------------------------------
