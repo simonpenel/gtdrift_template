@@ -103,7 +103,7 @@ RESOURCES_DIR_NAME/
 
 > "domains" provides  the list of domains for which a hmm search and a paralogy analysis will be performed
 
-> "domains_simple" provides  the list of domains for which a hmm search  will be performed
+> "domains_simple" provides  the list of domains for which a hmm search only will be performed
 
 
 >[!TIP]
