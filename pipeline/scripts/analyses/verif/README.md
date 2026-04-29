@@ -69,7 +69,7 @@ A more complex example for PRDM9 analysis:
 > 
 > "global_analyse_dir_name" describes the directory in which the concatenation of the results of all assemblies is stored.
 > 
-> For a same analyis it is recommended to keep the same _analyse_dir_name_, however it may be interesting to change the  _global_analyse_dir_name_ according to the studied taxa: for example you may be interested in concatenated results for primates, then for rodents. 
+> "analyse_dir_name"  and "global_analyse_dir_name"may be different : for a same analyis it is recommended to keep the same _analyse_dir_name_, however it may be interesting to change the  _global_analyse_dir_name_ according to the studied taxa, for example you may be interested in concatenated results for primates, then for rodents. 
 
 
 
