@@ -26,6 +26,7 @@ R has to be installed with the package Biostrings
   "mode": "",  
   "storagetype": "irods",
   "analyse_dir_name": "verif/",
+  "global_analyse_dir_name": "verif/",
   "resources_dir_name": "protein_domain_PRDM9/", 
   "domain_references" : {
 "SET":"Domain_SET_ReferenceAlignment2024",
@@ -36,6 +37,7 @@ R has to be installed with the package Biostrings
   "domains" :  ["SET"],    
   "domains_simple" : ["SSXRD","ZF","KRAB"],
 }
+
 
 ```
 > [!CAUTION]
