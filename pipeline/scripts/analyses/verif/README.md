@@ -19,7 +19,7 @@ R has to be installed with the package Biostrings
 
 ## Configuration files
 
-There are 2 configuration files:
+There are 2 configuration files: _analyse.json_ and _assemblies.json_
 
 - `analyse.json` file :
 
