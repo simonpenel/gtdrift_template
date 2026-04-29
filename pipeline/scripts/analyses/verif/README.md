@@ -19,6 +19,8 @@ R has to be installed with the package Biostrings
 
 ## Configuration files
 
+There are 2 configuration files:
+
 - `analyse.json` file :
 
 ```
