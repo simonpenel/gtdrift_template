@@ -41,7 +41,11 @@ R has to be installed with the package Biostrings
 
 ```
 > [!CAUTION]
-> "analyse_dir_name" describes the directory win which the  results are stored. It should be modified for each analyse! 
+> "analyse_dir_name" describes the directory in which the  results are stored for each assembly.
+> 
+> "global_analyse_dir_name" describes the directory in which the concatenation of the results of all assemblies is stored.
+> 
+> For a same analyis it is recommended to keep the same _analyse_dir_name_, however it may be interesting to change the  _global_analyse_dir_name_ according to the studied taxa: for example you may be interested in concatenated results for primates, then for rodents. 
 
 
 
