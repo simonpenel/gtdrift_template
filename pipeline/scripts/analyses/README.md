@@ -181,7 +181,7 @@ n'est plus présent.
 ## 4. Récupérer les données de séquence et les annotations (si elles existent)
 Ce pipeline permet de télécharger les génomes et leurs annotations étant donné une liste d'assemblage. Des liens symboliques seront créés pour faciliter les analyses. Parfois le téléchargement en simultané de plusieurs fichiers bug.
 
-Se déplacer dans le répertoire _collecting_genome_annotation_. Créer le fichier de configuration à l'aide des fichiers générés en *3*, puis lancer le pipeline snakemake _collecting_annotations.smk_.
+Se déplacer dans le répertoire _gtdrift_template/pipeline/scripts/analyses/collecting_genome_annotation_. Créer le fichier de configuration _config.json_ à l'aide des fichiers générés en *3*, puis lancer le pipeline snakemake _collecting_annotations.smk_.
 >Cela va collecter les données de séquences et d'annotation des assemblages. Ces données seront stockées dans les répertoires _genome_seq_ et _annotation_ de chaque assemblage du répertoire _pathGTDriftData/genome_assembly_
 
 
