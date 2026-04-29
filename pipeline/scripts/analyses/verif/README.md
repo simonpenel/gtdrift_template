@@ -5,6 +5,7 @@ The analyis is done on the proteomes.
 
 ## Settings 
 
+>[!NOTE]
 Use "uv" to run snakemake because it is the easisest way of managing python pacakges and versions especially when we hav no root permission.
 
 Type :
@@ -15,8 +16,8 @@ uv add pandas
 uv add hmmer
 uv add Bio
 ```
+This will create a pyproject.toml file 
 
-R has to be installed with the package Biostrings
 
 ## Configuration files
 
@@ -93,10 +94,20 @@ RESOURCES_DIR_NAME/
 
 `uv run snakemake -s ../utils/process_stats_domain.smk  --jobs 1`
 
+This will calculate the stats for each assemblies stored in its subdirectory analyses/{analyse_dir_name} and create a global results _results.csv_ stored in {pathGTDriftGlobalResults}{global_analyse_dir_name}
+
+##  Get the positions of target proteins in chromosomes
+
+`uv run snakemake -s ../utils/process_add_chromosomes_info.smk  --jobs 10`
+
+This will get the position in chromosomes for the stats of each assemblies and create a global results _results_with_chromosomes.csv_ stored in {pathGTDriftGlobalResults}{global_analyse_dir_name}
+.
 ## Run complementary analyses
 
 The following analysis are specific to the PRDM9 analysis
 
+>[!IMPORTANT]
+R has to be installed with the package Biostrings
 ### Run the  analysis of the ZF domain on protein data
 
 `uv run snakemake -s ../utils/process_zincfinger.smk  --jobs 1`
