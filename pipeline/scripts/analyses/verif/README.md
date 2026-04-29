@@ -128,7 +128,7 @@ This will get the position in chromosomes for the stats of each assemblies and c
 .
 ## Run complementary analyses for PRDM9 analysis
 
-The following analysis are specific to the PRDM9 analysis
+The following analyses are specific to the PRDM9 analysis
 
 >[!IMPORTANT]
 R has to be installed with the package Biostrings
