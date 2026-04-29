@@ -126,7 +126,7 @@ This will calculate the stats for each assemblies stored in its subdirectory ana
 
 This will get the position in chromosomes for the stats of each assemblies and create a global results _results_with_chromosomes.csv_ stored in {pathGTDriftGlobalResults}{global_analyse_dir_name}
 .
-## Run complementary analyses
+## Run complementary analyses for PRDM9 analysis
 
 The following analysis are specific to the PRDM9 analysis
 
