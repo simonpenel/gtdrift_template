@@ -92,14 +92,18 @@ RESOURCES_DIR_NAME/
 
 `uv run snakemake -s ../utils/process_stats_domain.smk  --jobs 1`
 
-## Run the  analysis of the ZF domain on protein data
+## Run complementary analyses
+
+The following analysis are specific to the PRDM9 analysis
+
+### Run the  analysis of the ZF domain on protein data
 
 `uv run snakemake -s ../utils/process_zincfinger.smk  --jobs 1`
 
-## Run the analysis of the ZF domain on the dna sequence  coding for the protein data
+### Run the analysis of the ZF domain on the dna sequence  coding for the protein data
 
 `uv run snakemake -s ../utils/process_zincfinger_dna.smk  --jobs 1`
 
-## Run the Tyrosine analysis of the SET domain
+### Run the Tyrosine analysis of the SET domain
 
 `uv run snakemake -s ../utils/process_SET_tyrosines.smk  --jobs 1`
