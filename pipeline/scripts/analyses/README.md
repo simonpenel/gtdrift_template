@@ -237,7 +237,7 @@ La commande pour lancer ce pipeline avec _pixi_ (nécessaire sur le cluster pbil
 pixi run snakemake -s  collecting_annotations.smk --configfile config.json  --cores 1
 ```
 
-Le fichier _pixi.toml_:
+Le fichier _pixi.toml_ permettant d'utiliser gffread:
 ```yaml
 [workspace]
 authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
