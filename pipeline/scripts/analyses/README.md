@@ -85,26 +85,25 @@ dependencies = [
 > [!TIP]
 >Utilisation de _uv_ :https://uv-introduction-da5541.pages.in2p3.fr/1
 
-Le taxon est défini dans le fichier de configuration config.json:
+Le taxon est défini dans le fichier de configuration config.json, ici pour les hominidés:
 
 ```json
 {    
-    "query": "\"Metazoa\"[Organism]"
+    "query": "\"Hominidae\"[Organism]"
 }
 ```
 
 Cela va génerer le fichier  _data/resources/organisms_data_   qui devra être copié dans le répertoire _pathGTDriftData_ pour servir de référence dans la suite du pipeline, par exemple pour connaître l'espèce associée a un numero d'assemblage.
 
 > [!IMPORTANT]
-> Pour l'analyse des métazoaires le fichier _data/resources/organisms_data_ doit être copié dans _pathGTDriftData_ (i.e. _gtdrift_template/data_results_per_assembly/_) et il sera utilisé comme référence. Mais il est possible de générer un fichier dédié à des jeux de données plus réduits (pour ensuite génerer des liste d'assemblages destinées a des analyses spécifiques à un taxon par exemple) auquel cas on ne le copiera pas dans _pathGTDriftData_:
+> Pour l'analyse des métazoaires le fichier _data/resources/organisms_data_ doit être copié dans _pathGTDriftData_ (i.e. _gtdrift_template/data_results_per_assembly/_) et il sera utilisé comme référence par les autres scripts. Mais il est possible de générer un fichier dédié à des jeux de données plus réduits (pour ensuite génerer des liste d'assemblages destinées a des analyses spécifiques à un taxon par exemple) auquel cas on ne le copiera pas dans _pathGTDriftData_:
 
 
-  
-Le fichier de configuration config.json pour les hominidés:
+Le fichier de configuration config.json pour les métazoaires:
 
 ```json
 {    
-    "query": "\"Hominidae\"[Organism]"
+    "query": "\"Metazoa\"[Organism]"
 }
 ```
 
