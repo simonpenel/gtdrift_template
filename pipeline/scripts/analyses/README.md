@@ -1,7 +1,17 @@
 
 > [!IMPORTANT]
-> Il est nécessaire d'installer les commandes EDirect:
+> Il est nécessaire d'installer les commandes _EDirect_:
 > https://www.ncbi.nlm.nih.gov/books/NBK179288/  
+
+> [!IMPORTANT]
+> Il est nécessaire d'installer le programme _seqkit_ :https://bioinf.shenwei.me/seqkit/download/#installation
+> 
+> Sinon il est possible d'utiliser  _seqkit_  via _pixi_
+
+> [!IMPORTANT]
+> Il est nécessaire d'installer le programme _gffread_ (pour l'étape _collecting_genome_annotation_):https://github.com/gpertea/gffread
+> 
+> Sinon il est possible d'utiliser  _gffread_  via _pixi_
 
 > [!NOTE]
 > Le résultat des exemples de commandes peuvent être différent de ceux donnés dans cette documentation
