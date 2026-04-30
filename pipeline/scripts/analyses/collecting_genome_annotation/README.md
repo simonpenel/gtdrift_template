@@ -10,8 +10,4 @@ Ce pipeline permet de télécharger les génomes et leurs annotations étant don
 > ou
 >
 > `more ../README.md`
-Créer un  dag file :
 
-``` bash
-snakemake --configfile config.json --forceall --dag | dot -Tpdf > dag-GTDrift.pdf
-```
