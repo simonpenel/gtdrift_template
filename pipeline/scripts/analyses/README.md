@@ -1,5 +1,7 @@
 # Settings:
 
+Les commandes linux  _wget_  and _gzip_ doivent être installées. 
+
 > [!IMPORTANT]
 > Il est nécessaire d'installer les commandes _EDirect_:
 > https://www.ncbi.nlm.nih.gov/books/NBK179288/  
