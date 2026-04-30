@@ -1,0 +1,14 @@
+{ 
+  "mode": "",  
+  "storagetype": "irods",
+  "analyse_dir_name": "demo/",
+  "global_analyse_dir_name": "demo/",
+  "resources_dir_name": "domain_example_demo/", 
+  "domain_references" : {
+"DOMAIN_A":"DOMAIN_A_ReferenceAlignment",
+"DOMAIN_B":"DOMAIN_B_ReferenceAlignment"
+},
+  "domains" :  ["DOMAIN_B"],    
+  "domains_simple" : ["DOMAIN_A"],
+}
+
