@@ -185,6 +185,8 @@ calc.ZFD.FASTA = function(fasta_file, return.prop = TRUE) {
   # Iteration over each sequence of the FASTA file
   for (i in 1:length(fasta_seqs)) {
     seq_id <- names(fasta_seqs)[i]  # Obtener el ID de la secuencia
+    short_id <-str_split_1(seq_id, " ")[1]
+    seq_id <- short_id
     aa.seq <- tolower(as.character(fasta_seqs[[i]]))
     
     # Call to the function calc.ZFD
