@@ -1,7 +1,9 @@
 >[!NOTE]
 > Plus d'information sur https://github.com/simonpenel/gtdrift_template/tree/master/pipeline/scripts/analyses
 >
-> ou ../README.md
+> ou
+>
+> `more ../README.md`
 
 # Télécharger les génomes et les annotation à partir du NCBI
 
