@@ -1,3 +1,4 @@
+# Settings:
 
 > [!IMPORTANT]
 > Il est nécessaire d'installer les commandes _EDirect_:
