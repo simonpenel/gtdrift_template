@@ -1,6 +1,12 @@
 {
-    "assembly_list": ["GCA_001262665.1","GCF_000247795.1","GCF_000283155.1"],
-    "storagetype": "irods"
-#    "storagetype": "local"    
+    "assembly_list": [
+        "GCF_028885625.2" , 
+        "GCF_028885655.2" , 
+        "GCF_028858775.2" , 
+        "GCF_029289425.2" , 
+        "GCF_029281585.2" , 
+        "GCF_000001405.40" 
+        ],
+    "storagetype": "local"  
 }
 
