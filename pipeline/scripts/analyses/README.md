@@ -218,6 +218,29 @@ uv run snakemake -s  collecting_annotations.smk --configfile config.json  --core
 ```
 
 
+La commande pour lancer ce pipeline avec _pixi_ (nécessaire sur le cluster pbil) :
+
+``` bash
+pixi run snakemake -s  collecting_annotations.smk --configfile config.json  --cores 1
+```
+
+Le fichier _pixi.toml_:
+```yaml
+[workspace]
+authors = ["Simon Penel <simon.penel@univ-lyon1.fr>"]
+channels = ["conda-forge", "bioconda"]
+name = "collecting_genome_annotation_pixi"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+snakemake = ">=9.16.3,<10"
+gffread = ">=0.12.7,<0.13"
+```
+
+
 ## 5. Lancer les pipelines d'analyse  des données
 
 Plusieurs pipelines d'analyse sont disponibles dans le repertoire `pipeline/scripts/analyses` :
