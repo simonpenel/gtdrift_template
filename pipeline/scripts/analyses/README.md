@@ -5,7 +5,7 @@
 
 > [!NOTE]
 > Le résultat des exemples de commandes peuvent être différent de ceux donnés dans cette documentation
-> les assemblages proposés par le NCBI évoluent. 
+> car les assemblages proposés par le NCBI évoluent. 
 
 
 # Les étapes à suivre:
@@ -52,7 +52,7 @@ Les 4 répertoires suivants doivent impérativement être définis:
   
 
 
-## 2. Recupérerer la description des assemblages pour un taxon donné
+## 2. Récupérerer la description des assemblages pour un taxon donné
 
 
 Se déplacer dans le répertoire  _gtdrift_template/pipeline/scripts/analyses/get_genomes_list_ et lancer le pipeline snakemake _get_list.smk_.
@@ -69,7 +69,7 @@ La commande pour lancer ce pipeline avec _uv_ (recommandé) :
 uv run snakemake -s  get_list.smk  --cores 1
 ```
 
-Le fichier pyproject.toml en cas d'utilisation de _uv_:
+>Le fichier pyproject.toml en cas d'utilisation de _uv_:
 
 ```yaml
 [project]
@@ -85,26 +85,25 @@ dependencies = [
 > [!TIP]
 >Utilisation de _uv_ :https://uv-introduction-da5541.pages.in2p3.fr/1
 
-Le taxon est défini dans le fichier de configuration config.json:
+Le taxon est défini dans le fichier de configuration config.json, ici pour les hominidés:
 
 ```json
 {    
-    "query": "\"Metazoa\"[Organism]"
+    "query": "\"Hominidae\"[Organism]"
 }
 ```
 
 Cela va génerer le fichier  _data/resources/organisms_data_   qui devra être copié dans le répertoire _pathGTDriftData_ pour servir de référence dans la suite du pipeline, par exemple pour connaître l'espèce associée a un numero d'assemblage.
 
 > [!IMPORTANT]
-> Pour l'analyse des métazoaires le fichier _data/resources/organisms_data_ doit être copié dans _pathGTDriftData_ (i.e. _gtdrift_template/data_results_per_assembly/_) et il sera utilisé comme référence. Mais il est possible de générer un fichier dédié à des jeux de données plus réduits (pour ensuite génerer des liste d'assemblages destinées a des analyses spécifiques à un taxon par exemple) auquel cas on ne le copiera pas dans _pathGTDriftData_:
+> Pour l'analyse des métazoaires le fichier _data/resources/organisms_data_ doit être copié dans _pathGTDriftData_ (i.e. _gtdrift_template/data_results_per_assembly/_) et il sera utilisé comme référence par les autres scripts. Mais il est possible de générer un fichier dédié à des jeux de données plus réduits (pour ensuite génerer des liste d'assemblages destinées a des analyses spécifiques à un taxon par exemple) auquel cas on ne le copiera pas dans _pathGTDriftData_:
 
 
-  
-Le fichier de configuration config.json pour les hominidés:
+Le fichier de configuration config.json pour les métazoaires:
 
 ```json
 {    
-    "query": "\"Hominidae\"[Organism]"
+    "query": "\"Metazoa\"[Organism]"
 }
 ```
 
@@ -179,9 +178,9 @@ n'est plus présent.
 
 
 ## 4. Récupérer les données de séquence et les annotations (si elles existent)
-Ce pipeline permet de télécharger les génomes et leurs annotations étant donné une liste d'assemblage. Des liens symboliques seront créés pour faciliter les analyses. Parfois le téléchargement en simultané de plusieurs fichiers bug.
+Ce pipeline permet de télécharger les génomes et leurs annotations étant donné une liste d'assemblage. Des liens symboliques seront créés pour faciliter les analyses. Parfois le téléchargement en simultané de plusieurs fichiers plante.
 
-Se déplacer dans le répertoire _gtdrift_template/pipeline/scripts/analyses/collecting_genome_annotation_. Créer le fichier de configuration _config.json_ à l'aide des fichiers générés en *3*, puis lancer le pipeline snakemake _collecting_annotations.smk_.
+Se déplacer dans le répertoire _gtdrift_template/pipeline/scripts/analyses/collecting_genome_annotation_. Créer le fichier de configuration _config.json_ à l'aide du fichier _*.col_ générés en *3* , puis lancer le pipeline snakemake _collecting_annotations.smk_.
 >Cela va collecter les données de séquences et d'annotation des assemblages. Ces données seront stockées dans les répertoires _genome_seq_ et _annotation_ de chaque assemblage du répertoire _pathGTDriftData/genome_assembly_
 
 
