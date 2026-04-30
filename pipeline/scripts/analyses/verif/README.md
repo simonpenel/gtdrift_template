@@ -131,7 +131,10 @@ This will get the position in chromosomes for the stats of each assemblies and c
 The following analyses are specific to the PRDM9 analysis
 
 >[!IMPORTANT]
-R has to be installed as well as the package Biostrings
+>R has to be installed as well as the package Biostrings
+>
+>https://bioconductor.org/packages/release/bioc/html/Biostrings.html
+>
 ### Run the  analysis of the ZF domain on protein data
 
 `uv run snakemake -s ../utils/process_zincfinger.smk  --jobs 1`
