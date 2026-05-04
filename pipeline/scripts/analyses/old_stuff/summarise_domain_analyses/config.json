@@ -1,0 +1,9 @@
+{   
+  "analyse_dir_name": "analyses_summary/",
+  "analyse_list": ["domain_example","domain_ZCWPW"],
+    "assembly_list": [
+"GCF_028885655.2" , 
+"GCF_000001405.40" 
+]  
+}
+
