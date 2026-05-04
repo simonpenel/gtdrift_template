@@ -1,0 +1,15 @@
+{ 
+  "mode": "",  
+  "storagetype": "local",
+  "analyse_dir_name": "DNA_repair/",
+  "global_analyse_dir_name": "DNA_repair/",
+  "resources_dir_name": "DNA_repair/", 
+  "domain_references" : {
+    "MBD": "MBD4_domain",
+    "C-TERM_MBD4": "C-TERM_MBD4_domain",
+    "TDG":"TDG_domain",
+    "C-TERM_TDG":"C-TERM_TDG_domain"
+  },
+  "domains" : ["MBD"],    
+  "domains_simple" : ["C-TERM_MBD4","TDG","C-TERM_TDG"]
+}
