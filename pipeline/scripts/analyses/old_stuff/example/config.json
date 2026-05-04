@@ -1,0 +1,21 @@
+{ 
+  "mode": "",
+  "analyse_dir_name": "domain_example/",
+  "domain_references" : {
+"SET":"Domain_SET_ReferenceAlignment2024",
+"KRAB":"Domain_KRAB_ReferenceAlignment2024",
+"SSXRD":"Domain_SSXRD_ReferenceAlignment2024",
+"ZF":"Domain_ZF_unit_ReferenceAlignment2024",
+},
+  "domains" :  ["SET"],    
+  "domains_simple" : ["KRAB","ZF"],   
+  "assembly_list": [
+"GCF_029281585.2" , 
+"GCF_029289425.2" , 
+"GCF_028885625.2" , 
+"GCF_028858775.2" , 
+"GCF_028885655.2" , 
+"GCF_000001405.40" 
+]  
+}
+
