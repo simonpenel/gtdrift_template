@@ -1,6 +1,7 @@
 import sys
 import csv
 import os
+import re
 import subprocess
 from Bio import Blast
 # from Bio.Blast import Applications
@@ -32,13 +33,12 @@ def run_blastp(query_seq, subject_file, output_csv):
             for alignment in blast_record.alignments:
                 for hsp in alignment.hsps:
                     subject_id = alignment.hit_id
-                    print("debug subject_id = "+subject_id)
                     # Check if this subject_id has been seen before
                     if subject_id not in best_hits:
                         best_hits[subject_id] = hsp  # Store HSP as the best hit for this subject
                     else:
                         # Compare the current HSP score with the stored best hit score
-                        print("debug "+str(hsp.score) + "> " + str(best_hits[subject_id].score))
+                        #print("debug "+str(hsp.score) + "> " + str(best_hits[subject_id].score))
                         if hsp.score > best_hits[subject_id].score:
                             best_hits[subject_id] = hsp  # Update the best hit
 
@@ -82,7 +82,14 @@ def run_blastp(query_seq, subject_file, output_csv):
                         subject_real_pos += 1  # Move to the next real position in the subject sequence
 
                 # Write the data to the CSV with updated column names
-                csvwriter.writerow([subject_id, y276, y341, y357])
+                print("debug "+subject_id)
+                clean_subject_id = subject_id
+                if subject_id.startswith("ref|"):
+                    pattern = r"ref\|(.+)\|" 
+                    repl = r"\1" 
+                    clean_subject_id =  re.sub(pattern, repl, subject_id)
+                    print("debug "+clean_subject_id)
+                csvwriter.writerow([clean_subject_id, y276, y341, y357])
 
 def is_fasta_empty(subject_file):
     """ Check if the FASTA file is empty or does not exist. """
@@ -109,7 +116,8 @@ if __name__ == "__main__":
         # Generate output CSV with the message
         with open(output_csv, "w", newline='') as csvfile:
             csvwriter = csv.writer(csvfile)
-            csvwriter.writerow(["0 candidate PRDM9 proteins"])
+            csvwriter.writerow(["Subject_ID", "Y276", "Y341", "Y357"])
+            # csvwriter.writerow(["0 candidate PRDM9 proteins"])
     else:
         # Run BLASTP and save the results in the CSV file
         run_blastp(query_seq, subject_file, output_csv)
