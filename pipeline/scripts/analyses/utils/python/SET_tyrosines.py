@@ -38,7 +38,6 @@ def run_blastp(query_seq, subject_file, output_csv):
                         best_hits[subject_id] = hsp  # Store HSP as the best hit for this subject
                     else:
                         # Compare the current HSP score with the stored best hit score
-                        #print("debug "+str(hsp.score) + "> " + str(best_hits[subject_id].score))
                         if hsp.score > best_hits[subject_id].score:
                             best_hits[subject_id] = hsp  # Update the best hit
 
@@ -82,13 +81,11 @@ def run_blastp(query_seq, subject_file, output_csv):
                         subject_real_pos += 1  # Move to the next real position in the subject sequence
 
                 # Write the data to the CSV with updated column names
-                print("debug "+subject_id)
                 clean_subject_id = subject_id
                 if subject_id.startswith("ref|"):
                     pattern = r"ref\|(.+)\|" 
                     repl = r"\1" 
                     clean_subject_id =  re.sub(pattern, repl, subject_id)
-                    print("debug "+clean_subject_id)
                 csvwriter.writerow([clean_subject_id, y276, y341, y357])
 
 def is_fasta_empty(subject_file):
