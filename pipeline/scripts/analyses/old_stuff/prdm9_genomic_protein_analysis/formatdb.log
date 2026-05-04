@@ -1,0 +1,12 @@
+
+========================[ Aug 23, 2024 12:30 PM ]========================
+Version 2.2.26 [Sep-21-2011]
+Started database file "/beegfs/data/penel/snakemake/gtdrift_template/data_results_per_assembly/genome_assembly/GCF_000283155.1/genome_seq/genomic.fna"
+Formatted 3087 sequences in volume 0
+SUCCESS: formatted database data/blastdb_nucleotide_seq/GCF_000283155.1/nucldb
+
+========================[ Aug 23, 2024 12:34 PM ]========================
+Version 2.2.26 [Sep-21-2011]
+Started database file "/beegfs/data/penel/snakemake/gtdrift_template/data_results_per_assembly/genome_assembly/GCF_000247795.1/genome_seq/genomic.fna"
+Formatted 32 sequences in volume 0
+SUCCESS: formatted database data/blastdb_nucleotide_seq/GCF_000247795.1/nucldb

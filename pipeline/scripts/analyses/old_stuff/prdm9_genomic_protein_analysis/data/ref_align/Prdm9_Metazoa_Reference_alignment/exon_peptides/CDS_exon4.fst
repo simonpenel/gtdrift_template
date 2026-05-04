@@ -1,0 +1,96 @@
+>Homo_sapiens_NP_001297143.1 histone-lysine N-methyltransferase PRDM9 isoform PRDM9 A 
+LRATRPAFMCHRRQAIKLQVDDTEDSDEEWTPRQQ
+>Propithecus_coquereli_XP_012512611.1 PREDICTED: probable histone-lysine N-methyltransferase PRDM7 
+LRAPRPAFMCHRRQAIKHQVDDTEDSDEEWTPRQQ
+>Oryctolagus_cuniculus_XP_051694654.1 histone-lysine N-methyltransferase PRDM9 isoform X2 
+LRAPRPAFMCHRRLAVRARADDTEDSDEEWTPRQQ
+>Meriones_unguiculatus_XP_021513083.1 histone-lysine N-methyltransferase PRDM9 
+LKAPKPAFMCFQRQAVKPQISDSDDSDEEWTPKQQ
+>Acomys_russatus_XP_051020323.1 histone-lysine N-methyltransferase PRDM9, partial 
+LKAPRPAFMCHQRQAIKPQIDDSDDSDEEWTPSQR
+>Mus_musculus_domesticus_BAO48043.1 Prdm9 
+LRAPRPAFMCYQRQAMKPQINDSEDSDEEWTPKQQ
+>Apodemus_sylvaticus_XP_052025772.1 histone-lysine N-methyltransferase PRDM9 isoform X1 
+LRAPRPAFMCYQRQEIKLQINDSEDSDEEWTPKQP
+>Cricetulus_griseus_XP_035296347.1 histone-lysine N-methyltransferase PRDM9 isoform X2 
+LKAPRPAFMCYQRQAFKPQMDDSEDSDEEWTPKQQ
+>Phodopus_roborovskii_CAH7304074.1 Prdm9 
+LKAPRPAFMCCQRQAFKPQIDESEDSDEEWTPKQQ
+>Mesocricetus_auratus_XP_040584272.1 histone-lysine N-methyltransferase PRDM9 
+LKAPRPAFMCYQRQAFKPQIDDSEDSDEEWTPKRQ
+>Peromyscus_leucopus_XP_028722407.1 histone-lysine N-methyltransferase PRDM9 
+LRAPRPAFMCYQRQRIKPQIDDSEDSDEEWTPKQQ
+>Nannospalax_galili_XP_008841629.2 LOW QUALITY PROTEIN: histone-lysine N-methyltransferase PRDM9 
+LRAPRPAFMCYQRQAIKPQPNDTEDSDEEWTPRRQ
+>Dipodomys_ordii_XP_012869273.1 PREDICTED: histone-lysine N-methyltransferase PRDM9-like 
+LKAPRPVFMCHRRQAIKPQVDDTDDSDEEWTPGRQ
+>Perognathus_longimembris_pacificus_XP_048224360.1 LOW QUALITY PROTEIN: histone-lysine N-methyltransferase PRDM9 
+LKAPRPVFMCHRRQAIKPQVDDTDDSDEEWTPRQQ
+>Pteropus_vampyrus_XP_023378091.1 zinc finger protein 596 isoform X1 
+LRAPRPAFMCRRRQAIKPQVDDSEDSDEEWTPRQQ
+>Loxodonta_africana_XP_023397543.1 histone-lysine N-methyltransferase PRDM9 
+LRAPRPAFMCHRRQAIKAQVDNTEDSDEEWTPRQQ
+>Pipistrellus_kuhlii_KAF6272747.1 PR/SET domain 9 
+LRAPRPAFMCHRRRTAKPLAEDAEDSEDSDEEWTPRQR
+>Pipistrellus_kuhlii_XP_036281923.1 histone-lysine N-methyltransferase PRDM9 
+LRAPRPAFMCHRRRTAKPLAEDAEDSEDSDEEWTPRQR
+>Molossus_molossus_KAF6407794.1 PR/SET domain 9 
+LRAPRPAFMCHRRQAAKPQVEDAEDSDEEWTPRQQ
+>Desmodus_rotundus_XP_053769381.1 histone-lysine N-methyltransferase PRDM9-like 
+LRAPRPAFMCHHRPAAELQEEDPGDSDEEWTPRRQ
+>Desmodus_rotundus_XP_053771023.1 histone-lysine N-methyltransferase PRDM9-like isoform X2 
+LRAPRPAFMCHRRPAAELQEEDPEDSDEEWTPRRQ
+>Phyllostomus_hastatus_XP_045704705.1 histone-lysine N-methyltransferase PRDM9-like 
+LRVPRPAFMCHHHRQATQLQEEDPEDSDEEWTPGQQ
+>Artibeus_jamaicensis_XP_037017474.2 histone-lysine N-methyltransferase PRDM9-like 
+LRALQPAFLCHHRSWTTELQEEDPEDSDEQWTPRQQ
+>Artibeus_jamaicensis_XP_053524569.1 histone-lysine N-methyltransferase PRDM9-like isoform X1 
+LRAPRPASMCHRSQTTELQEEDPEDSDEEWNPRQQ
+>Artibeus_jamaicensis_XP_053517935.1 histone-lysine N-methyltransferase PRDM9-like isoform X4 
+LRAPRPAFLCHHRGRATELEEEDPEDSDEEWAPRRR
+>Sturnira_hondurensis_XP_036891181.1 histone-lysine N-methyltransferase PRDM9-like 
+LRAPRLAFLCHHHRQATELQEEDPEDADEEWAPGQR
+>Phyllostomus_hastatus_XP_045695009.1 histone-lysine N-methyltransferase PRDM9-like, partial 
+LRVPRPAFMGHRRRATKLQEGDREDSDEERAPRQQ
+>Pteronotus_parnellii_mesoamericanus_XP_054423774.1 histone-lysine N-methyltransferase PRDM9 
+LRVPRPTFMCHRRQTTKLQEENPEDSDEEWTPKQQ
+>Phyllostomus_discolor_KAF6078330.1 hypothetical protein HJG60_009179 
+LRAPRPAFMCRRRRAAAPRAAASDDSDEEWTPRQR
+>Sturnira_hondurensis_XP_036922203.1 histone-lysine N-methyltransferase PRDM9-like 
+LRAPRPAFMCRRRRAAAARAAASDDSDEEWTPRQR
+>Equus_caballus_XP_023493360.1 probable histone-lysine N-methyltransferase PRDM7 isoform X1 
+LRAPRPAFMCHRRRASRRRDEDAEDSDEEWTPRQQ
+>Manis_javanica_XP_017517700.2 probable histone-lysine N-methyltransferase PRDM7 
+LRSPRPAFMCRRRQAIKPQVDDTEDSDEEWMPSQQ
+>Erinaceus_europaeus_XP_016047293.1 PREDICTED: probable histone-lysine N-methyltransferase PRDM7 
+LRAPRPAFMCHRRQATKSKLDDTEDSDEEWTPRQQ
+>Ovis_aries_XP_042100752.1 LOW QUALITY PROTEIN: histone-lysine N-methyltransferase PRDM9-like 
+FRATRPAFMHHRRQVIKLQVDDTEDSDEEWTPRQQ
+>Budorcas_taxicolor_XP_052501909.1 histone-lysine N-methyltransferase PRDM9-like 
+FRATRPAFMHHRRQVIKLQVDDTEDSDEEWTPRQQ
+>Bos_taurus_AHW76795.1 PRDM9 
+FRATRPAFMHHRRQVIKLQADDTEDSDEEWTPRQQ
+>Muntiacus_muntjak_KAB0364846.1 hypothetical protein FD754_009002 
+FRATRPDFMHHCRQVIKLQVDDTEDSDEEWTPRQQ
+>Cervus_canadensis_XP_043336547.1 histone-lysine N-methyltransferase PRDM9-like 
+FRATRPDFMHHRRQVVKPQVDDTEDSDEEWTPRQQ
+>Capra_hircus_XP_017921406.1 PREDICTED: LOW QUALITY PROTEIN: histone-lysine N-methyltransferase PRDM9-like 
+LRATQLAFMHHCRQVIKPQVDDIEDSDEEWTPRQQ
+>Sousa_chinensis_TEA40423.1 hypothetical protein DBR06_SOUSAS30610001, partial 
+LRAPRPAFMCHRRQAIKAQVGDPEDSDEEWTPRQQ
+>Panthera_leo_XP_042776135.1 probable histone-lysine N-methyltransferase PRDM7 isoform X3 
+LRAPRPAFMCHRRQAIKPQVDDTEDSDEEWTPRQQ
+>Lynx_pardinus_VFV36104.1 histone-lysine n-methyltransferase 
+LRAPRPAFMCHRRQAIKPQVDDTEDSDEEWTPRQQ
+>Suricata_suricatta_XP_029780747.1 probable histone-lysine N-methyltransferase PRDM7 
+LRAPRPAFMCHRRQAIKPQVQDTEDSDEEWTPRQQ
+>Talpa_occidentalis_XP_037367623.1 histone-lysine N-methyltransferase PRDM9-like isoform X2 
+LRAPRPAFMCHRRLAIKPKEEDSEDSDEEWTPRRQ
+>Talpa_occidentalis_XP_037352884.1 histone-lysine N-methyltransferase PRDM9 
+LRAPRPAFMCHRRLAIKPKGEDSEDSDEEWTPRRQ
+>Choloepus_didactylus_XP_037671730.1 probable histone-lysine N-methyltransferase PRDM7 
+LRAPRPAFMCRRRPPLRPREDAEDSDEDWTPRPR
+>Phascolarctos_cinereus_XP_020832681.1 histone-lysine N-methyltransferase PRDM9 isoform X1 
+LSAPRPAFMCRQNKRAKVEESGDSDEEWIPKQL
+>Dromiciops_gliroides_XP_043849818.1 histone-lysine N-methyltransferase PRDM9-like 
+LTAPRPTFMCRGRPNRRAKVEESGDSDEEWIPKKL

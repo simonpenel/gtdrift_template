@@ -1,0 +1,31 @@
+
+##############################
+# Searching for Prdm9 homologs in metazoa
+##############################
+
+
+#########
+# Summary
+#########
+
+I used RefSeq (update Sept. 2021) to search for homologs of Prdm9 within metazoans (see /Users/duret/Travail/Analyses/PRDM9_phylogeny/Prdm9_metazoa/PhylogeneticDistribution_PRDM9_metazoa_2021/README.Prdm9_phylogenetic_profile). 
+
+=> I selected 52 representative full-length sequences covering diverse metazoan clades : PRDM9_metazoa_ReferenceAlignment.mase
+
+NB: in the two hemiptera species (Halyomorpha halys, Nilaparvata lugens) Prdm9 is fast evolving. In Halyomorpha halys, Y276 was mutated into F : loss of methyl-transferase activity -> loss of original Prdm9 function?
+ 
+I annotated the positions of domains:
+	KRAB (positions 23..86 in the human Prdm9)
+ 	SSXRD (positions 171..204 in the human Prdm9)
+ 	SET  (positions 244..358 in the human Prdm9)
+ 	N-term ZF (C2H2 ZF encoded at the beginning of the last exon, not within the array; degenerate in some species): 388..411
+ 	ZF-array (C2H2 ZF in tandem repeats): starting at position 527 in human Prdm9
+ 
+ 
+To provide insights on the underlying gene structure (exon/intron), I added the protein segments encoded by each human exon (NB: the numbering starts at exon2, because human exon1 is entirely non-coding: 5'UTR).
+ 	KRAB is encoded by human exons 3 and 4
+ 	SSXRD is encoded by human exon 7
+ 	SET is encoded by human exons 8, 9 and 10
+ 	ZD is encoded by human exon 11
+ 	
+ For the ZF domain (N-term ZF + ZF-array): I computed the multiple alignment anchored on the N-term ZF and on the 1st ZF of the array. The following ZFs of the array are 
