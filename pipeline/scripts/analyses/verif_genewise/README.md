@@ -87,6 +87,8 @@ RESOURCES_DIR_NAME/
 > "domains" provides  the list of domains for which a hmm search and a paralogy analysis will be performed
 
 > "domains_simple" provides  the list of domains for which a hmm search  will be performed
+>
+> "exons" provides a list of exons to  search for. For the moment theses exons are stored in -RESOURCES_DIR_NAME/ref_align/Prdm9_Metazoa_Reference_alignment/exon_peptides/_. This has to be improved.
 
 - `assemblies.json` file :
   The file contains the list of assemblies to be processed.
