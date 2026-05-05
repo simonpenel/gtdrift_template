@@ -48,10 +48,13 @@ R has to be installed with the package Biostrings
         "CDS_exon8", "CDS_exon9", "CDS_exon10", "CDS_exon11"]
 }
 ```
+
 > [!CAUTION]
-> "analyse_dir_name" describes the directory win which the  results are stored. It should be modified for each analyse! 
-
-
+> "analyse_dir_name" describes the directory in which the  results are stored for each assembly.
+> 
+> "global_analyse_dir_name" describes the directory in which the concatenation of the results of all assemblies is stored.
+> 
+> "analyse_dir_name"  and "global_analyse_dir_name" may be different : for a same analyis it is recommended to keep the same _analyse_dir_name_ to avoid to re-calculate the same data, however it may be interesting to change the  _global_analyse_dir_name_ according to the studied taxa, for example you may be interested in concatenated results for primates and rodents separately. 
 
 > "resources_dir_name"  describes the  directory in which the  data about domains is stored. The directoy is located in "pathGTDriftResource". It must be structured as follows:
 
