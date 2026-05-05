@@ -140,6 +140,10 @@ The following analyses are specific to the PRDM9 analysis
 `uv run snakemake -s ../utils/process_zincfinger.smk  --jobs 1`
 
 ### Run the analysis of the ZF domain on the dna sequence  coding for the protein data
+>[!IMPORTANT]
+> The software _silixx_ has to be installed.
+> https://lbbe.univ-lyon1.fr/fr/SiLix
+
 
 `uv run snakemake -s ../utils/process_zincfinger_dna.smk  --jobs 1`
 
