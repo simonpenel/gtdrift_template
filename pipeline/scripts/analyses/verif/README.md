@@ -149,4 +149,7 @@ The following analyses are specific to the PRDM9 analysis
 
 ### Run the Tyrosine analysis of the SET domain
 
+> [!CAUTION]
+> Do not run in parallel, use --jobs 1
+> 
 `uv run snakemake -s ../utils/process_SET_tyrosines.smk  --jobs 1`
