@@ -82,10 +82,13 @@ def run_blastp(query_seq, subject_file, output_csv):
 
                 # Write the data to the CSV with updated column names
                 clean_subject_id = subject_id
-                if subject_id.startswith("ref|"):
-                    pattern = r"ref\|(.+)\|" 
-                    repl = r"\1" 
-                    clean_subject_id =  re.sub(pattern, repl, subject_id)
+                tmpvar = re.split('\\|', subject_id)
+                if len(tmpvar) == 3 :
+                       clean_subject_id = tmpvar[1]
+                # if subject_id.startswith("ref|"):
+                #     pattern = r"ref\|(.+)\|" 
+                #     repl = r"\1" 
+                #     clean_subject_id =  re.sub(pattern, repl, subject_id)                                  
                 csvwriter.writerow([clean_subject_id, y276, y341, y357])
 
 def is_fasta_empty(subject_file):
