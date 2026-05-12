@@ -85,3 +85,36 @@ rule concatenate_was_parsed_genwise_results:
         + GLOBAL_RESULTS + "wad_parsed_results.csv"
     script:
         "../utils/python/merge.py"
+
+# --------------
+# info_assembly
+# ---------------
+# Get the information associated to an assembly
+
+rule info_assembly:
+    input:
+        organisms_file=pathGTDriftData + "organisms_data"
+    output:
+        info_assembly=temp(pathGTDriftGlobalResults + GLOBAL_RESULTS + "info_{accession}.csv")
+    params:
+        accession=accession_nb
+    script:
+        "../utils/python/info_assembly.py"       
+
+# ----------------------
+# list_assemblies
+# ----------------------
+# Concatenate the infomration on  assemblies in a  list
+
+rule list_assemblies:
+    input:
+        info_assembly=expand(
+            pathGTDriftGlobalResults + GLOBAL_RESULTS + "info_{accession}.csv",
+            accession=ACCESSNB)
+    output:
+        # List of assemblies informations
+        # --------------------------------
+        pathGTDriftGlobalResults
+        + GLOBAL_RESULTS + "list_assemblies.csv"
+    script:
+        "../utils/python/list_assemblies.py"
