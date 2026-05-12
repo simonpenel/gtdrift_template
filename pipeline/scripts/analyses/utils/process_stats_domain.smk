@@ -137,7 +137,11 @@ rule all:
                               
         # Concatenation of results on all genomes
         # ----------------------------------------
-        concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv",     
+        concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv",
+
+        # List of assemblies
+        # -------------------
+        list_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "list_assemblies.csv",   
 
         # Pour l'analyse de type zinc finger a faire apres (pour PRDM9  uniquement, inutile sinon)
         # -----------------------------------------------------------------------------------------------         

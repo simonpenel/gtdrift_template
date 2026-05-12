@@ -30,7 +30,7 @@ rule concat:
 # ----------------------
 # concatenate_assemblies
 # ----------------------
-# concatenate the resulats of all assemblies in a global file
+# Concatenate the resulats of all assemblies in a global file
 
 rule concatenate_assemblies:
     input:
@@ -48,5 +48,37 @@ rule concatenate_assemblies:
         + GLOBAL_RESULTS + "results.csv"
     script:
         "../utils/python/merge.py"
-        
 
+# -------------
+# info_assembly
+# -------------
+# Get the info associated to an assembly
+
+rule info_assembly:
+    input:
+        organisms_file=pathGTDriftData + "organisms_data"
+    output:
+        info_assembly=temp(pathGTDriftGlobalResults + GLOBAL_RESULTS + "info_{accession}.csv")
+    params:
+        accession=accession_nb
+    script:
+        "../utils/python/info_assembly.py"       
+
+
+# ----------------
+# list_assemblies
+# ----------------
+# Concatenate the infos of all assemblies in a  global list
+
+rule list_assemblies:
+    input:
+        info_assembly=expand(
+            pathGTDriftGlobalResults + GLOBAL_RESULTS + "info_{accession}.csv",
+            accession=ACCESSNB)
+    output:
+        # CList of assemblies info
+        # ------------------------
+        pathGTDriftGlobalResults
+        + GLOBAL_RESULTS + "list_assemblies.csv"
+    script:
+        "../utils/python/list_assemblies.py"
