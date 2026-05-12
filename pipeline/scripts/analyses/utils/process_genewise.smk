@@ -163,8 +163,12 @@ rule all:
 
         # Concatenation of results on all genomes
         # ----------------------------------------
-        concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv",              
-          
+        concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv",   
+
+        # Concatenation of parsed results on all genomes
+        # ----------------------------------------
+        concat_assemblies_parsed=pathGTDriftGlobalResults + GLOBAL_RESULTS + "ordered_parsed_results.csv", 
+        
         # Statistics on all domains for all genomes
         # -----------------------------------------                
         # (supprimé) all_domains_stats_summary=pathGTDriftGlobalResults + GLOBAL_RESULTS + "statistics_summary.csv",
