@@ -19,7 +19,7 @@ args = parser.parse_args()
 flog  = open(args.log,"w")
 # output file
 f = open(args.output, "w")
-f.write("SeqID;Contig;mrna;Status;Nb ZF full;Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original SF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length\n")
+f.write("SeqID;Contig;mrna;Status;Nb ZF hits in annotated protein;Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original ZF string;Contig;mrna;dna sequence;dna sequence reading strand;dna sequence length\n")
 
 
 # define patterns
@@ -175,14 +175,26 @@ with open(args.output, 'w') as writer, open(args.fasta, 'w') as faawriter:
         faawriter.write(output[elt][6])
         faawriter.write("\n")
         protein_seq = output[elt][6]
-        print("Protein seq. =           " + output[elt][6])
-        print("Dna seq. =               " + output[elt][10])
+        #print("Protein seq. =           " + output[elt][6])
+        #print("Dna seq. =               " + output[elt][10])
         dna_seq = output[elt][10]
         bio_dna_seq = Seq(dna_seq)
         translated_dna = bio_dna_seq.translate()
-        print("Transl. dna seq. =       " + translated_dna)
+        #print("Transl. dna seq. =       " + translated_dna)
 
-        status = "Ok"
+        flog.write("DNA sequence :\n")
+        flog.write(dna_seq)
+        flog.write("\n")
+
+        flog.write("Full protein :\n")
+        flog.write(protein_seq)
+        flog.write("\n")
+
+        flog.write("Translated protein :\n")
+        flog.write(str(translated_dna))
+        flog.write("\n")
+
+        status = "OK, the translated DNA sequence has the same length as the annotated protein sequence."
         # Create the  part of the translated protein which is correct (i.e util frame shift)
         correct_protein  = []
         flag_fs = False
@@ -192,11 +204,14 @@ with open(args.output, 'w') as writer, open(args.fasta, 'w') as faawriter:
             else :
                 print("Frameshift!")
                 flag_fs = True
-                status = "frameshift"
+                status = "Frameshift: the translated DNA sequence is shorter than the  annotated protein sequence."
                 break
         correct_protein = "".join(correct_protein)
-        print("Frameshift =             " + str(flag_fs))       
-        print("Corr. Transl. dna seq. = " + correct_protein)
+        print("Frameshift =             " + str(flag_fs))    
+        flog.write("Corr. Transl. dna seq :\n")
+        flog.write(correct_protein)
+        flog.write("\n")   
+        #print("Corr. Transl. dna seq. = " + correct_protein)
         # Search for zf
         # search patterns
 
@@ -210,9 +225,13 @@ with open(args.output, 'w') as writer, open(args.fasta, 'w') as faawriter:
                 list_of_matches.append([pattern,match])
         sorted_list_of_matches = sorted(list_of_matches, key=lambda element: element[1].span()[0])   # sort
         flog.write(str(len(sorted_list_of_matches))+ " matches.\n")
+        for element in sorted_list_of_matches:
+            match  = element[1]
+            flog.write("Check Match in full protein : "+str(match.span()[0])+" - "+str(match.span()[1])+" :" +str(match.group())+"\n")
         nb_zf_full = len(sorted_list_of_matches)
 
         flog.write("Pattern search in translated protein :\n")
+        
         pattern_nb = 1
         list_of_matches = []
         for pattern in [pattern1,pattern2]:
@@ -279,12 +298,23 @@ with open(args.output, 'w') as writer, open(args.fasta, 'w') as faawriter:
         match_tandem_nb = 1 # num of the match in set of tandem zincfingers
         flag_match_ok = True
         flog.write("\nProcessing matches\n")
+        id = elt
+        contig = id.split("-")[1]
+        mrna = id.split("-")[2]
+        #f.write(str(id) + ";" + str(contig) + ";" + str(mrna)+";Status;" + str(nb_zf_full) + ";Pattern;Pattern num;Match num;Tandem num;ZF num;ZF name;Start in prot;End in prot;Length;uniformised ZF string;original ZF string;" + str(contig) + ";" + str(mrna) + ";dna sequence;dna sequence reading strand;dna sequence length\n")
+
+        #f.write(id + ";" + contig + ";" + mrna + ";" + "Status" + ";" + str(nb_zf_full) + ";" + "pattern" + ";" + "0" + ";" + "0" + ";" + "0" + ";" + "0" + ";" + "zfname" + ";" + "0" + ";" + "0" + ";" + "0" + ";" + "zf" + ";" + "match" + ";" + contig + ";" + mrna + ";" + "" + ";" + "" + ";" + "0" + "\n")
+
+        if len(sorted_list_of_matches) == 0 :
+            f.write(id+";"+contig+";"+mrna+";"+status+";"+str(nb_zf_full)+";;;;;;;;;;;;;;;;\n")
+
         for element in sorted_list_of_matches:
             flog.write("Match "+str(element)+"\n")
             if flag_match_ok == False:
                 flog.write("Match was flaged as erroneous,  sequence flaged as erroneous\n")
                 status = "match transl. problem"
                 flag_sequence_ok = False
+                sys.exit("match pb")
                 continue
             match  = element[1]
             pattern = element[0]
