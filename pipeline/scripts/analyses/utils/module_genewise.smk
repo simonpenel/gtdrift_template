@@ -94,7 +94,9 @@ rule get_tblastn:
         "results/{accession}/Step1_blast/tblastn/PRDM9_{exon}.tblastn.fmt7"
     shell:
         """
-        /beegfs/home/penel/tmpdir/ncbi/ncbi-blast-2.16.0+-src/c++/ReleaseMT/bin/tblastn   -query {input.cds} -db data/blastdb_nucleotide_seq/{wildcards.accession}/db_no_lc/nucldb -out {output} -evalue 1e-3 -max_target_seqs 500 -max_hsps 180 -outfmt "7 delim=  qseqid qlen sseqid slen pident nident length mismatch gapopen qstart qend sstart send bitscore evalue" -num_threads 4
+        #/beegfs/home/penel/tmpdir/ncbi/ncbi-blast-2.16.0+-src/c++/ReleaseMT/bin/tblastn   -query {input.cds} -db data/blastdb_nucleotide_seq/{wildcards.accession}/db_no_lc/nucldb -out {output} -evalue 1e-3 -max_target_seqs 500 -max_hsps 180 -outfmt "7 delim=  qseqid qlen sseqid slen pident nident length mismatch gapopen qstart qend sstart send bitscore evalue" -num_threads 4
+        tblastn   -query {input.cds} -db data/blastdb_nucleotide_seq/{wildcards.accession}/db_no_lc/nucldb -out {output} -evalue 1e-3 -max_target_seqs 500 -max_hsps 180 -outfmt "7 delim=  qseqid qlen sseqid slen pident nident length mismatch gapopen qstart qend sstart send bitscore evalue" -num_threads 4
+
         """
 
 # function to get the path of a blast search results  for all exons
