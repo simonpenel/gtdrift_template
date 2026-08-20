@@ -1,6 +1,8 @@
 import pandas as pd
 import argparse
 from math import isnan
+import warnings
+warnings.filterwarnings("error")
 
 #pd.options.mode.copy_on_write = True
 parser = argparse.ArgumentParser(description='Reads overview table in the csv format and returns best candidates for each locus')
@@ -34,12 +36,17 @@ sorted.insert(loc=len(sorted.columns)-2, column='Nb Introns', value=sorted['SET 
 #sorted.insert(loc=len(sorted.columns)-2, column='Pseudogene (HMMER)', value='No')
 sorted.insert(loc=len(sorted.columns)-2, column='ZF Truncated', value='No')
 for elt in sorted.index:
-    if type(sorted['Stop/Shift Positions'][elt]) != float or not isnan(sorted['Stop/Shift Positions'][elt]):
+    ss_positions = sorted['Stop/Shift Positions'][elt]
+    # if type(sorted['Stop/Shift Positions'][elt]) != float or not isnan(sorted['Stop/Shift Positions'][elt]):
+    if str(sorted['Stop/Shift Positions'][elt]) != "nan":
+        print(str(sorted['Stop/Shift Positions'][elt]).split(';'))
         for pos in str(sorted['Stop/Shift Positions'][elt]).split(';'):
             if int(sorted['KRAB domain start'][elt]) < float(pos) < int(sorted['SET domain end'][elt]):
-                sorted.loc[:,'Pseudogene (HMMER)'][elt] = 'Yes'
+                #sorted.loc[:,'Pseudogene (HMMER)'][elt] = 'Yes'
+                sorted.loc[elt, 'Pseudogene (HMMER)'] = 'Yes'
             if float(pos) < int(sorted['ZF domain start'][elt]) or int(sorted['ZF domain start'][elt]) < float(pos) < int(sorted['ZF domain end'][elt]):
-                sorted.loc[:,'ZF Truncated'][elt] = 'Yes'
+                #sorted.loc[:,'ZF Truncated'][elt] = 'Yes'
+                sorted.loc[elt, 'ZF Truncated'] = 'Yes'
 
 ## Check if truncated (stop in ZF)
 
