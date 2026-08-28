@@ -1,5 +1,8 @@
 import pandas as pd
 
+import warnings
+warnings.filterwarnings("error")
+
 accession_number = snakemake.params.accession
 
 organisms_file = snakemake.input.organisms_file
