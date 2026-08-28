@@ -1,4 +1,6 @@
 import pandas as pd
+import warnings
+warnings.filterwarnings("error")
 
 accession_number = snakemake.params.accession
 
@@ -249,4 +251,4 @@ print("Output file = "+output_file)
 summarised_data.drop(summarised_data.columns[summarised_data.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)         
 
 summarised_data.to_csv(output_file, sep=';')
-#summarised_data.to_csv(output_file, sep=';', index = False)
+
