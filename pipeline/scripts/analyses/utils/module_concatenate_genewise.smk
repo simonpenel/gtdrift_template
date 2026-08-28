@@ -18,22 +18,22 @@ rule concat_genewise:
     script:
         "../utils/python/concatenate_genewise.py"
         
-rule concatenate_assemblies:
-    input:
-         # Whole analyse summary
-         # ---------------------
-         whole_summary=expand(
-            pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
-            + "whole_summary_genewise.csv",
-            accession=ACCESSNB)
-    output:
-        # Concatenation of assemblies results
-        # -----------------------------------
-        pathGTDriftGlobalResults
-        + GLOBAL_RESULTS + "results.csv"
-    script:
-        "../utils/python/merge.py"
+#rule concatenate_assemblies:
+#    input:
+#         # Whole analyse summary
+#         # ---------------------
+#         whole_summary=expand(
+#            pathGTDriftData
+#            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+#            + "whole_summary_genewise.csv",
+#            accession=ACCESSNB)
+#    output:
+#        # Concatenation of assemblies results
+#        # -----------------------------------
+#        pathGTDriftGlobalResults
+#        + GLOBAL_RESULTS + "results.csv"
+#    script:
+#        "../utils/python/merge.py"
         
         
         
@@ -49,8 +49,8 @@ rule concatenate_parsed_genwise_results:
     output:
         # Concatenation of assemblies results
         # -----------------------------------
-        pathGTDriftGlobalResults
-        + GLOBAL_RESULTS + "parsed_results.csv"
+        temp(pathGTDriftGlobalResults
+        + GLOBAL_RESULTS + "parsed_results.csv")
     script:
         "../utils/python/merge.py"
         
