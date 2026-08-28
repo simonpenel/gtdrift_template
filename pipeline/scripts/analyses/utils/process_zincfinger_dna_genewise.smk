@@ -94,7 +94,8 @@ rule all:
         zincfinger_motif = expand(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/zf_results.csv",accession=ACCESSNB),
         fasta_list = expand(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/clustering/list_of_files.txt",accession=ACCESSNB),
         zincfinger_out = expand(pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger_dna/zinc_finger_details/ZFD_{accession}.csv",accession=ACCESSNB),
-
+        zincfinger_summary=pathGTDriftGlobalResults
+        + GLOBAL_RESULTS + "zinc_finger_dna/zf_dna_diversity_summary.csv",
 # -------------------------------------------------------
 # zincfinger_motif
 # analyse of the genewise ouput
@@ -116,6 +117,43 @@ rule zincfinger_motif:
         python3 ../utils/python/genewise_parser_zf.py  -i {input.genewise} -a {wildcards.accession} -o {output.results} -f {output.fasta} -l {output.log}
         """      
        #python3 ../utils/python/get_ZF_motif_positions_in_protein.py -i {input.protein_seq} -g {input.gff}  -d {input.fasta_dna} -o {output.results} -l {output.log} -w {output.warnings}
+
+
+rule concat:
+    input: expand(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/clustering/concat_summary",accession =ACCESSNB),
+    output: temp(pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger_dna/zf_dna_diversity_summary.csv.tmp"),  
+    shell:
+        """
+        cat {input} > {output}
+        """
+rule clean:
+    input: pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger_dna/zf_dna_diversity_summary.csv.tmp",  
+    output: pathGTDriftGlobalResults + GLOBAL_RESULTS + "zinc_finger_dna/zf_dna_diversity_summary.csv",  
+    shell:
+        """
+        grep -m 1 SeqID {input} |head -1 > {output}
+        grep -v '#' {input} |grep -v SeqID  >> {output}
+        """
+rule summary:
+    input: pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/clustering/list_of_files.txt"
+    output: temp(pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +  "zinc_finger_dna/clustering/concat_summary"),  
+    shell:
+        """
+        echo "#ZF DIVERSITY" > {output}
+
+
+        echo {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/
+        export zffs=`cat {input}`
+        echo "List of files : $zffs"
+        for zff in $zffs
+        do
+        echo "file $zff"
+        export zffname=$(basename $zff .fasta)
+        echo $zffname.clust_summary
+        cat {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}zinc_finger_dna/clustering/$zffname.clust_summary >> {output}
+        done
+        """
+
 
 
 # -------------------------------------------------------
