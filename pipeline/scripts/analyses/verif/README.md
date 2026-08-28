@@ -112,6 +112,13 @@ RESOURCES_DIR_NAME/
 - `assemblies.json` file :
   The file contains the list of assemblies to be processed.
 
+> [!CAUTION]
+> Some analyses depend on the _organism_data_ file. If this file is updated, it will 
+> trigger a new analysis. To avoid this, the time of creation of the file should be modified with the _touch -d_ command. A better solution  in the future would be to use the _ancient()_ keyword in the snakemake file. 
+
+
+> [!CAUTION]
+> Any odification of the code  will  trigger a new analysisn, even if it isn't necessary.  To avoid this, use the option _--rerun-trigger mtime_
 
 
 ## Run the domains analysis on protein data
