@@ -24,4 +24,11 @@ df_cont['Taxid']=column_taxid
 df_cont['Species']=column_species
 
 df_cont.drop(df_cont.columns[df_cont.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)
+
+if 'Genewise index' in df_cont.columns:
+    df_cont['Genewise index'] = df_cont['Genewise index'].astype('Int64')
+    df_cont['Protein Length'] = df_cont['Protein Length'].astype('Int64')
+    df_cont['Chr Start'] = df_cont['Chr Start'].astype('Int64')
+    df_cont['Chr End'] = df_cont['Chr End'].astype('Int64')
+
 df_cont.to_csv(output_file, sep=';')
