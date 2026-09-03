@@ -29,7 +29,9 @@ dependencies = [
 busco = { path = "../../../../../../../../beegfs/home/penel/busco" }
 
 
-# Recuperation des informations taxonomiques
+# Récupération des informations taxonomiques
+
+## Génération du fichier ncbi_genome_assembly.txt
 ```
 ../utils/create_taxonomy_file.sh
 ```
@@ -41,3 +43,9 @@ echo -e "AssemblyName\tAssemblyAccession\tRefSeq_category\tSpeciesName\tSpeciesT
 esearch -db assembly -query eukaryota | efetch -format docsum | xtract -pattern DocumentSummary -element AssemblyName AssemblyAccession RefSeq_category SpeciesName SpeciesTaxid Taxid FtpPath_GenBank >> ncbi_genome_assembly.txt
 sed 's/#//g' ncbi_genome_assembly.txt > tempfile && mv tempfile ncbi_genome_assembly.txt
 ```
+## Génération du fichier ncbi_genome_assembly_taxon.txt
+```
+uv run ../utils/python/reformat_retrieve_taxonomy.py ncbi_genome_assembly.txt ncbi_genome_assembly_taxon.txt
+```
+
+
