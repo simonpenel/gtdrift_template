@@ -30,14 +30,14 @@ busco = { path = "../../../../../../../../beegfs/home/penel/busco" }
 
 
 # Recuperation des informations taxonomiques
-
-'''
+```
 ../utils/create_taxonomy_file.sh
-'''
+```
 
-'''
+Contenu du script:
+```
 #!/usr/bin/sh
 echo -e "AssemblyName\tAssemblyAccession\tRefSeq_category\tSpeciesName\tSpeciesTaxid\tTaxid\tFtpPath_GenBank" > ncbi_genome_assembly.txt
 esearch -db assembly -query eukaryota | efetch -format docsum | xtract -pattern DocumentSummary -element AssemblyName AssemblyAccession RefSeq_category SpeciesName SpeciesTaxid Taxid FtpPath_GenBank >> ncbi_genome_assembly.txt
 sed 's/#//g' ncbi_genome_assembly.txt > tempfile && mv tempfile ncbi_genome_assembly.txt
-'''
+```
