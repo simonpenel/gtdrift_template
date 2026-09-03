@@ -11,7 +11,13 @@ dico_col_names_univ = {
        'SeqID': 'Sequence name from the proteome', 
        'Assembly':'Assembly accession number',
        'Taxid':'Taxonomic identifier',
-       'Species':'Species name'
+       'Species':'Species name',
+       'Chromosome': "Chromosome (according to gff)",
+       'Chr Start': "Start in chromosome (according to gff)", 
+       'Chr End': "End in chromosome (according to gff)", 
+       'Strand': "Chromosome strand (according to gff)", 
+       'Protein Length': "Length of the protein", 
+       'Pseudo': "Taged as pseudogene (according to gff)"
        }
 col_names_domain_univ = dico_col_names_univ.keys()
 
@@ -53,7 +59,7 @@ with open("analyse.json", "r") as file:
 domains=analyse["domains"]
 domains_simple=analyse["domains_simple"]
 resources_dir_name=analyse['resources_dir_name']
-data_origin = analyse["domain_aln_data_origin"]
+data_origin = analyse["domain_references"]
 outfile.write("Reference alignments:\n")
 outfile.write("====================:\n")
 for data in data_origin:
