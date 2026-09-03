@@ -127,7 +127,7 @@ rule generate:
     input :
         # Concatenation of results on all genomes
         # ----------------------------------------
-        concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv",
+        concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results_with_chromosomes.csv",
     output :
         # README file
         # -----------
