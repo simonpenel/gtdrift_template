@@ -17,7 +17,7 @@ dico_col_names_univ = {
         'Chr End':'End position  in the chromosome', 
         'Strand':'Strand on the chromosome', 
         'Protein Length':'Length of the protein', 
-        'ProtRefID':'???', 
+        'ProtRefID':'Refernce of the protein used for genewise analysis', 
         'Nb Introns':'Number of introns in the predicted sequence', 
         'Nb Stop/Frameshift':'Number of stops and frameshifts in the predicted sequence', 
         'Pseudogene (HMMER)':'Pseudogene detected by the hmmer ouput analyis',
@@ -50,7 +50,7 @@ col_names_domain_univ = dico_col_names_univ.keys()
 #           'Stop/Shift Positions', 'Genewise index'
 
 dico_col_names_domain_simple = {
-        'DOMAIN non-truncated':'???',
+        'DOMAIN non-truncated':'Number of non truncated DOMAIN domains',
         'DOMAIN Stop/Frameshift':'Stop and shift positions in DOMAIN domain',
         'DOMAIN Intron'      :'Number of introns in DOMAIN domain',
         'DOMAIN Query'       :'Sequence used to search the DOMAIN domain with hmmer',
