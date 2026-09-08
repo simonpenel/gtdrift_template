@@ -78,7 +78,8 @@ def get_hmm_info(line) :
             "end_in_hmm" : end_in_hmm,
             "start_in_prot": start_in_prot,
             "end_in_prot" : end_in_prot,
-            "merged" : False          
+            "merged" : False,
+            "segments" : []          
         }
         return info__hit     
 
@@ -113,6 +114,7 @@ def process_domain_merge(domain, domain_summary_file, accession_number=accession
                 hmm_info = get_hmm_info(sequence_hmm_line)
                 # print(hmm_info)
                 if index_hmm_line == 1 :
+                    hmm_info["segments"].append("[" + hmm_info["start_in_prot"] + "-" + hmm_info["end_in_prot"]+ "]")
                     current_hmm_info = hmm_info
                     merged_hmm_info = hmm_info
                 else :
@@ -130,6 +132,7 @@ def process_domain_merge(domain, domain_summary_file, accession_number=accession
                             merged_hmm_info["end_in_prot"] = hmm_info["end_in_prot"]
                             merged_hmm_info["hit_score"] = str(float(merged_hmm_info["hit_score"]) + float(hmm_info["hit_score"]))
                             merged_hmm_info["merged"] = True
+                            merged_hmm_info["segments"].append("[" + hmm_info["start_in_prot"] + "-" + hmm_info["end_in_prot"]+ "]")
                         else : 
                             print("superposed hit in hmm : new hmm domain")
                             merged_domains.append(merged_hmm_info)
@@ -144,7 +147,9 @@ def process_domain_merge(domain, domain_summary_file, accession_number=accession
                 print(buf)
             if  to_be_merged == "merged" :
                 print("Combine all domains (" + domain + ")")
+
                 combined_domain = merged_domains.pop(0)
+                positions = "[" + combined_domain["start_in_hmm"] +"-" + combined_domain["end_in_hmm"]+"]"
                 for merged_domain in merged_domains:
                     print("current")
                     print(combined_domain)
@@ -153,15 +158,20 @@ def process_domain_merge(domain, domain_summary_file, accession_number=accession
                     if int(merged_domain["start_in_prot"]) >= int(combined_domain["end_in_prot"]) - 2:
                         print("ok")
                         combined_domain["end_in_prot"] = merged_domain["end_in_prot"]
+                        positions += ",[" + merged_domain["start_in_hmm"] +"-" + merged_domain["end_in_hmm"]+"]"
                     else :
                         sys.exit("problem")
                 print("Combined domain :")
                 print(combined_domain)
                 if sequence in summarised_data['SeqID'].values:
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"Nb {domain} hits"] = len(sequence_domains[sequence])
-                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"Nb {domain} domains (after merging domains)"] = 1
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"Nb {domain} domains"] = 1
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain start"] = int(combined_domain["start_in_prot"])
-                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain end"]= int(combined_domain["end_in_prot"])
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain end"] = int(combined_domain["end_in_prot"])
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Score"] = combined_domain["global_score"]
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Position"] = positions
+
+                    # summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Position"] = "["+comnined["start_in_hmm"]"+","+combined_domain["start_in_hmm"]]
 
             else :
                 print("Select best domain (" + domain + ")")
@@ -178,10 +188,11 @@ def process_domain_merge(domain, domain_summary_file, accession_number=accession
                 if sequence in summarised_data['SeqID'].values:
                     print("debug add "+sequence)
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"Nb {domain} hits"] = len(sequence_domains[sequence])
-                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"Nb {domain} domains (after merging splited hits)"] = len(merged_domains)
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"Nb {domain} domains"] = len(merged_domains)
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain start"] = int(best_domain["start_in_prot"])
-                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain end"]= int(best_domain["end_in_prot"])
-                    print(summarised_data["Nb "+domain+" hits"])
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain end"] = int(best_domain["end_in_prot"])
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Score"] = best_domain["hit_score"]
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Position"] = "[" + best_domain["start_in_hmm"] +"-" + best_domain["end_in_hmm"]+"]"
 
 
 def process_domain_summary(domain, domain_summary_file, accession_number=accession_number):
@@ -296,11 +307,11 @@ noms_colonnes.append(domain+' Query')
 noms_colonnes.append(domain+' E-value')
 noms_colonnes.append(domain+' Score')
 noms_colonnes.append('Nb '+domain+' hits')
-#noms_colonnes.append('Nb '+domain+' domains')
-if  to_be_merged == "merged" :
-    noms_colonnes.append('Nb '+domain+' domains (after merging domains)')
-else :
-    noms_colonnes.append('Nb '+domain+' domains (after merging splited hits)')
+noms_colonnes.append('Nb '+domain+' domains')
+# if  to_be_merged == "merged" :
+#     noms_colonnes.append('Nb '+domain+' domains (after merging domains)')
+# else :
+#     noms_colonnes.append('Nb '+domain+' domains (after merging splited hits)')  
 noms_colonnes.append(domain+' domain start')
 noms_colonnes.append(domain+' domain end')
 noms_colonnes.append(domain+' HMM cov.')
@@ -324,17 +335,18 @@ with open(domain_per_sequence_tabulated_file) as reader:
     summarised_data = summarised_data.astype({domain+' HMM cov. pos.': "string"})
     summarised_data = summarised_data.astype({domain+' domain start': "Int32"})
     summarised_data = summarised_data.astype({domain+' domain end': "Int32"})
-    if  to_be_merged == "merged" :
-        summarised_data = summarised_data.astype({ 'Nb '+domain+' domains (after merging domains)': "Int32"})
-    else :
-        summarised_data = summarised_data.astype({ 'Nb '+domain+' domains (after merging splited hits)': "Int32"})
+    # if  to_be_merged == "merged" :
+    #     summarised_data = summarised_data.astype({ 'Nb '+domain+' domains (after merging domains)': "Int32"})
+    # else :
+    #     summarised_data = summarised_data.astype({ 'Nb '+domain+' domains (after merging splited hits)': "Int32"})
+    summarised_data = summarised_data.astype({ 'Nb '+domain+' domains': "Int32"})    
     summarised_data = summarised_data.astype({'Nb '+ domain+' hits': "Int32"})    
 
 print(".... Processing file "+domain_per_domain_summary_file)
 process_domain_tabulated(domain,domain_per_domain_summary_file)
 process_domain_merge(domain,domain_per_domain_summary_file)  
 # process_domain_summary(domain,domain_per_domain_summary_file)  
-process_hmm_cov(domain,domain_per_domain_summary_file)   
+#process_hmm_cov(domain,domain_per_domain_summary_file)   
  
 getTaxid()                
 getSpecies()                
