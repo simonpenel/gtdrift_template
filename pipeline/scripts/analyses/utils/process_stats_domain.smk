@@ -70,6 +70,10 @@ DOMAINS = config["domains"]
 # --------------------------------------------------------
 DOMAINS_SIMPLE = config["domains_simple"]
 
+# List of domains to be merged (ZF). 
+# --------------------------------------------------------
+DOMAINS_TO_MERGE = config["domains_to_merge"]
+
 # Name of global results directory.
 # ---------------------------------
 # The directory is located in pathGTDriftGlobalResults
@@ -113,6 +117,15 @@ def get_reference_file(wildcards):
     domain = wildcards.domain
     return pathGTDriftResource + RESOURCES_DIR_NAME + "hmm_profiles/"+ domain+"/"+fname+".hmm"
 
+# function to indicate if a domain should be merged
+# --------------------------------------------------
+def to_be_merged(wildcards):
+    domain = wildcards.domain
+    if domain in DOMAINS_TO_MERGE:
+        return "merged"
+    else :
+        return "best"
+
 # get the files and directories describing the reference alignments
 # -----------------------------------------------------------------   
 directories, files = glob_wildcards(pathGTDriftResource + RESOURCES_DIR_NAME + "reference_alignments/{dir}/{file}.fst")
@@ -145,10 +158,10 @@ rule all:
 
         # Pour l'analyse de type zinc finger a faire apres (pour PRDM9  uniquement, inutile sinon)
         # -----------------------------------------------------------------------------------------------         
-        candidates_domain_simple=expand(
-            pathGTDriftData
-            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
-            + "candidates_simple_{domain}.txt", accession=ACCESSNB,domain=DOMAINS_SIMPLE),
+        #candidates_domain_simple=expand(
+        #    pathGTDriftData
+        #    + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+        #    + "candidates_simple_{domain}.txt", accession=ACCESSNB,domain=DOMAINS_SIMPLE),
 
         # Pour l'analyase zinc finger a faire apres (pour PRDM9  uniquement, commenter cette ligne sinon)
         # -----------------------------------------------------------------------------------------------                

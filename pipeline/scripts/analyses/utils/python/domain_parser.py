@@ -21,7 +21,7 @@ with open(per_domain_file) as reader, open(summary_per_domain_file, 'w') as writ
         else:
             # overlapping zinc finger domains are merged to create one big domain with multiple repetitions.
             test_if_zf = per_domain_file.split("/")[-1].split("_")[0]
-            if test_if_zf == 'ZF':
+            if test_if_zf == 'ZF_LOL':
                 line_data = line.split(maxsplit=23)
                 newline_data = newline.split('\t')
                 evalue = line_data[12]

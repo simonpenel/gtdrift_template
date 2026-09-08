@@ -90,13 +90,16 @@ rule summarize_hmm_results:
         # path of all per-sequence hits in tabular format 
         domain_per_sequence_tabulated=pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "hmm_search/tbl/{domain}_tabulated",
         # path of all per-domain hits in tabular format with overlapping zinc finger domains                     
-        domain_per_domain_summary=pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "hmm_search/domtbl/{domain}_domains_summary",        
+        domain_per_domain_summary=pathGTDriftData + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "hmm_search/domtbl/{domain}_domains_summary"     
     output:
         # domain protein statistics for each assembly.
         pathGTDriftData
         + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS +"summary_hmmsearch_{accession}_{domain}.csv",
-    params:    
-        accession=accession_nb,  
+    params:
+        # accession number    
+        accession=accession_nb, 
+        # boolean dicating if domain shoudl be merged
+        to_be_merged = to_be_merged  
     script:
         "../utils/python/table_domain_builder_single.py"
 
