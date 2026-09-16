@@ -26,8 +26,8 @@ def filter_bestmatch(input_file, output_file, reference, domain):
         create_default_output(output_file, domain)
     else:
         # Filter the rows where the 'Best Match' column equals 'PRDM9'
-        df_filtered = df[df['Best Match'] == reference ]
-        
+        #df_filtered = df[df['Best Match'] == reference ]
+        df_filtered = df[df['paralog Match'] == reference ]
         # If the filtered DataFrame has no rows, generate a row with default values
         if df_filtered.empty:
             #create_default(output_file)
@@ -48,12 +48,13 @@ def create_default_output(output_file, domain):
         domain + ' E-value': "",
         domain + ' Score': "",
         'Nb '+domain + ' domains': "",
+        'Nb '+domain + ' hits': "",
         domain + ' domain start': "",
         domain + ' domain end': "",
         'Taxid': "",
-        'Best Match': "",
-        'Bit Score': "",
-        'Score ratio': ""
+        'paralog Match': "",
+        'paralog Score': "",
+        'paralog ratio': ""
     }
     # Convert the dictionary to a DataFrame and add it to the output DataFrame
     new_df = pd.DataFrame([new_row])

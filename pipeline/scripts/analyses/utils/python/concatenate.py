@@ -41,7 +41,7 @@ for file in input_files:
             if test[1] == "Query" :
                 domain = test[0]
                 break
-    df = df.rename(columns={'Best Match': domain + ' Best Match','Bit Score': domain + ' Bit Score','Score ratio': domain + ' Score ratio'})
+    df = df.rename(columns={'paralog Match': domain + ' paralog Match','paralog Score': domain + ' paralog Score','paralog Ratio': domain + ' paralog Ratio'})
     print("Processing "+file) 
     if i == 0 :
         # First file
@@ -82,11 +82,12 @@ for file in input_files:
         # Set missing taxid,species and assembly
         newdf["Taxid"] = newdf["Taxid"].fillna(value=taxid)
         newdf["Assembly"] = newdf["Assembly"].fillna(value=assembly)
-        newdf["Species"] = newdf["Species"].fillna(value=species)        
+        newdf["Species"] = newdf["Species"].fillna(value=species)   
+        df_cont = newdf    
         # Set other missing data to 0
-        df_cont = newdf.fillna(0)
-        # Apply types   
-        df_cont = df_cont.apply(lambda x: x.astype(orig[x.name]))
+        # df_cont = newdf.fillna(0)
+        # # Apply types   
+        # df_cont = df_cont.apply(lambda x: x.astype(orig[x.name]))
     i = i + 1
 # Moving Taxid and Species columns to the end    
 column_taxid = df_cont.pop("Taxid")   
@@ -94,4 +95,4 @@ column_species = df_cont.pop("Species")
 df_cont['Taxid']=column_taxid
 df_cont['Species']=column_species
 # Write output
-df_cont.to_csv(output_file, sep=';')
+df_cont.to_csv(output_file, sep=';',na_rep="N/A")

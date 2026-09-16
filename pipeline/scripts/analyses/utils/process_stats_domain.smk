@@ -62,17 +62,28 @@ RESOURCES_DIR_NAME  = config["resources_dir_name"]
 # ---------------------------------------
 DOMAIN_REFERENCES = config["domain_references"]
 
-# List of domains to be fully processed. 
-# --------------------------------------
+# List of domains to be fully processed (with paralogy checks). 
+# ------------------------------------------------------------
 DOMAINS = config["domains"]
 
 # List of domains to be processed without paralogy checks. 
 # --------------------------------------------------------
 DOMAINS_SIMPLE = config["domains_simple"]
 
-# List of domains to be merged (ZF). 
-# --------------------------------------------------------
+# List of domains to be merged ( as ZF for example ). 
+# ---------------------------------------------------
 DOMAINS_TO_MERGE = config["domains_to_merge"]
+
+# Check there is no error in domains declaration
+# ----------------------------------------------
+for domain in    DOMAINS_TO_MERGE :
+    if (domain not in DOMAINS_SIMPLE) and (domain not in DOMAINS) :
+        print("Error : the domain "+domain+" is not in DOMAINS or DOMAINS_SIMPLE")
+        sys.exit()
+
+# Name of the analyse ( will be sued in the ouput name)
+# -----------------------------------------------------
+ANALYSE_NAME_FOR_OUTPUT = config["analyse_output_name"] 
 
 # Name of global results directory.
 # ---------------------------------
@@ -150,7 +161,11 @@ rule all:
                               
         # Concatenation of results on all genomes
         # ----------------------------------------
-        concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results.csv",
+        concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "candidate_homologs." + ANALYSE_NAME_FOR_OUTPUT + ".proteome.csv",
+
+        # Concatenation of results on all genomes
+        # ----------------------------------------
+        #concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "results_with_chromosomes.csv",
 
         # List of assemblies
         # -------------------
@@ -203,3 +218,4 @@ include: "../utils/module_stats_domain.smk"
 include: "../utils/module_check_paralogs.smk"
 include: "../utils/module_hmm.smk"
 include: "../utils/module_concatenate.smk"
+include: "../utils/module_add_chromosomes_info.smk"

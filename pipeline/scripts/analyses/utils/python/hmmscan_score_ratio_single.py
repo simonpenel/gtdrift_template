@@ -69,7 +69,7 @@ def parse_hmmscan_output(output_file):
         target_name = best_hit[0] if best_hit[0] else "No hit"
         best_score = best_hit[1] if best_hit[1] else 0
         score_ratio = (
-            best_hit[1] / second_hit[1] if second_hit[1] > 0 else "no second hit"
+            round ( best_hit[1] / second_hit[1], 2 ) if second_hit[1] > 0 else "no second hit"
         )
         formatted_results.append((target_name, query, best_score, score_ratio))
 
@@ -80,7 +80,8 @@ def write_output_table(results, output_table_file):
     Escribe la tabla formateada en un archivo de salida.
     """
     with open(output_table_file, "w") as f:
-        f.write("Target Name\tQuery Name\tBest Score\tScore Ratio\n")
+        #f.write("Target Name\tQuery Name\tBest Score\tScore Ratio\n")
+        f.write("paralog Match\tQuery Name\tparalog Score\tparalog Ratio\n")
         for row in results:
             f.write(f"{row[0]}\t{row[1]}\t{row[2]}\t{row[3]}\n")
 
@@ -89,6 +90,7 @@ def update_csv_with_results(csv_file, formatted_results):
     Crea un nuevo archivo CSV actualizado con los resultados obtenidos de hmmscan.
     """
     if os.path.exists(csv_file):
+        print("debug "+csv_file)
         df = pd.read_csv(csv_file, sep=";", index_col=0)
         # Traitement specifique genewise (crade)
         if "Stop/Shift Positions" in df:
@@ -97,18 +99,23 @@ def update_csv_with_results(csv_file, formatted_results):
             return
 
         # Eliminar filas duplicadas basadas en la columna SeqID, conservando solo la primera
+        print(df)
         df = df[~df.duplicated(subset='SeqID', keep='first')]
         for target_name, query, best_score, score_ratio in formatted_results:
             #match_row = df[df['SeqID'].str.contains(query, na=False)]
             match_row = df[df['SeqID'].str.fullmatch(query, na=False)]
             if not match_row.empty:
                 index = match_row.index[0]
-                df.at[index, 'Best Match'] = target_name
-                df.at[index, 'Bit Score'] = best_score
-                df.at[index, 'Score ratio'] = str(score_ratio)
+                df.at[index, 'paralog Match'] = target_name
+                df.at[index, 'paralog Score'] = best_score
+                df.at[index, 'paralog Ratio'] = str(score_ratio)
+                # df.at[index, 'Best Match'] = target_name
+                # df.at[index, 'Bit Score'] = best_score
+                # df.at[index, 'Score ratio'] = str(score_ratio)               
             else:
                 print("DEBUG SIMON " + target_name +" "+ query)
-        df = df.astype({'Score ratio': "string"})        
+        #df = df.astype({'Score ratio': "string"})       
+        df = df.astype({'paralog Ratio': "string"})        
         # Crear el nuevo archivo con un sufijo "_curated"
         curated_csv_file = os.path.splitext(csv_file)[0] + "_curated.csv"
         df.to_csv(curated_csv_file, sep=";", encoding="utf-8")
@@ -131,7 +138,7 @@ def main():
         if args.csv_file:
             # Si se pasa un archivo CSV, crear un archivo CSV vacío
             df = pd.read_csv(args.csv_file, sep=";", index_col=0)
-            df.to_csv(os.path.splitext(args.csv_file)[0] + "_curated.csv", sep=";", encoding="utf-8")
+            df.to_csv(os.path.splitext(args.csv_file)[0] + "_curated.csv", sep=";", encoding="utf-8",na_rep="N/A")
         return
 
     # Si el FASTA no está vacío, proceder con el análisis normal

@@ -15,6 +15,67 @@ domain_per_domain_summary_file = snakemake.input.domain_per_domain_summary
 
 output_file = snakemake.output[0]
 
+
+def get_coverage(segments):
+    max = 0
+    for segment in segments :
+        if segment[1] > max :
+            max = segment[1]
+    sequence = [0] * (max + 1)
+    for segment in segments:
+        index =  segment[0]
+        while index <= segment[1] :
+            sequence[index] = 1
+            index += 1
+    print(sequence)
+    couverture = 0
+    index = 0
+    while index <= max :
+        if sequence[index] == 1 :
+            couverture +=1
+        index +=1
+    return couverture
+
+
+def get_positions(segments):
+    max = 0
+    for segment in segments :
+        if segment[1] > max :
+            max = segment[1]
+    sequence = [0] * (max + 1)
+    for segment in segments:
+        index =  segment[0]
+        while index <= segment[1] :
+            sequence[index] = 1
+            index += 1
+    print(sequence)
+    positions = []
+    flag = 0
+    index  = 0
+    position = []
+    flag = sequence[index]
+    if sequence[index] == 1 :
+        position.add(index)
+    index = 1
+    while index <= max :
+        if sequence[index] != flag :
+            if flag == 1 :
+                position.append(index)
+                positions.append(position)
+                position = []
+                flag = sequence[index]
+            else :
+                position.append(index)
+                flag = sequence[index]
+        index +=1
+    if flag == 1 :
+        index -= 1
+        position.append(index)
+        positions.append(position)
+    print("POSITIONS:")
+    print(positions)
+    return positions
+
 def process_domain_tabulated(domain, domain_tabulated_file, accession_number=accession_number):
     '''
     Lit les fichiers résultat de hmm_search après mise en forme (1 fichier pour chaque domain protéique) et saisit les valeurs d'intérêt (E-value, Score) dans un data frame
@@ -25,46 +86,44 @@ def process_domain_tabulated(domain, domain_tabulated_file, accession_number=acc
             seq_id = line_data[0]
             if seq_id in summarised_data['SeqID'].values:
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} Query"] = line_data[3]
-                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} E-value"] = line_data[6]
-                summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} Score"] = line_data[7]
 
 def display_info(line) :
         seqname = line[0]
-        hmm_length =line[5]
-        global_evalue =line[6]
-        global_score =line[7]
-        num_hit = line[9]
-        nb_hits =  line[10]
-        hit_cvalue = line[11]
-        hit_score = line[13]
-        start_in_hmm = line[15]
-        end_in_hmm = line[16]
-        start_in_prot = line[17]
-        end_in_prot = line[18]        
-        print(seqname +" "+num_hit+"/"+nb_hits)
-        print("\thmm_length "+hmm_length)
-        print("\tglobal evalue "+global_evalue)
-        print("\tglobal score "+global_score)        
-        print("\thit cvalue "+hit_cvalue)
-        print("\thit score "+hit_score)
-        print("\tstart prot "+start_in_prot)
-        print("\tend prot "+end_in_prot)                  
-        print("\tstart hmm "+start_in_hmm)
-        print("\tend hmm "+end_in_hmm) 
+        hmm_length = int(line[5])
+        global_evalue =float(line[6])
+        global_score = float(line[7])
+        num_hit = int(line[9])
+        nb_hits =  int(line[10])
+        hit_cvalue = float(line[11])
+        hit_score = float(line[13])
+        start_in_hmm = int(line[15])
+        end_in_hmm = int(line[16])
+        start_in_prot = int(line[17])
+        end_in_prot = int(line[18])        
+        print(seqname + " " + str(num_hit) + "/" + str(nb_hits))
+        print("\thmm_length " + str(hmm_length))
+        print("\tglobal evalue " + str(global_evalue))
+        print("\tglobal score " + str(global_score))        
+        print("\thit cvalue " + str(hit_cvalue))
+        print("\thit score " + str(hit_score))
+        print("\tstart prot " + str(start_in_prot))
+        print("\tend prot " + str(end_in_prot))                  
+        print("\tstart hmm " + str(start_in_hmm))
+        print("\tend hmm " + str(end_in_hmm)) 
 
 def get_hmm_info(line) :
         seqname = line[0]
-        hmm_length =line[5]
-        global_evalue =line[6]
-        global_score =line[7]
-        num_hit = line[9]
-        nb_hits =  line[10]
-        hit_cvalue = line[11]
-        hit_score = line[13]
-        start_in_hmm = line[15]
-        end_in_hmm = line[16]
-        start_in_prot = line[17]
-        end_in_prot = line[18]
+        hmm_length = int(line[5])
+        global_evalue = float(line[6])
+        global_score = float(line[7])
+        num_hit = int(line[9])
+        nb_hits =  int(line[10])
+        hit_cvalue = float(line[11])
+        hit_score = float(line[13])
+        start_in_hmm = int(line[15])
+        end_in_hmm = int(line[16])
+        start_in_prot = int(line[17])
+        end_in_prot = int(line[18])
         info__hit = {
             "seqname" : seqname,
             "hmm_length" : hmm_length,  
@@ -79,7 +138,8 @@ def get_hmm_info(line) :
             "start_in_prot": start_in_prot,
             "end_in_prot" : end_in_prot,
             "merged" : False,
-            "segments" : []          
+            "segments_prot" : [],
+            "segments_hmm" : [],         
         }
         return info__hit     
 
@@ -102,41 +162,46 @@ def process_domain_merge(domain, domain_summary_file, accession_number=accession
                     sequence_domains[seq_id] = []
                 sequence_domains[seq_id].append(line_data)
         for sequence in sequence_domains:
-            # if len(sequence_domains[sequence]) == 1 :# pour l'affichage
-            #     break 
             print("\n\nSEQUENCE "+ sequence)
             index_hmm_line = 1
             merged_domains = []
             for sequence_hmm_line in sequence_domains[sequence] :
-                # print("Line "+str(index_hmm_line))
-                # print(sequence_hmm_line)
                 display_info(sequence_hmm_line)
                 hmm_info = get_hmm_info(sequence_hmm_line)
-                # print(hmm_info)
                 if index_hmm_line == 1 :
-                    hmm_info["segments"].append("[" + hmm_info["start_in_prot"] + "-" + hmm_info["end_in_prot"]+ "]")
+                    hmm_info["segments_prot"].append([hmm_info["start_in_prot"], hmm_info["end_in_prot"]])
+                    hmm_info["segments_hmm"].append([hmm_info["start_in_hmm"], hmm_info["end_in_hmm"]])
                     current_hmm_info = hmm_info
                     merged_hmm_info = hmm_info
+                    evalue_min = float(hmm_info["hit_cvalue"])
                 else :
-                    print("Check protein position : is curent hit start "+hmm_info["start_in_prot"] + " > previous hit end " +  current_hmm_info["end_in_prot"] + " ?")
-                    if int(hmm_info["start_in_prot"]) < int(current_hmm_info["end_in_prot"]):
+                    print("Check protein position : is curent hit start " + str(hmm_info["start_in_prot"]) + " > previous hit end " +  str(current_hmm_info["end_in_prot"]) + " ?")
+                    if hmm_info["start_in_prot"] < current_hmm_info["end_in_prot"]:
                         print("superposed hit in protein : new hmm domain")
                         merged_domains.append(merged_hmm_info)
                         merged_hmm_info = hmm_info
+                        evalue_min = float(hmm_info["hit_cvalue"])
                     else :
                         print("current hit in protein is compatible with previous hit")
-                        print("Check hmm position : is curent hit start " + hmm_info["start_in_hmm"] + " > previous hit end " +  current_hmm_info["end_in_hmm"] + " ?")
-                        if int(hmm_info["start_in_hmm"]) > int(current_hmm_info["end_in_hmm"]):
+                        print("Check hmm position : is curent hit start " + str(hmm_info["start_in_hmm"]) + " > previous hit end " +  str(current_hmm_info["end_in_hmm"]) + " ?")
+                        if hmm_info["start_in_hmm"] > current_hmm_info["end_in_hmm"]:
                             print("splited hmm domain")
                             merged_hmm_info["end_in_hmm"] = hmm_info["end_in_hmm"]
                             merged_hmm_info["end_in_prot"] = hmm_info["end_in_prot"]
-                            merged_hmm_info["hit_score"] = str(float(merged_hmm_info["hit_score"]) + float(hmm_info["hit_score"]))
+                            merged_hmm_info["hit_score"] = round((float(merged_hmm_info["hit_score"]) + float(hmm_info["hit_score"])),2)
                             merged_hmm_info["merged"] = True
-                            merged_hmm_info["segments"].append("[" + hmm_info["start_in_prot"] + "-" + hmm_info["end_in_prot"]+ "]")
+                            merged_hmm_info["segments_prot"].append([hmm_info["start_in_prot"],hmm_info["end_in_prot"]])
+                            merged_hmm_info["segments_hmm"].append([hmm_info["start_in_hmm"],hmm_info["end_in_hmm"]])
+                            if hmm_info["hit_cvalue"] < evalue_min:
+                                evalue_min = hmm_info["hit_cvalue"]
+                                merged_hmm_info["hit_cvalue"] = evalue_min
                         else : 
                             print("superposed hit in hmm : new hmm domain")
+                            hmm_info["segments_prot"].append([hmm_info["start_in_prot"],hmm_info["end_in_prot"]])
+                            hmm_info["segments_hmm"].append([hmm_info["start_in_hmm"],hmm_info["end_in_hmm"]])
                             merged_domains.append(merged_hmm_info)
                             merged_hmm_info = hmm_info
+                            evalue_min = hmm_info["hit_cvalue"]
 
                     current_hmm_info = hmm_info
                 index_hmm_line += 1
@@ -149,29 +214,37 @@ def process_domain_merge(domain, domain_summary_file, accession_number=accession
                 print("Combine all domains (" + domain + ")")
 
                 combined_domain = merged_domains.pop(0)
-                positions = "[" + combined_domain["start_in_hmm"] +"-" + combined_domain["end_in_hmm"]+"]"
-                for merged_domain in merged_domains:
-                    print("current")
-                    print(combined_domain)
-                    print("new ")
-                    print(merged_domain)                    
-                    if int(merged_domain["start_in_prot"]) >= int(combined_domain["end_in_prot"]) - 2:
-                        print("ok")
-                        combined_domain["end_in_prot"] = merged_domain["end_in_prot"]
-                        positions += ",[" + merged_domain["start_in_hmm"] +"-" + merged_domain["end_in_hmm"]+"]"
-                    else :
-                        sys.exit("problem")
-                print("Combined domain :")
+                segments_hmm = []
+                segments_hmm += combined_domain["segments_hmm"]
+                segments_prot = []
+                segments_prot += combined_domain["segments_prot"]
+                for merged_domain in merged_domains:                
+                    combined_domain["end_in_prot"] = merged_domain["end_in_prot"]
+                    segments_hmm += merged_domain["segments_hmm"]
+                    segments_prot += merged_domain["segments_prot"]
+
+                combined_domain["segments_hmm"] = segments_hmm
+                combined_domain["segments_prot"] = segments_prot
                 print(combined_domain)
+                # Calcul longueur cumullee en proteine    
+                cumulated_length = get_coverage(combined_domain["segments_prot"])
+                print("Cumulated length : "+str(cumulated_length))
+                # Calcul couverture hmm  
+                coverage = get_coverage(combined_domain["segments_hmm"])
+                coverage = round(coverage /  combined_domain["hmm_length"],2)
+                print("Coverage : "+str(coverage))
+                # Calcul des positions
+                positions = get_positions(combined_domain["segments_hmm"])
                 if sequence in summarised_data['SeqID'].values:
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"Nb {domain} hits"] = len(sequence_domains[sequence])
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"Nb {domain} domains"] = 1
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain start"] = int(combined_domain["start_in_prot"])
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain end"] = int(combined_domain["end_in_prot"])
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Score"] = combined_domain["global_score"]
-                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Position"] = positions
-
-                    # summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Position"] = "["+comnined["start_in_hmm"]"+","+combined_domain["start_in_hmm"]]
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} position"] = str(positions)
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Length"] = combined_domain["hmm_length"]
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Prot Length"] = cumulated_length
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} coverage"] = coverage
 
             else :
                 print("Select best domain (" + domain + ")")
@@ -185,15 +258,24 @@ def process_domain_merge(domain, domain_summary_file, accession_number=accession
                             score_max = merged_domain["hit_score"]
                 print("Best domain :")
                 print(best_domain)
+                # Calcul longueur cumullee en proteine    
+                cumulated_length = get_coverage(best_domain["segments_prot"])
+                print("Cumulated length : "+str(cumulated_length))
+                # Calcul couverture hmm  
+                coverage = get_coverage(best_domain["segments_hmm"])
+                coverage = round(coverage /  best_domain["hmm_length"],2)
+                print("Coverage : "+str(coverage))                
                 if sequence in summarised_data['SeqID'].values:
-                    print("debug add "+sequence)
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"Nb {domain} hits"] = len(sequence_domains[sequence])
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"Nb {domain} domains"] = len(merged_domains)
-                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain start"] = int(best_domain["start_in_prot"])
-                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain end"] = int(best_domain["end_in_prot"])
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain start"] = best_domain["start_in_prot"]
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain end"] = best_domain["end_in_prot"]
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Score"] = best_domain["hit_score"]
-                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Position"] = "[" + best_domain["start_in_hmm"] +"-" + best_domain["end_in_hmm"]+"]"
-
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} position"] = str(best_domain["segments_hmm"])
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Length"] = best_domain["hmm_length"]
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Prot Length"] = cumulated_length
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} coverage"] = coverage
+                    
 
 def process_domain_summary(domain, domain_summary_file, accession_number=accession_number):
     '''
@@ -203,89 +285,12 @@ def process_domain_summary(domain, domain_summary_file, accession_number=accessi
         for line in reader.readlines()[1:]:
             line_data = line.split('\t')
             nb_domains = int(line_data[9])
-            #if nb_domains > 1 :
-                # print("warning")
-                # sys.exit(1)
             seq_id = line_data[0]
             if seq_id in summarised_data['SeqID'].values:
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"Nb {domain} domains"] = nb_domains
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain start"] = int(line_data[17])
                 summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} domain end"]= int(line_data[18])
-      
-      
-def process_hmm_cov(domain, domain_summary_file, accession_number=accession_number):
-    '''
-    '''
-    dico = {}
-    with open(domain_summary_file) as reader:
-        for line in reader.readlines()[1:]:
-            line_data = line.split('\t')
-            seq_id = line_data[0]
-            hmm_id = line_data[3]
-            prot_len = int(line_data[2])
-            hmm_len = int(line_data[5])
-            hmm_range = [int(line_data[15]),int(line_data[16])]
-            prot_range = [int(line_data[19]),int(line_data[20])]
-            if seq_id in dico :
-                _val = dico[seq_id]
-                hmm = _val[0]
-                sequence = _val[1]
-                for i in range(hmm_range[0],hmm_range[1]) :
-                    hmm[i-1] += 1
-                    if hmm[i-1] > 1 :
-                        hmm[i-1] = 1
-                for i in range(prot_range[0],prot_range[1]) :
-                    sequence[i-1] += 1
-                    if sequence[i-1] > 1 :
-                        sequence[i-1] = 1
-                dico[seq_id] = [hmm,sequence]
 
-            else :
-                hmm = [0] * hmm_len
-                for i in range(hmm_range[0],hmm_range[1]) :
-                    hmm[i-1] = 1
-                sequence  = [0] * prot_len
-                for i in range(prot_range[0],prot_range[1]) :
-                    sequence[i-1] = 1
-                dico[seq_id] = [hmm,sequence]
-
-    for seq_id in  dico:
-        _val = dico[seq_id]
-        hmm = _val[0]
-        couv_hmm = 0
-        ii = 0 # (index)
-        limit = [] # [debut, fin] de la couverture
-        limits = []
-        curr_val = hmm[ii]
-        
-        if curr_val == 1 :
-            limit.append( ii + 1 ) #ajoute 1 car la 1ere position est 1
-        for i in hmm:
-            if i != curr_val:
-                if i == 1 :
-                    limit = []
-                    limit.append( ii + 1 )
-                    curr_val = i
-                if i == 0 :
-                    limit.append( ii  )
-                    limits.append(limit)
-                    curr_val = i   # on ne rajoute pas 1 ici car i+1 est un 0
-            if i > 0 :
-                couv_hmm += 1
-            ii += 1
-        score_hmm = int (100 * couv_hmm / len(hmm))/100
-
-        prot = _val[1]
-        couv_prot = 0
-        for i in prot:
-            if i > 0 :
-                couv_prot += 1
-        score_prot = int (100 * couv_prot / len(hmm))/100        
-
-        if seq_id in summarised_data['SeqID'].values:
-            summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} HMM cov."] = score_hmm 
-            summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} HMM cov. pos."] = str(limits) 
-            summarised_data.loc[summarised_data['SeqID'] == seq_id, f"{domain} Prot cov."] = score_prot 
       
 def getTaxid(accession_number=accession_number,input_file=organisms_file):
     df = pd.read_csv(organisms_file, sep='\t', header=0)
@@ -308,16 +313,12 @@ noms_colonnes.append(domain+' E-value')
 noms_colonnes.append(domain+' Score')
 noms_colonnes.append('Nb '+domain+' hits')
 noms_colonnes.append('Nb '+domain+' domains')
-# if  to_be_merged == "merged" :
-#     noms_colonnes.append('Nb '+domain+' domains (after merging domains)')
-# else :
-#     noms_colonnes.append('Nb '+domain+' domains (after merging splited hits)')  
+noms_colonnes.append(domain+' Prot Length')
+noms_colonnes.append(domain+' Length')
 noms_colonnes.append(domain+' domain start')
 noms_colonnes.append(domain+' domain end')
-noms_colonnes.append(domain+' HMM cov.')
-noms_colonnes.append(domain+' HMM cov. pos.')
-noms_colonnes.append(domain+' Prot cov.')
-
+noms_colonnes.append(domain+' position')
+noms_colonnes.append(domain+' coverage')
 data_list = []
 
 
@@ -329,35 +330,27 @@ print(".... Processing file "+domain_per_sequence_tabulated_file)
 with open(domain_per_sequence_tabulated_file) as reader:
     for line in reader:
         line_data = line.strip().split('\t')
-        to_add = {'SeqID': line_data[0], 'Assembly':accession_number, domain+' Query': line_data[2], domain+' E-value': line_data[7], domain+' Score': line_data[8]}
+        # TO DO A QOI SERT SCORE ER EVALU ICI
+        to_add = {'SeqID': line_data[0], 'Assembly':accession_number, domain+' Query': line_data[2], domain+' E-value': float(line_data[7]), domain+' Score': float(line_data[8])}
         data_list.append(to_add)
     summarised_data = pd.DataFrame(data_list, columns=noms_colonnes)
-    summarised_data = summarised_data.astype({domain+' HMM cov. pos.': "string"})
     summarised_data = summarised_data.astype({domain+' domain start': "Int32"})
     summarised_data = summarised_data.astype({domain+' domain end': "Int32"})
-    # if  to_be_merged == "merged" :
-    #     summarised_data = summarised_data.astype({ 'Nb '+domain+' domains (after merging domains)': "Int32"})
-    # else :
-    #     summarised_data = summarised_data.astype({ 'Nb '+domain+' domains (after merging splited hits)': "Int32"})
     summarised_data = summarised_data.astype({ 'Nb '+domain+' domains': "Int32"})    
-    summarised_data = summarised_data.astype({'Nb '+ domain+' hits': "Int32"})    
+    summarised_data = summarised_data.astype({'Nb '+ domain+' hits': "Int32"})  
+    summarised_data = summarised_data.astype({domain+' position': "str"})    
 
 print(".... Processing file "+domain_per_domain_summary_file)
 process_domain_tabulated(domain,domain_per_domain_summary_file)
 process_domain_merge(domain,domain_per_domain_summary_file)  
-# process_domain_summary(domain,domain_per_domain_summary_file)  
-#process_hmm_cov(domain,domain_per_domain_summary_file)   
- 
+
 getTaxid()                
 getSpecies()                
 
-# summarised_data = summarised_data.fillna(0)    
-summarised_data[domain+' HMM cov. pos.'] = summarised_data[domain+' HMM cov. pos.'].fillna(value="0")
-summarised_data[domain+' domain start'] = summarised_data[domain+' domain start'].fillna(value=0)
-summarised_data[domain+' domain end'] = summarised_data[domain+' domain end'].fillna(value=0)
-
-#summarised_data['Nb '+domain+' domains'] = summarised_data['Nb '+domain+' domains'].fillna(value=0)
-
+summarised_data = summarised_data.astype({domain+' Prot Length': "Int32"})   
+summarised_data = summarised_data.astype({domain+' Length': "Int32"}) 
+summarised_data['Nb '+domain+' domains'] = summarised_data['Nb '+domain+' domains'].fillna(value=0)
+summarised_data['Nb '+domain+' hits'] = summarised_data['Nb '+domain+' hits'].fillna(value=0)
 print("Output file = "+output_file)                 
-summarised_data.to_csv(output_file, sep=';')
-
+#summarised_data.to_csv(output_file, sep=';',index=False,na_rep="N/A")
+summarised_data.to_csv(output_file, sep=';',na_rep="NA") # On garde l'index car il est utilise par le script python suivant

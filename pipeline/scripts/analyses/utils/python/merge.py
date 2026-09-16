@@ -15,7 +15,7 @@ for file in input_files:
     i += 1
 
 #df_cont = df_cont.fillna(0.0)  
-df_cont = df_cont.fillna(0)  
+#df_cont = df_cont.fillna(0)  
 # Write output
 # Moving Taxid and Species columns to the end    
 column_taxid = df_cont.pop("Taxid")   
@@ -25,10 +25,26 @@ df_cont['Species']=column_species
 
 df_cont.drop(df_cont.columns[df_cont.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)
 
+columns = list(df_cont.columns)
+
+tobeintegers  = ["hits","domains", "Length","start","end","Taxid"] 
+for column in columns:
+    for test in tobeintegers:
+        if test in column:
+            print("Change "+column)
+            df_cont[column] = df_cont[column].astype('Int64')
+
+tobe0whenNA  = ["hits","domains"] 
+for column in columns:
+    for test in tobe0whenNA:
+        if test in column:
+            print("Na is 0 for  "+column)
+            df_cont[column] = df_cont[column].fillna(value=0)
+
 if 'Genewise index' in df_cont.columns:
     df_cont['Genewise index'] = df_cont['Genewise index'].astype('Int64')
     df_cont['Protein Length'] = df_cont['Protein Length'].astype('Int64')
     df_cont['Chr Start'] = df_cont['Chr Start'].astype('Int64')
     df_cont['Chr End'] = df_cont['Chr End'].astype('Int64')
 
-df_cont.to_csv(output_file, sep=';')
+df_cont.to_csv(output_file, sep=';',na_rep="NA",index=False)
