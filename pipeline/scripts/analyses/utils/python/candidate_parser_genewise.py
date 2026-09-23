@@ -33,19 +33,15 @@ sorted.insert(loc=len(sorted.columns)-2, column='Nb Stop/Frameshift', value=sort
 sorted.insert(loc=len(sorted.columns)-2, column='Nb Introns', value=sorted['SET Intron']+sorted['KRAB Intron']+sorted['SSXRD Intron']+sorted['ZF Intron'])
 
 ## Columns to check if stop/frameshift in domain, and if truncated (stops in ZF)
-#sorted.insert(loc=len(sorted.columns)-2, column='Pseudogene (HMMER)', value='No')
 sorted.insert(loc=len(sorted.columns)-2, column='ZF Truncated', value='No')
 for elt in sorted.index:
     ss_positions = sorted['Stop/Shift Positions'][elt]
-    # if type(sorted['Stop/Shift Positions'][elt]) != float or not isnan(sorted['Stop/Shift Positions'][elt]):
     if str(sorted['Stop/Shift Positions'][elt]) != "nan":
-        print(str(sorted['Stop/Shift Positions'][elt]).split(';'))
         for pos in str(sorted['Stop/Shift Positions'][elt]).split(';'):
-            if int(sorted['KRAB domain start'][elt]) < float(pos) < int(sorted['SET domain end'][elt]):
-                #sorted.loc[:,'Pseudogene (HMMER)'][elt] = 'Yes'
-                sorted.loc[elt, 'Pseudogene (HMMER)'] = 'Yes'
+            if not (isnan(sorted['KRAB domain start'][elt]) or isnan(sorted['SET domain end'][elt])):
+                if int(sorted['KRAB domain start'][elt]) < int(float(pos)) < int(sorted['SET domain end'][elt]):
+                    sorted.loc[elt, 'Pseudogene (HMMER)'] = 'Yes'
             if float(pos) < int(sorted['ZF domain start'][elt]) or int(sorted['ZF domain start'][elt]) < float(pos) < int(sorted['ZF domain end'][elt]):
-                #sorted.loc[:,'ZF Truncated'][elt] = 'Yes'
                 sorted.loc[elt, 'ZF Truncated'] = 'Yes'
 
 ## Check if truncated (stop in ZF)
@@ -183,6 +179,20 @@ while True:
                     j = 0
                     continue
 
+## Fifth comparison: Protein length, longer proteins are more likely to be complete
+                # elif itable['Protein Length'] > jtable['Protein Length']:
+                #     print(f"Dropping {jtable['SeqID']} keeping {itable['SeqID']}: protein length")
+                #     sorted.drop(index=j, inplace=True)
+                #     continue
+                    
+                # elif jtable['Protein Length'] > itable['Protein Length']:
+                #     print(f"Dropping {itable['SeqID']} keeping {jtable['SeqID']}: protein length")
+                #     sorted.drop(index=i, inplace=True)
+                #     i = j
+                #     j = 0
+                #     continue
+
+
 ## If passed, then both are identical: we remove one of them (This should no happen)
                 else:
                     print(f"Dropping {jtable['SeqID']} keeping {itable['SeqID']}: identity")
@@ -199,8 +209,8 @@ while True:
 
 # reorganise columns
 # ------------------
-sorted = sorted.astype({"Nb Stop/Frameshift": int, "Nb Introns": int, "SET Intron": int, "KRAB Intron": int, "SSXRD Intron": int, "ZF Intron": int })
-sorted = sorted.astype({"SET Stop/Frameshift": int, "KRAB Stop/Frameshift": int, "SSXRD Stop/Frameshift": int, "ZF Stop/Frameshift": int })
-sorted = sorted.astype({"SET non-truncated": int, "KRAB non-truncated": int, "SSXRD non-truncated": int, "ZF non-truncated": int })
+# sorted = sorted.astype({"Nb Stop/Frameshift": int, "Nb Introns": int, "SET Intron": int, "KRAB Intron": int, "SSXRD Intron": int, "ZF Intron": int })
+# sorted = sorted.astype({"SET Stop/Frameshift": int, "KRAB Stop/Frameshift": int, "SSXRD Stop/Frameshift": int, "ZF Stop/Frameshift": int })
+# sorted = sorted.astype({"SET non-truncated": int, "KRAB non-truncated": int, "SSXRD non-truncated": int, "ZF non-truncated": int })
 
 sorted.to_csv(args.output, sep=';')
