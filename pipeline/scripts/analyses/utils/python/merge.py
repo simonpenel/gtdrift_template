@@ -27,7 +27,7 @@ df_cont.drop(df_cont.columns[df_cont.columns.str.contains('unnamed', case=False)
 
 columns = list(df_cont.columns)
 
-tobeintegers  = ["hits","domains", "Length","start","end","Taxid"] 
+tobeintegers  = ["hits","domains", "Length","start","end","Taxid","Start","End","index","non-truncated","Intron","Stop/Frameshift"] 
 for column in columns:
     for test in tobeintegers:
         if test in column:
@@ -41,10 +41,10 @@ for column in columns:
             print("Na is 0 for  "+column)
             df_cont[column] = df_cont[column].fillna(value=0)
 
-if 'Genewise index' in df_cont.columns:
-    df_cont['Genewise index'] = df_cont['Genewise index'].astype('Int64')
-    df_cont['Protein Length'] = df_cont['Protein Length'].astype('Int64')
-    df_cont['Chr Start'] = df_cont['Chr Start'].astype('Int64')
-    df_cont['Chr End'] = df_cont['Chr End'].astype('Int64')
+# if 'Genewise index' in df_cont.columns:
+#     df_cont['Genewise index'] = df_cont['Genewise index'].astype('Int64')
+#     df_cont['Protein Length'] = df_cont['Protein Length'].astype('Int64')
+#     df_cont['Chr Start'] = df_cont['Chr Start'].astype('Int64')
+#     df_cont['Chr End'] = df_cont['Chr End'].astype('Int64')
 
 df_cont.to_csv(output_file, sep=';',na_rep="NA",index=False)
