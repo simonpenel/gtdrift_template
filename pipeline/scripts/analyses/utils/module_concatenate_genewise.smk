@@ -64,8 +64,11 @@ rule reorder_parsed_genwise_results:
     output:
         # Concatenation of assemblies results
         # -----------------------------------
-        pathGTDriftGlobalResults
-        + GLOBAL_RESULTS + "ordered_parsed_results.csv"
+        #pathGTDriftGlobalResults
+        #+ GLOBAL_RESULTS + "ordered_parsed_results.csv"
+        #pathGTDriftGlobalResults
+        pathGTDriftGlobalResults + GLOBAL_RESULTS + "candidate_homologs." + ANALYSE_NAME_FOR_OUTPUT + ".genome.csv",
+
     script:
         "../utils/python/reorder.py"        
         
