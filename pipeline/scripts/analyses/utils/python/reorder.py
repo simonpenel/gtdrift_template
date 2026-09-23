@@ -34,4 +34,15 @@ for column in columns:
             print("Na is 0 for  "+column)
             df[column] = df[column].fillna(value=0)
 
+toberemoved  = ["Genewise index","Pseudogene (HMMER)","Pseudogene (Genewise)"]
+
+
+toberemovedmatch  = ["non-truncated"]
+for column in columns:
+    for test in toberemovedmatch:
+        if test in column:
+            toberemoved.append(column)
+
+print("Remove "+str(toberemoved))
+df = df.drop(columns=toberemoved)
 df.to_csv(output_file, sep=';',index = False,na_rep="NA")
