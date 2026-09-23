@@ -90,7 +90,6 @@ def update_csv_with_results(csv_file, formatted_results):
     Crea un nuevo archivo CSV actualizado con los resultados obtenidos de hmmscan.
     """
     if os.path.exists(csv_file):
-        print("debug "+csv_file)
         df = pd.read_csv(csv_file, sep=";", index_col=0)
         # Traitement specifique genewise (crade)
         if "Stop/Shift Positions" in df:
@@ -99,7 +98,6 @@ def update_csv_with_results(csv_file, formatted_results):
             return
 
         # Eliminar filas duplicadas basadas en la columna SeqID, conservando solo la primera
-        print(df)
         df = df[~df.duplicated(subset='SeqID', keep='first')]
         for target_name, query, best_score, score_ratio in formatted_results:
             #match_row = df[df['SeqID'].str.contains(query, na=False)]
@@ -113,8 +111,7 @@ def update_csv_with_results(csv_file, formatted_results):
                 # df.at[index, 'Bit Score'] = best_score
                 # df.at[index, 'Score ratio'] = str(score_ratio)               
             else:
-                print("DEBUG SIMON " + target_name +" "+ query)
-        #df = df.astype({'Score ratio': "string"})       
+                print("No Match for " + target_name +" "+ query)
         df = df.astype({'paralog Ratio': "string"})        
         # Crear el nuevo archivo con un sufijo "_curated"
         curated_csv_file = os.path.splitext(csv_file)[0] + "_curated.csv"
