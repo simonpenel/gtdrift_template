@@ -18,4 +18,20 @@ for name in column_names:
 
 df.drop(df.columns[df.columns.str.contains('unnamed', case=False)], axis=1, inplace=True)         
 #df.to_csv(output_file, sep=';',index = False)
-df.to_csv(output_file, sep=';')
+columns = list(df.columns)
+
+tobeintegers  = ["hits","domains", "Length","start","end","Taxid","Start","End","index","non-truncated","Intron","Stop/Frameshift"] 
+for column in columns:
+    for test in tobeintegers:
+        if test in column:
+            print("Change "+column)
+            df[column] = df[column].astype('Int64')
+
+tobe0whenNA  = ["hits","domains"] 
+for column in columns:
+    for test in tobe0whenNA:
+        if test in column:
+            print("Na is 0 for  "+column)
+            df[column] = df[column].fillna(value=0)
+
+df.to_csv(output_file, sep=';',index = False,na_rep="NA")
