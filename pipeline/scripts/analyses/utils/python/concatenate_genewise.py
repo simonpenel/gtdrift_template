@@ -64,7 +64,7 @@ for file in input_files:
             if test[1] == "Query" :
                 domain = test[0]
                 break
-    df = df.rename(columns={'Best Match': domain + ' Best Match','Bit Score': domain + ' Bit Score','Score ratio': domain + ' Score ratio'})
+    df = df.rename(columns={'paralog Match': domain + ' paralog Match','paralog Score': domain + ' paralog Score','paralog Ratio': domain + ' paralog Ratio'})
     df["Stop/Shift Positions"] = df["Stop/Shift Positions"].replace(np.nan, 0)
     df["Stop/Shift Positions"] = df["Stop/Shift Positions"].astype(str)
     print("Processing "+file) 
@@ -130,9 +130,19 @@ for file in input_files:
         newdf["Assembly"] = newdf["Assembly"].fillna(value=assembly)
         newdf["Species"] = newdf["Species"].fillna(value=species)    
         # Set other missing data to 0
-        df_cont = newdf.fillna(0)
+        #df_cont = newdf.fillna(0)
+        columns = list(newdf.columns)
+        tobe0whenNA  = ["Intron","non-truncated","Stop/Frameshift"] 
+        for column in columns:
+            for test in tobe0whenNA:
+                if test in column:
+                    print("Na is 0 for  "+column)
+                    newdf[column] = newdf[column].fillna(value=0)
+
+
+        df_cont = newdf
         # Apply types   
-        df_cont = df_cont.apply(lambda x: x.astype(orig[x.name]))
+        #df_cont = df_cont.apply(lambda x: x.astype(orig[x.name]))
         #df_cont["Stop/Shift Positions"] = df_cont["Stop/Shift Positions"].astype(str)
     i = i + 1
 
@@ -148,7 +158,6 @@ for key in  dico_chromo :
     df_chromo = pd.concat([df_chromo, pd.DataFrame([new_row])], ignore_index=True)
 #print(df_chromo.SeqID)
 #print(df_chromo.Chromosome)
-print("debug "+ str(len(df_chromo)))
 # esquive le cas ou il n'y a pas de candidat
 if len(df_chromo) > 0 :
     newdf = df_cont.join(df_chromo.set_index('SeqID'),on='SeqID', how="outer", lsuffix='_caller', rsuffix='_other')
