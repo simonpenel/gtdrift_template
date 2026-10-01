@@ -41,8 +41,9 @@ for elt in sorted.index:
             if not (isnan(sorted['KRAB domain start'][elt]) or isnan(sorted['SET domain end'][elt])):
                 if int(sorted['KRAB domain start'][elt]) < int(float(pos)) < int(sorted['SET domain end'][elt]):
                     sorted.loc[elt, 'Pseudogene (HMMER)'] = 'Yes'
-            if float(pos) < int(sorted['ZF domain start'][elt]) or int(sorted['ZF domain start'][elt]) < float(pos) < int(sorted['ZF domain end'][elt]):
-                sorted.loc[elt, 'ZF Truncated'] = 'Yes'
+            if not (isnan(sorted['ZF domain start'][elt]) or isnan(sorted['ZF domain end'][elt])):
+                if int(float(pos)) < int(sorted['ZF domain start'][elt]) or int(sorted['ZF domain start'][elt]) < int(float(pos)) < int(sorted['ZF domain end'][elt]):
+                    sorted.loc[elt, 'ZF Truncated'] = 'Yes'
 
 ## Check if truncated (stop in ZF)
 
