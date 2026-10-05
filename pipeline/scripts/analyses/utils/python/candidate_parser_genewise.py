@@ -29,14 +29,17 @@ sorted.reset_index(drop=True, inplace=True)
 sorted.insert(loc=len(sorted.columns)-3, column='Pseudogene (HMMER)', value='No')
 
 ## New columns for counts
-sorted.insert(loc=len(sorted.columns)-2, column='Nb Stop/Frameshift', value=sorted['SET Stop/Frameshift']+sorted['KRAB Stop/Frameshift']+sorted['SSXRD Stop/Frameshift']+sorted['ZF Stop/Frameshift'])
+sorted.insert(loc=len(sorted.columns)-2, column='Nb Stop/Frameshift', value=0)
 sorted.insert(loc=len(sorted.columns)-2, column='Nb Introns', value=sorted['SET Intron']+sorted['KRAB Intron']+sorted['SSXRD Intron']+sorted['ZF Intron'])
 
 ## Columns to check if stop/frameshift in domain, and if truncated (stops in ZF)
 sorted.insert(loc=len(sorted.columns)-2, column='ZF Truncated', value='No')
 for elt in sorted.index:
     ss_positions = sorted['Stop/Shift Positions'][elt]
+    nb_total_stopshift = 0
     if str(sorted['Stop/Shift Positions'][elt]) != "nan":
+        nb_total_stopshift = len(str(sorted['Stop/Shift Positions'][elt]).split(';'))
+        sorted.loc[elt, 'Nb Stop/Frameshift'] = nb_total_stopshift
         for pos in str(sorted['Stop/Shift Positions'][elt]).split(';'):
             if not (isnan(sorted['KRAB domain start'][elt]) or isnan(sorted['SET domain end'][elt])):
                 if int(sorted['KRAB domain start'][elt]) < int(float(pos)) < int(sorted['SET domain end'][elt]):
