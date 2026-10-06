@@ -8,67 +8,55 @@ import warnings
 warnings.filterwarnings("error")
 universal_col_names = ['Unnamed: 0', 'SeqID', 'Assembly', 'Taxid', 'Species']
 dico_col_names_univ = {
-        'SeqID': 'Sequence name from the proteome', 
-        'Assembly':'Assembly accession number',
+        'SeqID': 'ID of the GeneWise predicted protein', 
+        'Assembly':'Genome assembly accession number',
         'Taxid':'Taxonomic identifier',
         'Species':'Species name',
-        'Chromosome':'Chromosome/Contig  name',
-        'Chr Start':'Start position  in the chromosome', 
-        'Chr End':'End position  in the chromosome', 
-        'Strand':'Strand on the chromosome', 
-        'Protein Length':'Length of the protein', 
-        'ProtRefID':'Refernce of the protein used for genewise analysis', 
-        'Nb Introns':'Number of introns in the predicted sequence', 
-        'Nb Stop/Frameshift':'Number of stops and frameshifts in the predicted sequence', 
-        'Pseudogene (HMMER)':'Pseudogene detected by the hmmer ouput analyis',
-        'Pseudogene (Genewise)':'Pseudogene detected by the genewise', 
-        'Stop/Shift Positions':'Stop and shift positions detected by genewise',
-        'Genewise index':'Index in the genewise output',
+        'Chromosome':'Chromosome or scaffold name',
+        'Chr Start':'Start position of the predicted gene in the chromosome', 
+        'Chr End':'End position of the predicted gene in the chromosome', 
+        'Strand':'Chromosome strand', 
+        'Protein Length':'Length of the predicted protein', 
+        'ProtRefID':'ID of the representative protein used for the GeneWise prediction', 
+        'Nb Introns':'Number of introns in the predicted gene', 
+        'Nb Stop/Frameshift':'Number of stops and frameshifts in the predicted gene', 
+        'Stop/Shift Positions':'Positions of frameshifts and stop codons reported by GeneWise (in protein coordinates)',
         'ZF Truncated':'Is the zinc finger part truncated?'
        }
 col_names_domain_univ = dico_col_names_univ.keys()
-# 'KRAB non-truncated', 
-# 'KRAB Stop/Frameshift',
-#  'KRAB Intron',
-#   'SSXRD non-truncated',
-#    'SSXRD Stop/Frameshift',
-#     'SSXRD Intron',
-#      'ZF non-truncated',
-#       'ZF Stop/Frameshift',
-#        'ZF Intron', 
-#        'SET non-truncated', 
-#        'SET Stop/Frameshift',
-#         'SET Intron',
-#          'Chromosome',
-#           'Chr Start', 
-#           'Chr End', 
-#           'Strand', 
-#           'Protein Length', 
-#           'ProtRefID', 
-#Pseudogene (HMMER)
-#           'Pseudogene (Genewise)', 
-#           'Stop/Shift Positions', 'Genewise index'
 
 dico_col_names_domain_simple = {
-        'DOMAIN non-truncated':'Number of non truncated DOMAIN domains',
-        'DOMAIN Stop/Frameshift':'Stop and shift positions in DOMAIN domain',
-        'DOMAIN Intron'      :'Number of introns in DOMAIN domain',
-        'DOMAIN Query'       :'Sequence used to search the DOMAIN domain with hmmer',
-        'DOMAIN E-value'     :'E-value of the DOMAIN domain (hmmer)', 
-        'DOMAIN Score'       :'Score of the DOMAIN domain (hmmer)',
-        'Nb DOMAIN domains'  :'Number of DOMAIN domains (hmmer) [if many, only the last domain is selected]',
-        'DOMAIN domain start':'Start of the DOMAIN domain',
-        'DOMAIN domain end'  :'Start of the DOMAIN domain',
-        'DOMAIN HMM cov.'    :'Ratio of the hmm part covering the protein over the hmm length  for the DOMAIN domain',
-        'DOMAIN HMM cov. pos.'  :'Segments of the hmm  covering the protein for the DOMAIN domain',
-        'DOMAIN Prot cov.'   :'Ratio of the protein part covered by  the hmm over the hmm length  for the DOMAIN domain'       }
+       'DOMAIN Query'       :'Reference protein alignment used to search for DOMAIN domains with HMMsearch',
+       'DOMAIN E-value'     :'E-value of the best DOMAIN hit (HMMsearch)', 
+       'DOMAIN Score'       :'HMMsearch score of the best DOMAIN domain (sum of hit scores in case of merging of split hits)',
+       'Nb DOMAIN hits'     :'Number of hits on the DOMAIN domains found by HMMsearch',
+       'Nb DOMAIN domains'  :'Number of DOMAIN domains found (after merging of split hits)',
+       'DOMAIN domain start':'Start of the best DOMAIN domain in the protein',
+       'DOMAIN domain end'  :'End of the best DOMAIN domain in the protein',
+       'DOMAIN coverage'    :'Start and end positions of the segments of the reference DOMAIN domain alignment that are covered by at least one hit of the best domain',
+       'DOMAIN position'    :'Start and end positions of all hits of the best domain in the reference DOMAIN domain alignment',
+       'DOMAIN Prot Length' :'Length of the DOMAIN domain (segments) detected in that protein',  
+       'DOMAIN Length'      :'Length of the reference DOMAIN domain',
+       'DOMAIN Intron' :'Number of introns in DOMAIN domain',     
+       }
+
+dico_col_names_domain_combined = {
+       'DOMAIN E-value'     :'Combined E-value of DOMAIN domains (HMMsearch)', 
+       'DOMAIN Score'       :'Combined score of DOMAIN domains (HMMsearch)',
+       'DOMAIN domain start':'Start of the first DOMAIN domain in the protein',
+       'DOMAIN domain end'  :'End of the last DOMAIN domain in the protein',
+       'DOMAIN coverage'    :'Fraction of the DOMAIN reference alignment covered by at least one hit',
+       'DOMAIN position'    :'Start and end positions of the hits in the reference DOMAIN domain',
+       'DOMAIN Prot Length' :'Cumulated length of DOMAIN domains detected in that protein', 
+       }
 
 dico_col_names_domain = {
-       'DOMAIN Best Match'  :'Name of the sequence presenting the best reciprocal match for the DOMAIN domain',
-       'DOMAIN Bit Score'   :'Score of the best reciprocal mach for the DOMAIN domain',
-       'DOMAIN Score ratio' :'Ratio between the scores of the best reciprocal match and the followong match for the DOMAIN domain'
+       'DOMAIN paralog Match'   :'ID of the paralog showing the highest similarity to the DOMAIN domain of this protein',
+       'DOMAIN paralog Score'   :'Score of the best match among paralogs',
+       'DOMAIN paralog Ratio'   :'Ratio (score of the best match)/(score of the 2nd best match)' 
        }
 custom_col_names_domain = dico_col_names_domain.keys()
+custom_col_names_domains_combined = dico_col_names_domain_combined.keys()
 custom_col_names_domain_simple = dico_col_names_domain_simple.keys()
 
 #pd.options.mode.copy_on_write = True
@@ -89,20 +77,25 @@ with open("analyse.json", "r") as file:
 domains=analyse["domains"]
 domains_simple=analyse["domains_simple"]
 resources_dir_name=analyse['resources_dir_name']
-data_origin = analyse["domain_aln_data_origin"]
+data_origin = analyse["domain_references"]
+exons  = analyse["exons"]
 outfile.write("Reference alignments:\n")
-outfile.write("====================:\n")
+outfile.write("====================\n")
 for data in data_origin:
        print(data)
        print(pathResources + resources_dir_name + "reference_alignments/" + data + "/" + data_origin[data] + ".fst")
-       outfile.write(f"{data:<20}" + " : " + pathResources + resources_dir_name + "reference_alignments/" + data + "/" + data_origin[data] + ".fst\n")
-
+       outfile.write(f"{data:<20}" + " " + pathResources + resources_dir_name + "reference_alignments/" + data + "/" + data_origin[data] + ".fst\n")
+outfile.write("Exons:\n")
+outfile.write("=====\n")     
+for exon in exons:
+       print(pathResources + "ref_align/Prdm9_Metazoa_Reference_alignment/exon_peptides/" + exon + ".fst")
+       outfile.write(f"{exon:<20}" + " " + pathResources + "ref_align/Prdm9_Metazoa_Reference_alignment/exon_peptides/" + exon + ".fst\n")
 ## Reading overview table for prdm9
 table = pd.read_csv(args.input, sep=';', dtype=str, header=0)
 fields = list(table.columns)
 
 outfile.write("Field definitions:\n")
-outfile.write("=================:\n")
+outfile.write("=================\n")
 for template in  col_names_domain_univ:
        definition =  dico_col_names_univ[template]
        if template in fields:
@@ -157,7 +150,7 @@ if len(fields) > 0 :
        sys.exit("Missing information for some fields")
 
 outfile.write("Python packages:\n")
-outfile.write("===============:\n")
+outfile.write("===============\n")
 with open("pyproject.toml", "r") as file:
        s=file.read()
 outfile.write(s)
