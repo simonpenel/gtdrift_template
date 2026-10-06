@@ -13,7 +13,7 @@ parser.add_argument('-o', '--output', type=str, required=True, help='Processed f
 args = parser.parse_args()
 
 ## Reading overview table for prdm9
-table = pd.read_csv(args.input, sep=';', header=0)
+table = pd.read_csv(args.input, sep=';', header=0,dtype={'Stop/Shift Positions': "str"})
 
 ## Sorting by chromosome then by start position
 if len(table) > 0 :
@@ -216,5 +216,4 @@ while True:
 # sorted = sorted.astype({"Nb Stop/Frameshift": int, "Nb Introns": int, "SET Intron": int, "KRAB Intron": int, "SSXRD Intron": int, "ZF Intron": int })
 # sorted = sorted.astype({"SET Stop/Frameshift": int, "KRAB Stop/Frameshift": int, "SSXRD Stop/Frameshift": int, "ZF Stop/Frameshift": int })
 # sorted = sorted.astype({"SET non-truncated": int, "KRAB non-truncated": int, "SSXRD non-truncated": int, "ZF non-truncated": int })
-
 sorted.to_csv(args.output, sep=';')
