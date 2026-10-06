@@ -2,7 +2,7 @@ import pandas as pd
 input_file = snakemake.input[0]
 output_file = snakemake.output[0]
 
-df = pd.read_csv(input_file, sep=';', header=0)
+df = pd.read_csv(input_file, sep=';', header=0,dtype={'Stop/Shift Positions': "str"})
 # remove first unamed column 
 #df = df.drop(["Unnamed: 0"],axis=1) 
 column_names = list(df.columns)
