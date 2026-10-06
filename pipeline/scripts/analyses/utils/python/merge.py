@@ -7,7 +7,7 @@ output_file = snakemake.output[0]
 
 i = 0;
 for file in input_files:    
-    df = pd.read_csv(file, sep=';', header=0)
+    df = pd.read_csv(file, sep=';', header=0,dtype={'Stop/Shift Positions': "str"})    
     if i ==  0 :
         df_cont = df
     else :
@@ -40,6 +40,7 @@ for column in columns:
         if test in column:
             print("Na is 0 for  "+column)
             df_cont[column] = df_cont[column].fillna(value=0)
+
 
 # if 'Genewise index' in df_cont.columns:
 #     df_cont['Genewise index'] = df_cont['Genewise index'].astype('Int64')
