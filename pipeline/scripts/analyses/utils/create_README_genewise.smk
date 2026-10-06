@@ -80,6 +80,9 @@ GLOBAL_RESULTS = config["global_analyse_dir_name"]
 # The directory is located in genome_assembly/{accession}/analyses/
 GENOME_RESULTS = config["analyse_dir_name"]
 
+# Name of the analyse ( will be sued in the ouput name)
+# -----------------------------------------------------
+ANALYSE_NAME_FOR_OUTPUT = config["analyse_output_name"] 
 
 # Check there is no error in domains declaration
 # ----------------------------------------------
@@ -127,7 +130,7 @@ rule generate:
     input :
         # Concatenation of results on all genomes
         # ----------------------------------------
-        concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "ordered_parsed_results.csv",
+        concat_assemblies=pathGTDriftGlobalResults + GLOBAL_RESULTS + "candidate_homologs." + ANALYSE_NAME_FOR_OUTPUT + ".genome.csv",
     output :
         # README file
         # -----------
