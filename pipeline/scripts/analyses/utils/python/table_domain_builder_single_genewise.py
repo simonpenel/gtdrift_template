@@ -178,6 +178,8 @@ def process_domain_merge(domain, domain_summary_file, accession_number=accession
                     print("Check protein position : is curent hit start " + str(hmm_info["start_in_prot"]) + " > previous hit end " +  str(current_hmm_info["end_in_prot"]) + " ?")
                     if hmm_info["start_in_prot"] < current_hmm_info["end_in_prot"]:
                         print("superposed hit in protein : new hmm domain")
+                        hmm_info["segments_prot"].append([hmm_info["start_in_prot"],hmm_info["end_in_prot"]])
+                        hmm_info["segments_hmm"].append([hmm_info["start_in_hmm"],hmm_info["end_in_hmm"]])   
                         merged_domains.append(merged_hmm_info)
                         merged_hmm_info = hmm_info
                         evalue_min = float(hmm_info["hit_cvalue"])
