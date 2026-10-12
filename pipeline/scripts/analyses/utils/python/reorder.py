@@ -1,6 +1,11 @@
 import pandas as pd
-input_file = snakemake.input[0]
-output_file = snakemake.output[0]
+import sys
+if len(sys.argv) == 3 :
+    input_file = sys.argv[1]
+    output_file = sys.argv[2]
+else :
+    input_file = snakemake.input[0]
+    output_file = snakemake.output[0]
 
 df = pd.read_csv(input_file, sep=';', header=0,dtype={'Stop/Shift Positions': "str"})
 # remove first unamed column 
@@ -42,6 +47,15 @@ for column in columns:
     for test in toberemovedmatch:
         if test in column:
             toberemoved.append(column)
+
+toberemovedmatch2  = ["Stop/Frameshift"]
+for column in columns:
+    buf = column.split(" ")
+    if len(buf) > 1 :
+        if buf[0] != "Nb" :
+            for test in toberemovedmatch2:
+                if test in buf[1]:
+                    toberemoved.append(column)            
 
 print("Remove "+str(toberemoved))
 df = df.drop(columns=toberemoved)
