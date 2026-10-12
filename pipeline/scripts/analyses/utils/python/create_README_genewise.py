@@ -33,7 +33,7 @@ dico_col_names_domain_simple = {
        'Nb DOMAIN domains'  :'Number of DOMAIN domains found (after merging of split hits)',
        'DOMAIN domain start':'Start of the best DOMAIN domain in the protein',
        'DOMAIN domain end'  :'End of the best DOMAIN domain in the protein',
-       'DOMAIN coverage'    :'Start and end positions of the segments of the reference DOMAIN domain alignment that are covered by at least one hit of the best domain',
+       'DOMAIN coverage'    :'Fraction of the DOMAIN reference alignment covered by the best domain',
        'DOMAIN position'    :'Start and end positions of all hits of the best domain in the reference DOMAIN domain alignment',
        'DOMAIN Prot Length' :'Length of the DOMAIN domain (segments) detected in that protein',  
        'DOMAIN Length'      :'Length of the reference DOMAIN domain',
