@@ -122,7 +122,7 @@ directories, files = glob_wildcards(pathGTDriftResource + RESOURCES_DIR_NAME + "
 # -----------------------------------------------
 rule all:
     input:
-        pathGTDriftGlobalResults + GLOBAL_RESULTS + "README"
+        pathGTDriftGlobalResults + GLOBAL_RESULTS + "README.candidate_homologs"
 rule generate:
     """
     Generate the README file.
@@ -134,7 +134,7 @@ rule generate:
     output :
         # README file
         # -----------
-        pathGTDriftGlobalResults + GLOBAL_RESULTS + "README"
+        pathGTDriftGlobalResults + GLOBAL_RESULTS + "README.candidate_homologs"
     shell:
         """
         python3 ../utils/python/create_README.py -i {input} -o {output}
