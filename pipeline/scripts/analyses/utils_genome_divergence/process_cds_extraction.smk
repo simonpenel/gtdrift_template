@@ -23,14 +23,26 @@ ACCESSNB_NOT_ANNOTED = [
 print(len(ACCESSNB_NOT_ANNOTED ))
 if len(ACCESSNB_NOT_ANNOTED ) < nb_not_annoted :
     print("Acessions have been removed from not annoated accessions")
-BUSCO_DIR = config["busco_dir"]
+
+
+#BUSCO_DIR = config["busco_dir"]
+
+# Name of global results directory.
+# ---------------------------------
+# The directory is located in pathGTDriftGlobalResults
+GLOBAL_RESULTS = config["global_analyse_dir_name"]
+
+# Name of genome specific results directory.
+# ------------------------------------------
+# The directory is located in genome_assembly/{accession}/analyses/
+GENOME_RESULTS = config["analyse_dir_name"]
 
 rule all:
     """
     Get extracted sequences for BUSCOs
     """
     input:
-        pair_list = BUSCO_DIR + "busco_full.fa"
+        pair_list = pathGTDriftGlobalResults + GLOBAL_RESULTS + "busco_full.fa"
 
 
 rule concatenate_all_buscos:
@@ -38,10 +50,12 @@ rule concatenate_all_buscos:
     Concatenate BUSCO files of all species
     """
     input:
-        busco_prot = expand(BUSCO_DIR + "extracted_buscos/{accession}_protein_all_buscos.fa", accession=ACCESSNB_ANNOTED),
-        busco_dna = expand(BUSCO_DIR + "extracted_buscos/{accession}_genomic_all_buscos.fa", accession=ACCESSNB_NOT_ANNOTED)
+        busco_prot = expand(pathGTDriftGlobalResults + GLOBAL_RESULTS 
+        + "extracted_buscos/{accession}_all_buscos.fa", accession=ACCESSNB_ANNOTED),
+        busco_dna = expand(pathGTDriftGlobalResults + GLOBAL_RESULTS 
+        + "extracted_buscos/{accession}_all_buscos.fa", accession=ACCESSNB_NOT_ANNOTED)
     output:
-        busco_cat = BUSCO_DIR + "busco_full.fa"
+        busco_cat = pathGTDriftGlobalResults + GLOBAL_RESULTS + "busco_full.fa"
     shell:
         """
         cat {input.busco_prot} {input.busco_dna} > {output}

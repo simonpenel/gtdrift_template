@@ -23,12 +23,24 @@ ACCESSNB = config["assembly_list_annoted"]
 storagetype  = config["storagetype"]
 
 
-BUSCO_DIR = config["busco_dir"]
-pathBUSCO = BUSCO_DIR + "protein/"
+# Name of global results directory.
+# ---------------------------------
+# The directory is located in pathGTDriftGlobalResults
+GLOBAL_RESULTS = config["global_analyse_dir_name"]
+
+# Name of genome specific results directory.
+# ------------------------------------------
+# The directory is located in genome_assembly/{accession}/analyses/
+GENOME_RESULTS = config["analyse_dir_name"]
+
+#BUSCO_DIR = config["busco_dir"]
+#pathBUSCO = BUSCO_DIR + "protein/"
 
 rule all:
     input:
-        expand(BUSCO_DIR + "extracted_buscos/{accession}_protein_all_buscos.fa", accession = ACCESSNB)
+        expand(pathGTDriftGlobalResults + GLOBAL_RESULTS 
+        + "extracted_buscos/{accession}_all_buscos.fa",
+        accession = ACCESSNB)
 
 rule clean_isoforms:
     """
@@ -45,8 +57,6 @@ rule clean_isoforms:
         python3 ../utils/python/filter_isoforms.py -f {input.faa} -g {input.gff} -o {output}
         """
 
-
-
 rule busco_protein:
     """
     Execute BUSCO on anottated data
@@ -55,10 +65,12 @@ rule busco_protein:
     input:
         faa = pathGTDriftData+ "genome_assembly/{accession}/annotation/clean_protein.faa"
     output:
-        table = pathBUSCO + "{accession}/run_eukaryota_odb12/full_table.tsv"
+        table = pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "results/run_eukaryota_odb12/full_table.tsv"
     shell:
         """
-        busco -i {input} -f --offline --download_path ./busco_downloads -m protein -l eukaryota_odb12 -c 1 -o {pathBUSCO}{wildcards.accession}
+        busco -i {input} -f --offline --download_path ./busco_downloads -m protein -l eukaryota_odb12 -c 1 --out_path {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS} -o results 
         """
 
 rule extract_protein_ids:
@@ -67,9 +79,12 @@ rule extract_protein_ids:
     """
     priority: 3
     input:
-        table = pathBUSCO + "{accession}/run_eukaryota_odb12/full_table.tsv"
+        table = pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "results/run_eukaryota_odb12/full_table.tsv"
     output:
-        prots = pathBUSCO + "{accession}/extracted_protein_ids"
+        prots = pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "results/extracted_protein_ids"
     shell:
         """
         python3 ../utils/python/extract_sequences_protein.py -i {input} -o {output}
@@ -81,16 +96,17 @@ rule busco_extract_protein:
     """
     priority: 4
     input:
-        prots = pathBUSCO + "{accession}/extracted_protein_ids",
+        prots = pathGTDriftData
+        + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS + "results/extracted_protein_ids",
         gff = pathGTDriftData+ "genome_assembly/{accession}/annotation/genomic.gff",
         fna = pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.fna"
     output:
-        BUSCO_DIR + "extracted_buscos/{accession}_protein_all_buscos.fa"
+        pathGTDriftGlobalResults + GLOBAL_RESULTS 
+        + "extracted_buscos/{accession}_all_buscos.fa"
     shell:
         """
-        mkdir -p {pathBUSCO}extracted_buscos/
-        python3 ../utils/python/extract_protein_cds.py -p {input.prots} -f {input.fna} -g {input.gff} -o {pathBUSCO}extracted_buscos -a {wildcards.accession}
-        cat {pathBUSCO}extracted_buscos/{wildcards.accession}_*.fasta > {output}
+        python3 ../utils/python/extract_protein_cds.py -p {input.prots} -f {input.fna} -g {input.gff} -o {pathGTDriftGlobalResults}{GLOBAL_RESULTS}extracted_buscos -a {wildcards.accession}
+        cat {pathGTDriftGlobalResults}{GLOBAL_RESULTS}extracted_buscos/{wildcards.accession}_*.fasta > {output}
         """
 
 rule get_genome_seq_fasta:

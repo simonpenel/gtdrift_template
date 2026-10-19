@@ -36,17 +36,40 @@ if PARTITION == NB_PARTITIONS:
 else :
     ACCESSNB = ALL_ACCESSNB[(PARTITION - 1) * SIZE_PARTITION : PARTITION * SIZE_PARTITION]
 
-BUSCO_DIR = config["busco_dir"]
-pathBUSCO = BUSCO_DIR + "genomic/"
+
+# Name of global results directory.
+# ---------------------------------
+# The directory is located in pathGTDriftGlobalResults
+GLOBAL_RESULTS = config["global_analyse_dir_name"]
+
+# Name of genome specific results directory.
+# ------------------------------------------
+# The directory is located in genome_assembly/{accession}/analyses/
+GENOME_RESULTS = config["analyse_dir_name"]
+
+
+#BUSCO_DIR = config["busco_dir"]
+#pathBUSCO = BUSCO_DIR + "genomic/"
 
 
 
 
 rule all:
     input:
-        expand(pathBUSCO + "{accession}/run_eukaryota_odb12/full_table.tsv", accession = ACCESSNB),
-        expand(pathBUSCO + "{accession}/single_copy_busco_sequences.gff",accession = ACCESSNB),
-        expand(BUSCO_DIR + "extracted_buscos/{accession}_genomic_all_buscos.fa", accession = ACCESSNB)
+        expand(
+            pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "results/run_eukaryota_odb12/full_table.tsv",
+            accession = ACCESSNB),
+        expand(
+            pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "single_copy_busco_sequences.gff",
+            accession = ACCESSNB),
+        expand(
+            pathGTDriftGlobalResults + GLOBAL_RESULTS 
+            + "extracted_buscos/{accession}_all_buscos.fa",
+            accession = ACCESSNB)
 
 rule busco_genomic:
     """
@@ -56,11 +79,13 @@ rule busco_genomic:
     input:
         fna = pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.fna"
     output:
-        table = pathBUSCO + "{accession}/run_eukaryota_odb12/full_table.tsv"
+        table = pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "results/run_eukaryota_odb12/full_table.tsv"
     shell:
         """
-        busco -i {input.fna} -f --offline --download_path ./busco_downloads -m genome -l eukaryota_odb12 -c 1 -o {pathBUSCO}{wildcards.accession}
-        #busco -i {input.fna} -f  --download_path ./busco_downloads -m genome -l eukaryota_odb12 -c 1 -o {pathBUSCO}{wildcards.accession}
+        busco -i {input.fna} -f --offline --download_path ./busco_downloads -m genome -l eukaryota_odb12 -c 1 --out_path {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS} -o results 
+        #busco -i {input.fna} -f  --download_path ./busco_downloads -m genome -l eukaryota_odb12 -c 1 -o {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}
  
         """
 
@@ -72,36 +97,40 @@ rule concatenate_gffs_genomic:
     Also deletes sizeable log and temp files.
     """
     input:
-        table = pathBUSCO + "{accession}/run_eukaryota_odb12/full_table.tsv"
+        table = pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+            + "results/run_eukaryota_odb12/full_table.tsv"
     output:
-        gff = pathBUSCO + "{accession}/single_copy_busco_sequences.gff"
+        gff = pathGTDriftData
+            + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS
+            + "single_copy_busco_sequences.gff"
     shell:
         """
-        if [ $(ls '{pathBUSCO}{wildcards.accession}/run_eukaryota_odb12/busco_sequences/single_copy_busco_sequences/*.gff' 2> /dev/null |wc -l) -gt 0 ]; then
-            find {pathBUSCO}{wildcards.accession}/run_eukaryota_odb12/busco_sequences/single_copy_busco_sequences/*.gff -type f -print -exec cat {{}} \; > {output}
+        if [ $(ls '{pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}run_eukaryota_odb12/busco_sequences/single_copy_busco_sequences/*.gff' 2> /dev/null |wc -l) -gt 0 ]; then
+            find {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}run_eukaryota_odb12/busco_sequences/single_copy_busco_sequences/*.gff -type f -print -exec cat {{}} \; > {output}
         fi
-        if [ $(ls '{pathBUSCO}{wildcards.accession}/run_eukaryota_odb12/busco_sequences/multi_copy_busco_sequences/*.gff' 2> /dev/null |wc -l) -gt 0 ]; then
-            find {pathBUSCO}{wildcards.accession}/run_eukaryota_odb12/busco_sequences/multi_copy_busco_sequences/*.gff -type f -print -exec cat {{}} \; >> {output}
-            for p in $(ls {pathBUSCO}{wildcards.accession}/run_eukaryota_odb12/busco_sequences/multi_copy_busco_sequences/*.gff);
+        if [ $(ls '{pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}/run_eukaryota_odb12/busco_sequences/multi_copy_busco_sequences/*.gff' 2> /dev/null |wc -l) -gt 0 ]; then
+            find {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}/run_eukaryota_odb12/busco_sequences/multi_copy_busco_sequences/*.gff -type f -print -exec cat {{}} \; >> {output}
+            for p in $(ls {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}/run_eukaryota_odb12/busco_sequences/multi_copy_busco_sequences/*.gff);
             do
-                echo $(basename $p) >> {pathBUSCO}{wildcards.accession}/multi_copy_buscos
+                echo $(basename $p) >> {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}/multi_copy_buscos
             done
         fi
-        if [ $(ls '{pathBUSCO}{wildcards.accession}/run_eukaryota_odb12/busco_sequences/single_copy_busco_sequences/*.gff' 2> /dev/null|wc -l) -gt 0 ] || [ $(ls '{pathBUSCO}{wildcards.accession}/run_eukaryota_odb12/busco_sequences/multi_copy_busco_sequences/*.gff' 2> /dev/null |wc -l) -gt 0 ]; then
+        if [ $(ls '{pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}/run_eukaryota_odb12/busco_sequences/single_copy_busco_sequences/*.gff' 2> /dev/null|wc -l) -gt 0 ] || [ $(ls '{pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}/run_eukaryota_odb12/busco_sequences/multi_copy_busco_sequences/*.gff' 2> /dev/null |wc -l) -gt 0 ]; then
             echo "GFFs concatenated."
         else
             echo "No BUSCO found for {wildcards.accession}"
             touch {output}
         fi
-        if [ -f '{pathBUSCO}{wildcards.accession}/run_eukaryota_odb12/miniprot_output/ref.mpi' ]; then
-            rm {pathBUSCO}{wildcards.accession}/run_eukaryota_odb12/miniprot_output/ref.mpi
-        fi
-        if [ -f '{pathBUSCO}{wildcards.accession}/logs/miniprot_align_eukaryota_odb12_out.log' ]; then
-            rm {pathBUSCO}{wildcards.accession}/logs/miniprot_align_eukaryota_odb12_out.log
-        fi
-        if [ -d '{pathBUSCO}{wildcards.accession}/tmp/' ]; then
-            rm -r {pathBUSCO}{wildcards.accession}/tmp/
-        fi
+ #       if [ -f '{pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}/run_eukaryota_odb12/miniprot_output/ref.mpi' ]; then
+ #           rm {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}/run_eukaryota_odb12/miniprot_output/ref.mpi
+ #       fi
+ #       if [ -f '{pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}/logs/miniprot_align_eukaryota_odb12_out.log' ]; then
+ #           rm {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}/logs/miniprot_align_eukaryota_odb12_out.log
+ #       fi
+ #       if [ -d '{pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}/tmp/' ]; then
+ #           rm -r {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}/tmp/
+ #       fi
         """
 
 rule get_genome_seq_fasta:
@@ -129,16 +158,18 @@ rule busco_extract_genomic:
     """
     priority: 3
     input:
-        fna = pathGTDriftData+ "genome_assembly/{accession}/genome_seq/genomic.fna",
-        gff = pathBUSCO + "{accession}/single_copy_busco_sequences.gff"
+        fna = pathGTDriftData + "genome_assembly/{accession}/genome_seq/genomic.fna",
+        gff = pathGTDriftData 
+        + "genome_assembly/{accession}/analyses/" + GENOME_RESULTS 
+        + "single_copy_busco_sequences.gff"
     output:
-        BUSCO_DIR + "extracted_buscos/{accession}_genomic_all_buscos.fa"
+        pathGTDriftGlobalResults + GLOBAL_RESULTS 
+        + "extracted_buscos/{accession}_all_buscos.fa"
     shell:
         """
-        mkdir -p {pathBUSCO}extracted_buscos/
-        python3 python/extract_genomic_cds.py -f {input.fna} -g {input.gff} -o {pathBUSCO}extracted_buscos -a {wildcards.accession}
-        if compgen -G '{pathBUSCO}extracted_buscos/{wildcards.accession}_*.fasta' > /dev/null; then
-            cat {pathBUSCO}extracted_buscos/{wildcards.accession}_*.fasta > {output}
+        python3 python/extract_genomic_cds.py -f {input.fna} -g {input.gff} -o {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}extracted_buscos -a {wildcards.accession}
+        if compgen -G '{pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}extracted_buscos/{wildcards.accession}_*.fasta' > /dev/null; then
+            cat {pathGTDriftData}genome_assembly/{wildcards.accession}/analyses/{GENOME_RESULTS}extracted_buscos/{wildcards.accession}_*.fasta > {output}
         else
             touch {output}
         fi
