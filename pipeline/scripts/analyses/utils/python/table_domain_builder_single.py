@@ -237,9 +237,10 @@ def process_domain_merge(domain, domain_summary_file, accession_number=accession
                 print("Coverage : "+str(coverage))
                 # Calcul des positions
                 positions = get_positions(combined_domain["segments_hmm"])
+              
                 if sequence in summarised_data['SeqID'].values:
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"Nb {domain} hits"] = len(sequence_domains[sequence])
-                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"Nb {domain} domains"] = len(merged_domains)
+                    summarised_data.loc[summarised_data['SeqID'] == sequence, f"Nb {domain} domains"] = len(merged_domains)  +1 #because of the pop done pon merged_domains 
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain start"] = int(combined_domain["start_in_prot"])
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} domain end"] = int(combined_domain["end_in_prot"])
                     summarised_data.loc[summarised_data['SeqID'] == sequence, f"{domain} Score"] = combined_domain["global_score"]
