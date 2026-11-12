@@ -216,6 +216,7 @@ rule all:
 
 include: "../utils/module_stats_domain.smk"
 include: "../utils/module_check_paralogs.smk"
-include: "../utils/module_hmm.smk"
+# inclure le module hmm sulement si on veut recalculer les profils et databases hmm
+#include: "../utils/module_hmm.smk"
 include: "../utils/module_concatenate.smk"
 include: "../utils/module_add_chromosomes_info.smk"
